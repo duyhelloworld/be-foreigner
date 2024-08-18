@@ -1,0 +1,37 @@
+{"properties": [
+  {
+    "name": "application.auth.jwt.issuer",
+    "type": "java.lang.String",
+    "description": "A description for 'application.auth.jwt.issuer'"
+  },
+  {
+    "name": "application.auth.jwt.expire-duration",
+    "type": "java.lang.String",
+    "description": "A description for 'application.auth.jwt.expire-duration'"
+  },
+  {
+    "name": "application.auth.jwt.secretKey",
+    "type": "java.lang.String",
+    "description": "A description for 'application.auth.jwt.secretKey'"
+  },
+  {
+    "name": "application.auth.test-user.username",
+    "type": "java.lang.String",
+    "description": "A description for 'application.auth.test-user.username'"
+  },
+  {
+    "name": "application.auth.test-user.password",
+    "type": "java.lang.String",
+    "description": "A description for 'application.auth.test-user.password'"
+  },
+  {
+    "name": "application.auth.test-user.email",
+    "type": "java.lang.String",
+    "description": "A description for 'application.auth.test-user.email'"
+  },
+  {
+    "name": "application.auth.test-user.fullname",
+    "type": "java.lang.String",
+    "description": "A description for 'application.auth.test-user.fullname'"
+  }
+]}
