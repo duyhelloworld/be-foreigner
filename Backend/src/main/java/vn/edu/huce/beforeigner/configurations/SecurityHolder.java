@@ -5,8 +5,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import lombok.extern.slf4j.Slf4j;
-import vn.edu.huce.beforeigner.dtos.auth.AuthenticatedUser;
 import vn.edu.huce.beforeigner.entities.core.User;
+import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.AuthenticatedUser;
 
 @Slf4j
 public abstract class SecurityHolder {

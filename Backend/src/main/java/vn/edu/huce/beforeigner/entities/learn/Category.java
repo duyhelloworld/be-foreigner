@@ -9,10 +9,12 @@ import jakarta.persistence.ManyToMany;
 import lombok.Setter;
 import vn.edu.huce.beforeigner.entities.base.Audited;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 public class Category extends Audited {
     
     private String name;
@@ -22,4 +24,9 @@ public class Category extends Audited {
     @ManyToMany
     @JoinTable(name = "categories_words")
     private Set<Word> words = new HashSet<>();
+
+    public Category(String name, String description) { 
+        this.name = name;
+        this.description = description;
+    }
 }

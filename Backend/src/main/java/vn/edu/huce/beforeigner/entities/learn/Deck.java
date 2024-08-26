@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
@@ -18,6 +20,9 @@ public class Deck extends Audited {
     private String name;
 
     private String description;
+
+    @Enumerated(EnumType.ORDINAL)
+    private DifficultyLevel difficultyLevel;
 
     @OneToMany
     @JoinColumn(name = "deck_id")

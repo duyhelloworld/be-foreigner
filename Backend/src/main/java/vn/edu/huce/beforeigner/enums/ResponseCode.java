@@ -17,7 +17,12 @@ public enum ResponseCode {
     USERNAME_MISSING(1009, "Không được bỏ trống tên tài khoản"),
     PASSWORD_MISSING(1010, "Không được bỏ trống mật khẩu"),
     EMAIL_MISSING(1011, "Không được bỏ trống email"),
-    TOKEN_EXPIRED(2001, "Phiên đăng nhập hết hạn");
+    TOKEN_EXPIRED(1012, "Phiên đăng nhập hết hạn"),
+    DECK_NOT_FOUND(2000, "Không tìm thấy bộ thẻ này"),
+    CARD_NOT_FOUND(2001, "Không tìm thấy thẻ này"),
+    WORD_NOT_FOUND(2002, "Không tìm thấy từ này"),
+    CATEGORY_NOT_FOUND(2003, "Không tìm thấy chủ đề này"),    
+    HAVENT_BEEN_LEARN_THIS_CARD(2004, "Bạn chưa từng học thẻ này");
 
     private int code;
 

@@ -13,13 +13,13 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import vn.edu.huce.beforeigner.dtos.auth.AuthenticatedUser;
 import vn.edu.huce.beforeigner.entities.core.User;
 import vn.edu.huce.beforeigner.enums.ResponseCode;
 import vn.edu.huce.beforeigner.exceptions.AppException;
+import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IInvalidTokenService;
+import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.ITokenService;
+import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.AuthenticatedUser;
 import vn.edu.huce.beforeigner.repositories.UserRepo;
-import vn.edu.huce.beforeigner.services.abstracts.core.IInvalidTokenService;
-import vn.edu.huce.beforeigner.services.abstracts.core.ITokenService;
 
 @Component
 @AllArgsConstructor

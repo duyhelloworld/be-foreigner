@@ -3,9 +3,9 @@ package vn.edu.huce.beforeigner.mappers.business;
 import org.springframework.stereotype.Component;
 
 import lombok.AllArgsConstructor;
-import vn.edu.huce.beforeigner.dtos.bussiness.DeckDto;
-import vn.edu.huce.beforeigner.dtos.bussiness.detail.DeckDetailDto;
 import vn.edu.huce.beforeigner.entities.learn.Deck;
+import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.DeckDto;
+import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.bussiness.detail.DeckDetailDto;
 
 @Component
 @AllArgsConstructor

@@ -2,36 +2,36 @@
   {
     "name": "application.auth.jwt.issuer",
     "type": "java.lang.String",
-    "description": "A description for 'application.auth.jwt.issuer'"
+    "description": "Trường 'iss' của jwt"
   },
   {
     "name": "application.auth.jwt.expire-duration",
-    "type": "java.lang.String",
-    "description": "A description for 'application.auth.jwt.expire-duration'"
+    "type": "java.time.Duration",
+    "description": "Khoảng thời gian khả dụng của jwt"
   },
   {
     "name": "application.auth.jwt.secretKey",
     "type": "java.lang.String",
-    "description": "A description for 'application.auth.jwt.secretKey'"
+    "description": "Khóa bí mật của jwt"
   },
   {
     "name": "application.auth.test-user.username",
     "type": "java.lang.String",
-    "description": "A description for 'application.auth.test-user.username'"
+    "description": "tên tài khoản admin"
   },
   {
     "name": "application.auth.test-user.password",
     "type": "java.lang.String",
-    "description": "A description for 'application.auth.test-user.password'"
+    "description": "Mật khẩu tài khoản admin"
   },
   {
     "name": "application.auth.test-user.email",
     "type": "java.lang.String",
-    "description": "A description for 'application.auth.test-user.email'"
+    "description": "Email tài khoản admin"
   },
   {
     "name": "application.auth.test-user.fullname",
     "type": "java.lang.String",
-    "description": "A description for 'application.auth.test-user.fullname'"
+    "description": "Họ tên đầy đủ tài khoản admin"
   }
 ]}

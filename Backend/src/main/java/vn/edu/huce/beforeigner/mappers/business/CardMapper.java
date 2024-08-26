@@ -3,9 +3,9 @@ package vn.edu.huce.beforeigner.mappers.business;
 import org.springframework.stereotype.Component;
 
 import lombok.AllArgsConstructor;
-import vn.edu.huce.beforeigner.dtos.bussiness.CardDto;
-import vn.edu.huce.beforeigner.dtos.bussiness.detail.CardDetailDto;
 import vn.edu.huce.beforeigner.entities.learn.Card;
+import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.CardDto;
+import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.bussiness.detail.CardDetailDto;
 
 @Component
 @AllArgsConstructor

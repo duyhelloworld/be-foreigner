@@ -13,7 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import lombok.AllArgsConstructor;
-import vn.edu.huce.beforeigner.services.impls.core.AppUserDetailService;
+import vn.edu.huce.beforeigner.infrastructures.coremodule.impls.AppUserDetailService;
 
 @Configuration
 @EnableMethodSecurity

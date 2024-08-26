@@ -44,6 +44,10 @@ public enum WordType {
     /**
      * Liên từ
      */
-    CONJUNCTIONS,
+    CONJUNCTIONS;
+
+    public static WordType caseSensitiveValue(String string) {
+        return WordType.valueOf(string.toUpperCase());
+    }
 
 }

@@ -1,15 +1,16 @@
 package vn.edu.huce.beforeigner.mappers.business;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import vn.edu.huce.beforeigner.dtos.bussiness.WordDto;
-import vn.edu.huce.beforeigner.dtos.bussiness.detail.WordDetailDto;
 import vn.edu.huce.beforeigner.entities.learn.Word;
-import vn.edu.huce.beforeigner.entities.learn.WordExample;
+import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.WordDto;
+import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.bussiness.detail.WordDetailDto;
+import vn.edu.huce.beforeigner.entities.learn.MeanExample;
 
 @Component
 public class WordMapper {
@@ -26,17 +27,28 @@ public class WordMapper {
             .id(word.getId())
             .value(word.getValue())
             .meanAndExamples(
-                wordMeanAndExample(word.getWordExamples()))
+                toDto(word.getWordExamples()))
             .audioFile(word.getAudioFile())
-            .pronunciation(word.getPronunciation())
+            .phonetic(word.getPhonetic())
             .build();
     }
 
-    private Map<String, String> wordMeanAndExample(List<WordExample> wordExamples) {
+    public Map<String, String> toDto(List<MeanExample> wordExamples) {
         Map<String, String> result = new HashMap<>();
-        for (WordExample wordExample : wordExamples) {
-            result.put(wordExample.getMeaning(), wordExample.getSentence());
+        for (MeanExample wordExample : wordExamples) {
+            result.put(wordExample.getMean(), wordExample.getExample());
         }
         return result;
+    }
+
+    public List<MeanExample> toEntity(Map<String, String> input) {
+        List<MeanExample> wordExamples = new LinkedList<>();
+        for (var entry : input.entrySet()) {
+            MeanExample wordExample = new MeanExample();
+            wordExample.setMean(entry.getKey());
+            wordExample.setExample(entry.getValue());
+            wordExamples.add(wordExample);
+        }
+        return wordExamples;
     }
 }
