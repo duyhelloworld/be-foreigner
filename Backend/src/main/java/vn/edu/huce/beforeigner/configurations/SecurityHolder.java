@@ -1,5 +1,7 @@
 package vn.edu.huce.beforeigner.configurations;
 
+import java.util.Optional;
+
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,6 +12,7 @@ import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.AuthenticatedUser
 
 @Slf4j
 public abstract class SecurityHolder {
+    
     public static User getUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
@@ -22,5 +25,10 @@ public abstract class SecurityHolder {
             log.error("Error when cast " + authentication.getPrincipal() + " to AuthenticatedUser", e);
             return null;
         }    
+    }
+
+    public static Optional<String> auditor() {
+        User user = getUser();
+        return user == null ? Optional.empty() : Optional.of(user.getUsername());
     }
 }

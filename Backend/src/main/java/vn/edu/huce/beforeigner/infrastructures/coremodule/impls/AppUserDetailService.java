@@ -7,13 +7,13 @@ import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.AuthenticatedUser;
-import vn.edu.huce.beforeigner.repositories.UserRepo;
+import vn.edu.huce.beforeigner.repositories.UserRepository;
 
 @Service
 @AllArgsConstructor
 public class AppUserDetailService implements UserDetailsService {
 
-    private UserRepo userRepo;
+    private UserRepository userRepo;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

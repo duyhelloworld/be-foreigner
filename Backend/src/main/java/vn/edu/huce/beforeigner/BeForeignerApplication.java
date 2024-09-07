@@ -9,5 +9,4 @@ public class BeForeignerApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(BeForeignerApplication.class, args);
 	}
-
 }

@@ -12,20 +12,20 @@ import vn.edu.huce.beforeigner.enums.ResponseCode;
 import vn.edu.huce.beforeigner.exceptions.AppException;
 import vn.edu.huce.beforeigner.infrastructures.learnmodule.abstracts.IDeckService;
 import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.DeckDto;
-import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.bussiness.creatation.CreateDeckDto;
-import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.bussiness.detail.DeckDetailDto;
-import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.bussiness.updatation.UpdateDeckDto;
-import vn.edu.huce.beforeigner.mappers.business.DeckMapper;
-import vn.edu.huce.beforeigner.repositories.CardRepo;
-import vn.edu.huce.beforeigner.repositories.DeckRepo;
+import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.creatation.CreateDeckDto;
+import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.detail.DeckDetailDto;
+import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.updatation.UpdateDeckDto;
+import vn.edu.huce.beforeigner.infrastructures.learnmodule.mappers.DeckMapper;
+import vn.edu.huce.beforeigner.repositories.CardRepository;
+import vn.edu.huce.beforeigner.repositories.DeckRepository;
 
 @Service
 @AllArgsConstructor
 public class DeckService implements IDeckService {
 
-    private DeckRepo deckRepo;
+    private DeckRepository deckRepo;
 
-    private CardRepo cardRepo;
+    private CardRepository cardRepo;
 
     private DeckMapper deckMapper;
 

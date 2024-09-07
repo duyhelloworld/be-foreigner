@@ -6,13 +6,13 @@ import lombok.AllArgsConstructor;
 import vn.edu.huce.beforeigner.entities.core.InvalidToken;
 import vn.edu.huce.beforeigner.entities.core.User;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IInvalidTokenService;
-import vn.edu.huce.beforeigner.repositories.InvalidTokenRepo;
+import vn.edu.huce.beforeigner.repositories.InvalidTokenRepository;
 
 @Service
 @AllArgsConstructor
 public class InvalidTokenService implements IInvalidTokenService {
 
-    private InvalidTokenRepo invalidTokenRepo;
+    private InvalidTokenRepository invalidTokenRepo;
 
     @Override
     public boolean isExisted(String token) {

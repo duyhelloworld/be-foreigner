@@ -1,5 +1,7 @@
 package vn.edu.huce.beforeigner.entities.learn;
 
+import org.springframework.util.StringUtils;
+
 public enum WordType {
     /**
      * Danh từ
@@ -47,7 +49,9 @@ public enum WordType {
     CONJUNCTIONS;
 
     public static WordType caseSensitiveValue(String string) {
+        if (!StringUtils.hasText(string)) {
+            return WordType.NOUN;
+        }
         return WordType.valueOf(string.toUpperCase());
     }
-
 }

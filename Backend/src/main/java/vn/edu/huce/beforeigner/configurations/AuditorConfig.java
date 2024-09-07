@@ -18,6 +18,6 @@ public class AuditorConfig implements AuditorAware<String> {
 
     @Override
     public Optional<String> getCurrentAuditor() {
-        return Optional.ofNullable(SecurityHolder.getUser().getUsername());
+        return SecurityHolder.auditor();
     }
 }

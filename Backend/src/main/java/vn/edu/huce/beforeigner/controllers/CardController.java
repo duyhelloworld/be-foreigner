@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import lombok.AllArgsConstructor;
 import vn.edu.huce.beforeigner.infrastructures.learnmodule.abstracts.ICardService;
 import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.CardDto;
-import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.bussiness.creatation.CreateCardDto;
-import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.bussiness.detail.CardDetailDto;
+import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.creatation.CreateCardDto;
+import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.detail.CardDetailDto;
 
 @AllArgsConstructor
 @RestController

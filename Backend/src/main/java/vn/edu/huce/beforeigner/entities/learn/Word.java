@@ -1,15 +1,12 @@
 package vn.edu.huce.beforeigner.entities.learn;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.Setter;
@@ -27,6 +24,9 @@ public class Word extends Audited {
     private String value;
 
     @Column(nullable = false)
+    private String mean;
+
+    @Column(nullable = false)
     private String phonetic;
 
     @Column(nullable = false)
@@ -39,13 +39,11 @@ public class Word extends Audited {
     private Card card;
 
     @OneToMany(mappedBy = "word")
-    private List<MeanExample> wordExamples = new ArrayList<>();
+    private List<Example> examples = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "words")
-    private Set<Category> categories = new HashSet<>();
-
-    public Word(String value, String phonetic, String audioFile, WordType wordType) {
+    public Word(String value, String mean, String phonetic, String audioFile, WordType wordType) {
         this.value = value;
+        this.mean = mean;
         this.phonetic = phonetic;
         this.audioFile = audioFile;
         this.wordType = wordType;

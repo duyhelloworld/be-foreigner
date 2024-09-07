@@ -1,12 +1,14 @@
 package vn.edu.huce.beforeigner.entities.core;
 
+import java.util.UUID;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 import lombok.Setter;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,11 +17,11 @@ import lombok.NoArgsConstructor;
 @Setter
 @Entity
 @NoArgsConstructor
+@Table(indexes = @Index(columnList = "id, username, email"))
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private String id = UUID.randomUUID().toString();
     
     @Column(length = 100, nullable = false, unique = true)
     private String username;
@@ -32,6 +34,9 @@ public class User {
 
     @Column(length = 100)
     private String password;
+
+    @Column(length = 100)
+    private String avatar;
 
     @Enumerated(EnumType.STRING)
     private TokenProvider provider;
@@ -52,8 +57,7 @@ public class User {
     @Override
     public boolean equals(Object object) {
         User user = (User) object;
-        return id == user.id 
-            && this.username.equals(user.username);
+        return this.username.equals(user.username);
     }
 
 }

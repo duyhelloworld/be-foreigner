@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import lombok.AllArgsConstructor;
 import vn.edu.huce.beforeigner.infrastructures.learnmodule.abstracts.IDeckService;
 import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.DeckDto;
-import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.bussiness.creatation.CreateDeckDto;
-import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.bussiness.detail.DeckDetailDto;
+import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.creatation.CreateDeckDto;
+import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.detail.DeckDetailDto;
 
 @AllArgsConstructor
 @RestController

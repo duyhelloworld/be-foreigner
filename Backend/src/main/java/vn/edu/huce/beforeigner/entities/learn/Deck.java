@@ -24,6 +24,15 @@ public class Deck extends Audited {
     @Enumerated(EnumType.ORDINAL)
     private DifficultyLevel difficultyLevel;
 
+    public Deck() {
+    }
+
+    public Deck(String name, String description, DifficultyLevel difficultyLevel) {
+        this.name = name;
+        this.description = description;
+        this.difficultyLevel = difficultyLevel;
+    }
+
     @OneToMany
     @JoinColumn(name = "deck_id")
     private Set<Card> cards = new HashSet<>();

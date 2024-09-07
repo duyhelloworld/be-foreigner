@@ -19,7 +19,7 @@ import vn.edu.huce.beforeigner.exceptions.AppException;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IInvalidTokenService;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.ITokenService;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.AuthenticatedUser;
-import vn.edu.huce.beforeigner.repositories.UserRepo;
+import vn.edu.huce.beforeigner.repositories.UserRepository;
 
 @Component
 @AllArgsConstructor
@@ -29,7 +29,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     private ITokenService tokenService;
 
-    private UserRepo userRepo;
+    private UserRepository userRepo;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

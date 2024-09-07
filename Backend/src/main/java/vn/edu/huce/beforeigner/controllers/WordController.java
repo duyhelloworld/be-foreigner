@@ -15,8 +15,8 @@ import lombok.AllArgsConstructor;
 import vn.edu.huce.beforeigner.entities.learn.WordType;
 import vn.edu.huce.beforeigner.infrastructures.learnmodule.abstracts.IWordService;
 import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.WordDto;
-import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.bussiness.creatation.CreateWordDto;
-import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.bussiness.detail.WordDetailDto;
+import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.creatation.CreateWordDto;
+import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.detail.WordDetailDto;
 
 @AllArgsConstructor
 @RestController
@@ -27,11 +27,10 @@ public class WordController {
 
     @GetMapping
     public List<WordDto> getAll(
-        @RequestParam(required = false, defaultValue = "") String keyword,
         @RequestParam(required = false) Integer categoryId,
         @RequestParam(required = false) String wordType
     ) {
-        return wordService.getAll(keyword, categoryId,  WordType.caseSensitiveValue(wordType));
+        return wordService.getAll(categoryId,  WordType.caseSensitiveValue(wordType));
     }
 
     @GetMapping("{id}")

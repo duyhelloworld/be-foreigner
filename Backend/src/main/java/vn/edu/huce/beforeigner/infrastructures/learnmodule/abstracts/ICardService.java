@@ -3,9 +3,9 @@ package vn.edu.huce.beforeigner.infrastructures.learnmodule.abstracts;
 import java.util.List;
 
 import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.CardDto;
-import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.bussiness.creatation.CreateCardDto;
-import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.bussiness.detail.CardDetailDto;
-import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.bussiness.updatation.UpdateCardDto;
+import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.creatation.CreateCardDto;
+import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.detail.CardDetailDto;
+import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.updatation.UpdateCardDto;
 
 public interface ICardService {
     

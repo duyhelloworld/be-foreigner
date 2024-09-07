@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import vn.edu.huce.beforeigner.entities.base.Audited;
 
-import java.time.LocalDateTime;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 
@@ -13,13 +11,11 @@ import jakarta.persistence.ManyToOne;
 @Setter
 @Entity
 public class LearnProcess extends Audited {
-
+    
+    private Integer correctCount;
+    
+    private Integer incorrectCount;
+    
     @ManyToOne
     private Deck deck;
-
-    private Integer correctCount;
-
-    private Integer incorrectCount;
-
-    private LocalDateTime lastReviewedAt;
 }

@@ -12,23 +12,23 @@ import vn.edu.huce.beforeigner.enums.ResponseCode;
 import vn.edu.huce.beforeigner.exceptions.AppException;
 import vn.edu.huce.beforeigner.infrastructures.learnmodule.abstracts.ICardService;
 import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.CardDto;
-import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.bussiness.creatation.CreateCardDto;
-import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.bussiness.detail.CardDetailDto;
-import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.bussiness.updatation.UpdateCardDto;
-import vn.edu.huce.beforeigner.mappers.business.CardMapper;
-import vn.edu.huce.beforeigner.repositories.CardRepo;
-import vn.edu.huce.beforeigner.repositories.DeckRepo;
-import vn.edu.huce.beforeigner.repositories.WordRepo;
+import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.creatation.CreateCardDto;
+import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.detail.CardDetailDto;
+import vn.edu.huce.beforeigner.infrastructures.learnmodule.dtos.updatation.UpdateCardDto;
+import vn.edu.huce.beforeigner.infrastructures.learnmodule.mappers.CardMapper;
+import vn.edu.huce.beforeigner.repositories.CardRepository;
+import vn.edu.huce.beforeigner.repositories.DeckRepository;
+import vn.edu.huce.beforeigner.repositories.WordRepository;
 
 @Service
 @AllArgsConstructor
 public class CardService implements ICardService {
 
-    private CardRepo cardRepo;
+    private CardRepository cardRepo;
 
-    private DeckRepo deckRepo;
+    private DeckRepository deckRepo;
 
-    private WordRepo wordRepo;
+    private WordRepository wordRepo;
 
     private CardMapper cardMapper;
 
