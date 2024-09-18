@@ -13,8 +13,8 @@ const TodayWordView = (prop: TodayWordViewProp) => {
       <Text style={styles.title}>Từ vựng hôm nay là :</Text>
       <Text style={styles.wordValue}>{word.value}</Text>
       <Text style={styles.wordPhonetic}>/ {word.phonetic} /</Text>
-      <TodayWordExpandView title='Ý nghĩa' data={word.mean} isPrimary />
-      <TodayWordExpandView title='Ví dụ' data={word.example} />
+      <TodayWordExpandView title='Ý nghĩa' mean={word.mean} />
+      <TodayWordExpandView title='Ví dụ' examples={word.examples} />
     </View>
   );
 }

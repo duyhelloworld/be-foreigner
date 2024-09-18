@@ -15,23 +15,28 @@
     "description": "Khóa bí mật của jwt"
   },
   {
-    "name": "application.auth.test-user.username",
+    "name": "application.auth.admin-user.username",
     "type": "java.lang.String",
-    "description": "tên tài khoản admin"
+    "description": "Tên tài khoản admin"
   },
   {
-    "name": "application.auth.test-user.password",
+    "name": "application.auth.admin-user.password",
     "type": "java.lang.String",
     "description": "Mật khẩu tài khoản admin"
   },
   {
-    "name": "application.auth.test-user.email",
+    "name": "application.auth.admin-user.email",
     "type": "java.lang.String",
     "description": "Email tài khoản admin"
   },
   {
-    "name": "application.auth.test-user.fullname",
+    "name": "application.auth.admin-user.fullname",
     "type": "java.lang.String",
     "description": "Họ tên đầy đủ tài khoản admin"
+  },
+  {
+    "name": "application.notification.app-icon",
+    "type": "java.lang.String",
+    "description": "Icon ứng dụng"
   }
 ]}

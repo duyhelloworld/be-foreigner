@@ -1,7 +1,7 @@
 package vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts;
 
 import jakarta.servlet.http.HttpServletRequest;
-import vn.edu.huce.beforeigner.entities.core.User;
+import vn.edu.huce.beforeigner.domains.core.User;
 
 public interface ITokenService {
     

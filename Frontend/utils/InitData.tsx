@@ -1,10 +1,10 @@
-import { DiffLevel } from "../types/enum";
+import { WordType } from "../types/enum";
 
-export function randomDeckId() : number {
-  const decks = sampleDecks();
-  return Math.floor(Math.random() * decks.length + 1);
+export function randomTopicId(): number {
+  const Topics = sampleTopics();
+  return Math.floor(Math.random() * Topics.length + 1);
 }
-export function sampleDeck(): Deck {
+export function sampleTopic(): Topic {
   return {
     id: 1,
     name: "Động vật",
@@ -13,7 +13,7 @@ export function sampleDeck(): Deck {
   };
 }
 
-export function sampleDecks(): Deck[] {
+export function sampleTopics(): Topic[] {
   return [
     {
       id: 1,
@@ -41,10 +41,20 @@ export function sampleDecks(): Deck[] {
   ];
 }
 
-export function sampleCard(): Card {
+export function sampleWord(): Word {
   return {
     id: 1,
-    word: sampleWord(),
+    value: "Valiu 1",
+    audio: "audio1",
+    mean: "Giá trị 1",
+    examples: [
+      { sentense: "1 shot value1", mean: "Ví dụ 1 shot" },
+      { sentense: "1 shot value1", mean: "Ví dụ 1 shot" },
+      { sentense: "Continue value1", mean: "Ví dụ phát nữa" },
+    ],
+    phonetic: "value1",
+    hint: "va líu 1",
+    type: WordType.N,
     image: "https://m.yodycdn.com/blog/duong-tang-meme-yody-vn-2.jpg",
   };
 }
@@ -56,73 +66,55 @@ export function sampleWords(): Word[] {
       id: 2,
       value: "Duy dep trai",
       mean: "Duy đẹp trai",
-      example: ["Duy đẹp trai vờ cờ lờ", "Không Duy thì ai"],
+      image:
+        "https://cdn2.fptshop.com.vn/unsafe/Uploads/images/tin-tuc/174965/Originals/meme-la-gi-3.jpg",
+      examples: [
+        { sentense: "Duy dep trai so much", mean: "Duy đẹp trai vờ cờ lờ" },
+        { sentense: "", mean: "" },
+      ],
     },
     {
       id: 3,
       value: "Test phát 3",
       mean: "Nghĩa test 3",
-      example: ["Ví dụ test 3", "Ví dụ khác test 3"],
+      image:
+        "https://cdn2.fptshop.com.vn/unsafe/Uploads/images/tin-tuc/174965/Originals/meme-la-gi-3.jpg",
+      examples: [
+        { sentense: "Test câu 3", mean: "Nghĩa câu 3" },
+        { sentense: "Test câu 3.2", mean: "Nghĩa câu 3.2" },
+      ],
     },
     {
       id: 4,
       value: "Test phát 4",
       mean: "Nghĩa test 4",
-      example: ["Ví dụ test 4", "Ví dụ khác test 4"],
+      image:
+        "https://media3.coolmate.me/cdn-cgi/image/quality=80,format=auto/uploads/March2023/anh-che-meme1_63.jpg",
+
+      examples: [
+        { sentense: "Test câu 4", mean: "Nghĩa câu 4" },
+        { sentense: "Test câu 4", mean: "Nghĩa câu 4" },
+      ],
     },
     {
       id: 5,
       value: "Test phát 5",
       mean: "Nghĩa test 5",
-      example: ["Ví dụ test 5", "Ví dụ khác test 5"],
+      image:
+        "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/03/anh-meme-hai-6.jpg",
+      examples: [
+        { sentense: "Test câu 3", mean: "Nghĩa câu 5" },
+        { sentense: "Test câu 5", mean: "Nghĩa câu 5" },
+      ],
     },
     {
       id: 6,
       value: "Test phát 6",
       mean: "Nghĩa test 6",
-      example: ["Ví dụ test 6", "Ví dụ khác test 6"],
+      examples: [
+        { sentense: "Test câu 3", mean: "Nghĩa câu 6" },
+        { sentense: "Test câu 6", mean: "Nghĩa câu 6" },
+      ],
     },
   ];
-}
-
-export function sampleCards(): Card[] {
-  let words = sampleWords();
-  return [
-    sampleCard(),
-    {
-      id: 2,
-      word: words[1],
-      image:
-        "https://cdn2.fptshop.com.vn/unsafe/Uploads/images/tin-tuc/174965/Originals/meme-la-gi-3.jpg",
-    },
-    {
-      id: 3,
-      word: words[2],
-      image:
-        "https://media3.coolmate.me/cdn-cgi/image/quality=80,format=auto/uploads/March2023/anh-che-meme1_63.jpg",
-    },
-    {
-      id: 4,
-      word: words[3],
-      image:
-        "https://genk.mediacdn.vn/2018/10/19/photo-1-15399266837281100315834-15399271585711710441111.png",
-    },
-    {
-      id: 5,
-      word: words[4],
-      image:
-        "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/03/anh-meme-hai-6.jpg",
-    },
-  ];
-}
-
-export function sampleWord(): Word {
-  return {
-    id: 1,
-    value: "Valiu 1",
-    audio: "audio1",
-    mean: "Giá trị 1",
-    example: ["Ví dụ 1 shot", "Ví dụ phát nữa"],
-    phonetic: "value1",
-  };
 }

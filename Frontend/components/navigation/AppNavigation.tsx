@@ -5,14 +5,14 @@ import { Routes } from "../../types/global";
 import { NavigationContainer } from "@react-navigation/native";
 import HomeScreen from "../home/HomeScreen";
 import LearnScreen from "../learn/LearnScreen";
-import MyDeckLibraryScreen from "../mydecklib/MyDeckLibraryScreen";
 import ProfileScreen from "../profile/Profile";
 import OnBoardScreen from "../auth/OnBoardScreen";
 import LoginScreen from "../auth/LoginScreen";
 import { Ionicons } from "@expo/vector-icons";
 import SearchScreen from "../search/SearchScreen";
 import AppNavigationMainIcon from "./AppNavigationMainIcon";
-import { randomDeckId } from "../../utils/InitData";
+import { randomTopicId } from "../../utils/InitData";
+import MyTopicLibraryScreen from "../mylib/MyTopicLibraryScreen";
 
 interface AppNavigationProp {
   isLogedIn: boolean;
@@ -54,7 +54,7 @@ const AppNavigation = (prop: AppNavigationProp) => {
           <Tab.Screen
             name="Learn"
             component={LearnScreen}
-            initialParams={{deckId: randomDeckId()}}
+            initialParams={{topicId: randomTopicId()}}
             options={{
               tabBarIcon: ({ focused }) => (
                 <AppNavigationMainIcon focused={focused} />
@@ -62,8 +62,8 @@ const AppNavigation = (prop: AppNavigationProp) => {
             }}
           />
           <Tab.Screen
-            name="MyDeckLibrary"
-            component={MyDeckLibraryScreen}
+            name="MyTopicLibrary"
+            component={MyTopicLibraryScreen}
             options={{
               tabBarIcon: ({ color }) => (
                 <Ionicons name="library" color={color} />

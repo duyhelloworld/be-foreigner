@@ -9,7 +9,7 @@ const LearnScreen = () => {
 
   return (
     <View>
-      <Text>{params.deckId}</Text>
+      <Text>{params.topicId}</Text>
       <Text>LearnScreen</Text>
     </View>
   )

@@ -1,29 +1,16 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Animated, StyleSheet, Text, View, useAnimatedValue } from 'react-native'
 import React, { useEffect } from 'react'
-import Animated, { interpolate, useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
 import { Ionicons } from '@expo/vector-icons';
 
 const SIZE = 100;
 const AppLoadingScreen = () => {
   
-  const tranRotate = useSharedValue(0);
-  const tranScale = useSharedValue(0);
-  const tranTran = useSharedValue(0);
-
-  const reanimatedStyle = useAnimatedStyle(() => {
-    return {
-      width: SIZE,
-      height: SIZE,
-      transform: [{scale: tranScale.value}],
-    }
-  }, []);
-
-  useEffect(() => {
-    tranScale.value = withSpring(5, {duration: 3000 });
-  }, []);
+  const tranRotate = useAnimatedValue(0);
+  const tranScale = useAnimatedValue(0);
+  const tranTran = useAnimatedValue(0);
 
   return (
-    <Animated.View style={reanimatedStyle}>
+    <Animated.View>
       <Ionicons name='airplane' />
     </Animated.View>
   )
@@ -31,4 +18,6 @@ const AppLoadingScreen = () => {
 
 export default AppLoadingScreen
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  
+})

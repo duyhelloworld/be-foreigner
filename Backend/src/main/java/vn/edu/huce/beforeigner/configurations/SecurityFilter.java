@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -13,13 +15,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import vn.edu.huce.beforeigner.entities.core.User;
 import vn.edu.huce.beforeigner.enums.ResponseCode;
 import vn.edu.huce.beforeigner.exceptions.AppException;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IInvalidTokenService;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.ITokenService;
-import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.AuthenticatedUser;
-import vn.edu.huce.beforeigner.repositories.UserRepository;
 
 @Component
 @AllArgsConstructor
@@ -29,7 +28,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
     private ITokenService tokenService;
 
-    private UserRepository userRepo;
+    private UserDetailsService appUserDetailService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -40,15 +39,11 @@ public class SecurityFilter extends OncePerRequestFilter {
             if (invalidTokenService.isExisted(token)) {
                 throw new AppException(ResponseCode.TOKEN_EXPIRED);
             }
-
-            User user = userRepo.findByUsername(tokenService.extractUsername(token))
-                .orElseThrow(() -> new AppException(ResponseCode.UNAUTHORIZED));
-            AuthenticatedUser authenticatedUser = AuthenticatedUser.instance(user);
-            var authToken = new UsernamePasswordAuthenticationToken(authenticatedUser, null, authenticatedUser.getAuthorities());
+            UserDetails user = appUserDetailService.loadUserByUsername(tokenService.extractUsername(token));
+            var authToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authToken);
         }
-
         filterChain.doFilter(request, response);
     }
     

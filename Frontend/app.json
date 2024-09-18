@@ -23,6 +23,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "3dff5e1d-883f-43fb-96ea-0319e3881f64"
+      }
+    },
+    "owner": "duyhelloworld"
   }
 }

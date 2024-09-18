@@ -6,13 +6,12 @@ import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import vn.edu.huce.beforeigner.configurations.SecurityHolder;
-import vn.edu.huce.beforeigner.entities.core.User;
+import vn.edu.huce.beforeigner.domains.core.User;
+import vn.edu.huce.beforeigner.domains.core.repo.UserRepository;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IUserService;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.UserDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.UserInfoDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.mappers.UserMapper;
-import vn.edu.huce.beforeigner.repositories.UserRepository;
 
 @Slf4j
 @Service
@@ -32,8 +31,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public UserInfoDto getInfo() {
-        User user = SecurityHolder.getUser();
+    public UserInfoDto getInfo(User user) {
         return userMapper.toInfoDto(user);
     }
 }

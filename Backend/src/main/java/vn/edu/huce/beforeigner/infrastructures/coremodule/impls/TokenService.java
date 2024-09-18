@@ -16,8 +16,8 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import vn.edu.huce.beforeigner.entities.core.ClaimTypes;
-import vn.edu.huce.beforeigner.entities.core.User;
+import vn.edu.huce.beforeigner.domains.core.ClaimTypes;
+import vn.edu.huce.beforeigner.domains.core.User;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.ITokenService;
 import vn.edu.huce.beforeigner.utils.DatetimeUtils;
 

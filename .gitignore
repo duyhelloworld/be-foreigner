@@ -8,6 +8,11 @@ Frontend/.expo/
 dist/
 web-build/
 
+# Backend
+Backend/target
+*.class
+firebase-*
+
 # Native
 *.orig.*
 *.jks
@@ -33,7 +38,4 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
-
-Backend/target
-*.class
 

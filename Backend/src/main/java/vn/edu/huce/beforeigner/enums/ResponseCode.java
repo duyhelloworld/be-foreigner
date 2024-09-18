@@ -17,12 +17,16 @@ public enum ResponseCode {
     USERNAME_MISSING(1009, "Không được bỏ trống tên tài khoản"),
     PASSWORD_MISSING(1010, "Không được bỏ trống mật khẩu"),
     EMAIL_MISSING(1011, "Không được bỏ trống email"),
+    AVATAR_MISSING(1011, "Không được bỏ trống ảnh đại diện"),
     TOKEN_EXPIRED(1012, "Phiên đăng nhập hết hạn"),
-    DECK_NOT_FOUND(2000, "Không tìm thấy bộ thẻ này"),
-    CARD_NOT_FOUND(2001, "Không tìm thấy thẻ này"),
-    WORD_NOT_FOUND(2002, "Không tìm thấy từ này"),
-    CATEGORY_NOT_FOUND(2003, "Không tìm thấy chủ đề này"),    
-    HAVENT_BEEN_LEARN_THIS_CARD(2004, "Bạn chưa từng học thẻ này");
+
+    TOPIC_NOT_FOUND(2000, "Không tìm thấy chủ đề này"),
+    WORD_NOT_FOUND(2001, "Không tìm thấy từ này"),
+    QUESTION_NOT_FOUND(2002, "Không tìm thấy câu hỏi này"), 
+    LESSON_NOT_FOUND(2003, "Không tìm thấy bài học này"),  
+    MATCH_ANSWER_NOT_FOUND(2004, "Không tìm thấy đáp án để nối"),   
+    NO_LESSON_HAVE_THIS_DIFF_LEVEL(2004, "Không có bài học nào có độ khó phù hợp với bạn"),
+    HAVENT_BEEN_LEARN_THIS_WORD(2004, "Bạn chưa từng học từ này");
 
     private int code;
 

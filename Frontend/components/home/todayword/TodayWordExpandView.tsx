@@ -4,17 +4,17 @@ import { Ionicons } from "@expo/vector-icons";
 
 interface TodayWordExpandViewProp {
   title: string;
-  data: string[] | string;
-  isPrimary?: boolean;
+  mean?: string;
+  examples?: Example[];
 }
 
-const TodayWordExpandView = ({title, data, isPrimary = false} : TodayWordExpandViewProp) => {
+const TodayWordExpandView = (prop: TodayWordExpandViewProp) => {
   const [isVisible, setIsVisible] = useState(false);
 
   return (
     <View>
       <Pressable onPress={() => setIsVisible(!isVisible)} style={styles.button}>
-        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.title}>{prop.title}</Text>
         <Ionicons
           name="play"
           style={{ transform: [{ rotate: isVisible ? "90deg" : "0deg" }] }}
@@ -23,15 +23,16 @@ const TodayWordExpandView = ({title, data, isPrimary = false} : TodayWordExpandV
 
       {isVisible ? (
         <View>
-          {isPrimary ? <Text style={styles.item}>{data}</Text> : 
-          (
-            <FlatList
-              data={data}
-              renderItem={({ item }) => (
-                <Text style={styles.item}>- {item}</Text>
-              )}
-            />
-          )}
+          {prop.mean ? <Text style={styles.mean}>{prop.mean}</Text> : null}
+          {prop.examples && <FlatList
+            data={prop.examples}
+            renderItem={({ item }) => (
+              <View>
+                <Text style={styles.sentense}>- {item.sentense}</Text>
+                <Text style={styles.sentenseMean}>{item.mean}</Text>
+              </View>
+            )}
+          />}
         </View>
       ) : null}
     </View>
@@ -59,7 +60,13 @@ const styles = StyleSheet.create({
   close: {
     tintColor: "#D00",
   },
-  item: {
+  sentense: {
     fontSize: 20,
   },
+  mean: {
+    fontSize: 30,
+  },
+  sentenseMean: {
+    fontSize: 13,
+  }
 });

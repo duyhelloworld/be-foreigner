@@ -3,10 +3,10 @@ package vn.edu.huce.beforeigner.infrastructures.coremodule.impls;
 import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
-import vn.edu.huce.beforeigner.entities.core.InvalidToken;
-import vn.edu.huce.beforeigner.entities.core.User;
+import vn.edu.huce.beforeigner.domains.core.InvalidToken;
+import vn.edu.huce.beforeigner.domains.core.User;
+import vn.edu.huce.beforeigner.domains.core.repo.InvalidTokenRepository;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IInvalidTokenService;
-import vn.edu.huce.beforeigner.repositories.InvalidTokenRepository;
 
 @Service
 @AllArgsConstructor

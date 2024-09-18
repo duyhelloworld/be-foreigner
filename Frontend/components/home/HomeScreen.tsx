@@ -1,15 +1,17 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import { sampleDecks, sampleWord } from '../../utils/InitData';
+import { sampleTopics, sampleWord, sampleWords } from '../../utils/InitData';
 import TodayWordView from './todayword/TodayWordView';
-import DeckView from './decks/DeckView';
+import ListTopicView from './topics/ListTopicView';
+import WordView from './WordView';
 
 const HomeScreen = () => {
   return (
     <View>
-      <TodayWordView word={sampleWord()} />
-      <DeckView decks={sampleDecks()} title="Bộ thẻ gần đây" />
-      <DeckView decks={sampleDecks()} title="Bộ thẻ yêu thích" />
+      {/* <TodayWordView word={sampleWord()} />
+      <ListTopicView topics={sampleTopics()} title="Bộ thẻ gần đây" />
+      <ListTopicView topics={sampleTopics()} title="Bộ thẻ yêu thích" /> */}
+      <WordView words={sampleWords()}/>
     </View>
   );
 }

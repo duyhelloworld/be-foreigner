@@ -1,41 +1,45 @@
+import { DiffLevel, WordType } from "./enum";
+
 declare global {
 
   type Word = {
     id: number;
     value: string;
     mean: string;
-    example: string[];
-    phonetic?: string;
+    image?: string;
     audio?: string;
+    hint?: string;
+    phonetic?: string;
+    examples: Example[];
+    type?: WordType;
   }
 
-  type Card = {
-    id: number;
-    word: Word;
-    image: string;
+  type Example = {
+    sentense: string;
+    mean: string;
   }
 
-  type Deck = {
+  type Topic = {
     id: number;
     name: string;
     cover: string;
   }
 
-  type DeckInfo = {
+  type TopicDetail = {
     id: number;
     name: string;
     description?: string;
-    cards: Card[],
-    diffLevel: DiffLevel
+    diffLevel: DiffLevel;
+    words: Word[];
   }
 }
 
 export type Routes = {
   Home: undefined,
-  Learn: {deckId: number},
+  Learn: {topicId: number},
   Profile: undefined,
   OnBoard: undefined,
-  MyDeckLibrary: undefined,
+  MyTopicLibrary: undefined,
   Login: undefined,
   Search: undefined,
 }
