@@ -17,6 +17,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Setter;
 import vn.edu.huce.beforeigner.domains.exam.Bookmark;
@@ -62,6 +63,9 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private UserLevel level = UserLevel.BEGINNER;
 
+    @OneToOne(mappedBy = "user")
+    private InvalidToken invalidToken;
+    
     @OneToMany(mappedBy = "user")
     private Set<Bookmark> userQuestionBookmarks = new HashSet<>();
 

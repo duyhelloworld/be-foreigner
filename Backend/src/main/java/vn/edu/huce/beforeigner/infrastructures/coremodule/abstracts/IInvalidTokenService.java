@@ -6,5 +6,6 @@ public interface IInvalidTokenService {
 
     boolean isExisted(String token);
 
-    void addNew(String token, User user);
+    void addNew(String refreshToken, User user);
+    
 }

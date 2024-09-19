@@ -12,5 +12,6 @@ public interface IAuthService {
     AuthDto signUp(SignUpDto signUpDto);
 
     void signOut(User current);
-    
+
+    String renewAccess(String refreshToken);
 }

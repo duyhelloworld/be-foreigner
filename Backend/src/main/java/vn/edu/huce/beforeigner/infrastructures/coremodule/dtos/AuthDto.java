@@ -7,5 +7,5 @@ public class AuthDto {
     
     public String access;
 
-    // public String refresh;
+    public String refresh;
 }

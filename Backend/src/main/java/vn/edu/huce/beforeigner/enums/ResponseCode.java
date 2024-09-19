@@ -19,6 +19,7 @@ public enum ResponseCode {
     EMAIL_MISSING(1011, "Không được bỏ trống email"),
     AVATAR_MISSING(1011, "Không được bỏ trống ảnh đại diện"),
     TOKEN_EXPIRED(1012, "Phiên đăng nhập hết hạn"),
+    INVALID_REFRESH_TOKEN(1013, "Phiên đăng xuất không hợp lệ"),
 
     TOPIC_NOT_FOUND(2000, "Không tìm thấy chủ đề này"),
     WORD_NOT_FOUND(2001, "Không tìm thấy từ này"),

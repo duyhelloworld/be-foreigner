@@ -1,5 +1,7 @@
 package vn.edu.huce.beforeigner.domains.core;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,6 +23,8 @@ public class InvalidToken {
     private Integer id;
 
     private String token;
+
+    private LocalDateTime expiredAt;
 
     @OneToOne
     private User user;
