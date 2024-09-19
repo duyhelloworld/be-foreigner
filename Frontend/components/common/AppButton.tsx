@@ -12,7 +12,6 @@ import {
   ViewStyle,
 } from "react-native";
 import React from "react";
-import { Ionicons } from "@expo/vector-icons";
 
 interface AppButtonProp {
   title?: string;

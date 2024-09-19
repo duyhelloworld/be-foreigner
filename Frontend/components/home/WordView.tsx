@@ -2,25 +2,36 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  Image,
   Pressable,
   StyleSheet,
-  ScrollView,
 } from "react-native";
 import { Audio } from "expo-av";
-import { MaterialIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
+import {Image} from "expo-image";
 
 interface WordViewProp {
-  words: Word[]
+  words: Word[];
 }
 
 const PROGRESSBAR_COLORS = {
-  GREEN: "#4CAF50", 
-  YELLOW: "#432321",
-  ORANGE: "#321342"
+  GREEN: "#4CAF50",
+  YELLOW: "#FFEE00",
+  ORANGE: "#FF4400",
 };
 
-const WordView = ({words} : WordViewProp) => {
+const IMAGE_SIZE = {
+  width: 100,
+  height: 100,
+};
+
+const BUTTON_COLOR = {
+  next: "#0AF",
+  audio: "#07F",
+  hint: "#FA0",
+  diable: "#888"
+};
+
+const WordView = ({ words }: WordViewProp) => {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -39,13 +50,17 @@ const WordView = ({words} : WordViewProp) => {
     }
   };
 
+  const handleCompleted = () => {
+    alert("Hết câu hỏi rồi nhé bạn");
+  };
+
   const toggleCard = () => {
     setIsFlipped(!isFlipped);
   };
 
   const handlePlayAudio = async () => {
     const { sound } = await Audio.Sound.createAsync({
-      uri: words[currentCardIndex].audio ?? "",
+      uri: words[currentCardIndex].audio,
     });
     await sound.playAsync();
   };
@@ -55,166 +70,149 @@ const WordView = ({words} : WordViewProp) => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.container}>
       <View style={styles.progressBarContainer}>
         <View style={[styles.progressBar, { width: `${progress * 100}%` }]} />
       </View>
+
       <View style={styles.cardContainer}>
         <Pressable style={styles.card} onPress={toggleCard}>
           {!isFlipped ? (
-            <View style={styles.wordContainer}>
-              <Text style={styles.wordText}>
-                {words[currentCardIndex].value}
-              </Text>
-            </View>
+            <Text style={styles.wordText}>{words[currentCardIndex].value}</Text>
           ) : (
             <View style={styles.cardBack}>
               <Image
                 source={{ uri: words[currentCardIndex].image }}
                 style={styles.image}
-                resizeMode="contain"
               />
               <View style={styles.meaningContainer}>
                 <Text style={styles.meaningText}>
                   {words[currentCardIndex].mean}
                 </Text>
-                <Pressable
+                <Ionicons
                   style={styles.audioButton}
                   onPress={handlePlayAudio}
-                >
-                  <MaterialIcons name="volume-up" size={24} color="#007AFF" />
-                </Pressable>
+                  name="volume-high"
+                  size={24}
+                />
               </View>
             </View>
           )}
         </Pressable>
+
+        <View style={styles.buttonContainer}>
+          <Ionicons
+            style={[styles.button, styles.hintButton]}
+            onPress={handleHint}
+            name="bulb"
+            size={24}
+          />
+          <Pressable
+            style={[
+              styles.button,
+              styles.nextButton,
+              isCompleted && styles.disabledButton,
+            ]}
+            onPress={!isCompleted ? handleNextCard : handleCompleted}
+          >
+            <Text style={styles.buttonText}>
+              {isCompleted ? "Học xong" : "Tiếp đê bạn"}
+            </Text>
+          </Pressable>
+        </View>
       </View>
-      <View style={styles.buttonContainer}>
-        <Pressable
-          style={[styles.button, styles.hintButton]}
-          onPress={handleHint}
-        >
-          <MaterialIcons name="lightbulb-outline" size={24} color="#FFFFFF" />
-          <Text style={styles.buttonText}>Hint</Text>
-        </Pressable>
-        <Pressable
-          style={[
-            styles.button,
-            styles.nextButton,
-            isCompleted && styles.disabledButton,
-          ]}
-          onPress={handleNextCard}
-          disabled={isCompleted}
-        >
-          <Text style={styles.buttonText}>
-            {isCompleted ? "Completed" : "Next"}
-          </Text>
-        </Pressable>
-      </View>
-    </ScrollView>
+    </View>
   );
-}
+};
 
 export default WordView;
 
 const styles = StyleSheet.create({
   container: {
     alignItems: "center",
-    paddingVertical: 15,
+    flex: 1,
   },
   progressBarContainer: {
-    width: "90%",
-    height: 10,
+    width: 320,
+    height: 15,
     backgroundColor: "#DDD",
-    borderRadius: 4,
-    overflow: "hidden",
-    marginBottom: 20,
+    borderRadius: 10,
+    marginVertical: 20,
   },
   progressBar: {
     flex: 1,
+    borderRadius: 10,
     backgroundColor: PROGRESSBAR_COLORS.GREEN,
   },
   cardContainer: {
-    width: "90%",
-    aspectRatio: 3 / 2,
-    marginBottom: 20,
-  },
-  card: {
-    flex: 1,
+    // code căn giữa, cấm sửa
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 20,
-    shadowColor: "#888",
+  },
+  card: {
+    width: 300,
+    backgroundColor: "#EEE",
+    aspectRatio: 1.5,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 20,
+    shadowColor: "#444",
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 3,
     elevation: 10,
   },
-  wordContainer: {
-    backgroundColor: "#007AFF",
-    padding: 20,
-    borderRadius: 10,
-  },
   wordText: {
     fontSize: 32,
     fontWeight: "bold",
-    color: "#FFF",
-    textAlign: "center",
   },
   cardBack: {
-    width: "100%",
-    height: "100%",
-    justifyContent: "space-around",
+    justifyContent: "center",
     alignItems: "center",
-    padding: 10,
   },
   image: {
-    width: "80%",
-    height: "50%",
+    width: IMAGE_SIZE.width,
+    height: IMAGE_SIZE.height,
     marginTop: 20,
     borderRadius: 10,
   },
   meaningContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
     marginTop: 10,
   },
   meaningText: {
     fontSize: 18,
-    textAlign: "center",
-    color: "#333333",
-    flex: 1,
   },
   audioButton: {
     padding: 10,
+    color: BUTTON_COLOR.audio,
   },
   buttonContainer: {
     flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
   },
   button: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
     paddingHorizontal: 20,
     paddingVertical: 10,
-    borderRadius: 25,
+    borderRadius: 10,
     marginHorizontal: 10,
+    color: "#FFF",
   },
   nextButton: {
-    backgroundColor: "#007AFF",
+    backgroundColor: BUTTON_COLOR.next,
   },
   hintButton: {
-    backgroundColor: "#FFA500",
+    backgroundColor: BUTTON_COLOR.hint,
   },
   disabledButton: {
-    backgroundColor: "#CCCCCC",
+    backgroundColor: BUTTON_COLOR.diable,
   },
   buttonText: {
-    color: "#FFFFFF",
     fontSize: 18,
-    fontWeight: "bold",
-    marginLeft: 5,
+    color: "#FFF",
   },
 });

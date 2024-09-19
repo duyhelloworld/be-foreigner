@@ -50,15 +50,14 @@ const styles = StyleSheet.create({
   },
   title: {
     width: 55,
+    fontSize: 15,
+    textDecorationLine: 'underline'
   },
   button: {
     flexDirection: "row",
     marginBottom: 5,
     alignItems: "center",
     paddingHorizontal: 5,
-  },
-  close: {
-    tintColor: "#D00",
   },
   sentense: {
     fontSize: 20,

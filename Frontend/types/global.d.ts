@@ -6,12 +6,12 @@ declare global {
     id: number;
     value: string;
     mean: string;
-    image?: string;
-    audio?: string;
-    hint?: string;
-    phonetic?: string;
+    image: string;
+    audio: string;
+    hint: string;
+    phonetic: string;
     examples: Example[];
-    type?: WordType;
+    type: WordType;
   }
 
   type Example = {
