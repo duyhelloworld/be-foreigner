@@ -4,9 +4,9 @@ import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import vn.edu.huce.beforeigner.domains.base.Audited;
+import vn.edu.huce.beforeigner.domains.base.FullAudited;
+import vn.edu.huce.beforeigner.domains.base.CloudinaryImage;
 import vn.edu.huce.beforeigner.domains.exam.Answer;
-import vn.edu.huce.beforeigner.domains.exam.Question;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,6 +16,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 
 @Getter
@@ -25,8 +28,12 @@ import jakarta.persistence.ManyToMany;
 /**
  * Từ vựng
  */
-public class Word extends Audited {
+public class Word extends FullAudited implements CloudinaryImage {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    
     /**
      * Giá trị từ vựng
      */
@@ -34,9 +41,8 @@ public class Word extends Audited {
     private String value;
 
     /**
-     * Ý nghĩa
+     * Nghĩa ở từ  
      */
-    @Column(nullable = false)
     private String mean;
 
     /**
@@ -58,6 +64,12 @@ public class Word extends Audited {
     private String image;
 
     /**
+     * Id ảnh
+     */
+    @Column(length = 50)
+    private String publicId;
+
+    /**
      * Loại từ 
      */
     @Enumerated(EnumType.STRING)
@@ -66,29 +78,18 @@ public class Word extends Audited {
     @OneToMany(mappedBy = "word", fetch = FetchType.LAZY)
     private Set<Example> examples = new HashSet<>();
 
-    @OneToMany(mappedBy = "word", fetch = FetchType.LAZY)
-    private Set<Question> questions = new HashSet<>();
-
     @ManyToMany(mappedBy = "words", fetch = FetchType.LAZY)
     private Set<Topic> topics = new HashSet<>();
 
-    @ManyToMany(mappedBy = "words", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "word", fetch = FetchType.LAZY)
     private Set<Answer> answers = new HashSet<>();
-    
+
     public Word(String value, String mean, String phonetic, String audio, String image, WordType wordType) {
         this.value = value;
-        this.image = image;
         this.mean = mean;
         this.phonetic = phonetic;
         this.audio = audio;
+        this.image = image;
         this.wordType = wordType;
-    }
-
-    public void setTopicList(Topic... topics) {
-        this.topics = Set.of(topics);
-    }
-
-    public void setExampleList(Example... examples) {
-        this.examples = Set.of(examples);
     }
 }

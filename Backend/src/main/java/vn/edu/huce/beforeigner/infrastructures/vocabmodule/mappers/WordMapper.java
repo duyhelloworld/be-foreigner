@@ -24,7 +24,6 @@ public class WordMapper {
                 .id(word.getId())
                 .image(word.getImage())
                 .audio(word.getAudio())
-                .mean(word.getMean())
                 .value(word.getValue())
                 .phonetic(word.getPhonetic())
                 .build();
@@ -35,7 +34,6 @@ public class WordMapper {
                 .id(word.getId())
                 .image(word.getImage())
                 .audio(word.getAudio())
-                .mean(word.getMean())
                 .value(word.getValue())
                 .phonetic(word.getPhonetic())
                 .topic(word.getTopics().stream()

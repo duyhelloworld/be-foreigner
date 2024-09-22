@@ -18,7 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 public class FirebaseConfig {
 
     @Bean
-    FirebaseMessaging firebaseMessaging() {
+    FirebaseApp firebaseApp() {
+
         GoogleCredentials credentials = null;
         try {
             var classPath = new ClassPathResource("firebase-service-account.json");
@@ -34,7 +35,17 @@ public class FirebaseConfig {
         FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(credentials)
                 .build();
-        FirebaseApp app = FirebaseApp.initializeApp(options, "be-foreigner");
-        return FirebaseMessaging.getInstance(app);
+        return FirebaseApp.initializeApp(options, "be-foreigner");
     }
+
+    @Bean
+    FirebaseMessaging firebaseMessaging() {
+        return FirebaseMessaging.getInstance(firebaseApp());
+    }
+
+    // @Bean
+    // FirebaseDatabase firebaseDatabase() {
+    //     return FirebaseDatabase.getInstance(firebaseApp());
+    // }
+
 }

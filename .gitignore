@@ -12,6 +12,7 @@ web-build/
 Backend/target
 *.class
 firebase-*
+secrets.*
 
 # Native
 *.orig.*

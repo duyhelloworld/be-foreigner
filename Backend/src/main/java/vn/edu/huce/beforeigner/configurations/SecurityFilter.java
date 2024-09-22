@@ -15,17 +15,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import vn.edu.huce.beforeigner.enums.ResponseCode;
-import vn.edu.huce.beforeigner.exceptions.AppException;
-import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IInvalidTokenService;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.ITokenService;
 
 @Component
 @AllArgsConstructor
 public class SecurityFilter extends OncePerRequestFilter {
     
-    private IInvalidTokenService invalidTokenService;
-
     private ITokenService tokenService;
 
     private UserDetailsService appUserDetailService;
@@ -33,13 +28,10 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String token = tokenService.getToken(request);
+        String accessToken = tokenService.getToken(request);
 
-        if (token != null && tokenService.isValidToken(token)) {
-            if (invalidTokenService.isExisted(token)) {
-                throw new AppException(ResponseCode.TOKEN_EXPIRED);
-            }
-            UserDetails user = appUserDetailService.loadUserByUsername(tokenService.extractUsername(token));
+        if (accessToken != null && tokenService.isValidToken(accessToken)) {
+            UserDetails user = appUserDetailService.loadUserByUsername(tokenService.extractUsername(accessToken));
             var authToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authToken);

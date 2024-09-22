@@ -7,11 +7,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import lombok.AllArgsConstructor;
+import vn.edu.huce.beforeigner.annotations.IsAdmin;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.abstracts.IQuestionService;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.QuestionDto;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.creation.CreateQuestionDto;
-import vn.edu.huce.beforeigner.infrastructures.paging.PagingRequest;
-import vn.edu.huce.beforeigner.infrastructures.paging.PagingResult;
+import vn.edu.huce.beforeigner.utils.paging.PagingRequest;
+import vn.edu.huce.beforeigner.utils.paging.PagingResult;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -32,11 +34,13 @@ public class QuestionController {
         return questionService.getById(id);
     }
 
-    @PostMapping("")
+    @IsAdmin
+    @PostMapping
     public QuestionDto addNew(@RequestBody CreateQuestionDto createQuestionDto) {
         return questionService.addNew(createQuestionDto);
     }
 
+    @IsAdmin
     @DeleteMapping("{id}")
     public void delete(@PathVariable Integer id) {
         questionService.delete(id);

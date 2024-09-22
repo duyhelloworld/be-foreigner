@@ -11,7 +11,12 @@ import com.google.firebase.messaging.Notification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import vn.edu.huce.beforeigner.commons.AppObjectMapper;
+import vn.edu.huce.beforeigner.domains.core.TokenType;
 import vn.edu.huce.beforeigner.domains.core.User;
+import vn.edu.huce.beforeigner.domains.core.UserToken;
+import vn.edu.huce.beforeigner.domains.core.repo.UserTokenRepository;
+import vn.edu.huce.beforeigner.exceptions.AppException;
+import vn.edu.huce.beforeigner.exceptions.ResponseCode;
 import vn.edu.huce.beforeigner.infrastructures.notificationmodule.abstracts.INotificationService;
 import vn.edu.huce.beforeigner.infrastructures.notificationmodule.dtos.LearnRemindDto;
 
@@ -25,6 +30,8 @@ public class NotificationService implements INotificationService {
 
     private final FirebaseMessaging firebaseMessaging;
 
+    private final UserTokenRepository userTokenRepo;
+
     private final AppObjectMapper objectMapper;
 
     @Override
@@ -35,9 +42,11 @@ public class NotificationService implements INotificationService {
                 .setImage(appIcon)
                 .build();
 
+        UserToken userToken = userTokenRepo.findByUsernameAndType(targetUser.getUsername(), TokenType.NOTIFICATION)
+            .orElseThrow(() -> new AppException(ResponseCode.NOTIFICATION_TOKEN_NOT_FOUND));
         Message message = Message.builder()
                 .setNotification(notification)
-                .setToken(targetUser.getFirebaseToken())
+                .setToken(userToken.getToken())
                 .build();
 
         try {

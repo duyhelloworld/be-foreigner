@@ -13,6 +13,8 @@ public class WordDto {
 
     public String mean;
 
+    public String language;
+
     public String phonetic;
 
     public String audio;

@@ -8,6 +8,7 @@ import {
 import React from "react";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { Routes } from "../../../types/global";
+import { MAIN } from "../../../constants/Colors";
 
 interface TopicViewProp {
   topic: Topic;
@@ -33,8 +34,7 @@ const styles = StyleSheet.create({
   topicContainer: {
     margin: 10,
     borderRadius: 5,
-    elevation: 14,
-    backgroundColor: "#C4FF61",
+    backgroundColor: MAIN,
     padding: 3,
   },
   topicName: {

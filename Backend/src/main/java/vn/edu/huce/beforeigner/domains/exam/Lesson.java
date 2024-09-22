@@ -1,29 +1,34 @@
 package vn.edu.huce.beforeigner.domains.exam;
 
-import java.time.Duration;
 import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import lombok.Setter;
-import vn.edu.huce.beforeigner.domains.base.Audited;
-import vn.edu.huce.beforeigner.domains.statistic.UserLessonStatistic;
+import vn.edu.huce.beforeigner.domains.base.FullAudited;
+import vn.edu.huce.beforeigner.domains.base.CloudinaryImage;
+import vn.edu.huce.beforeigner.domains.history.LessonHistory;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 @Setter
 @Entity
-@NoArgsConstructor
 /**
  * Bài học
  */
-public class Lesson extends Audited {
+public class Lesson extends FullAudited implements CloudinaryImage {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    
     /**
      * Tên bài
      */
@@ -39,10 +44,22 @@ public class Lesson extends Audited {
      */
     private String coverImage;
 
+    private String publicId;
+
+    /**
+     * Màu ảnh nền (code)
+     */
+    private String background;
+
     /**
      * Tổng điểm
      */
-    private Float totalScore;
+    private Integer diamonds;
+
+    /**
+     * Điểm kinh nghiệm
+     */
+    private Integer experience;
 
     /**
      * Độ khó
@@ -51,24 +68,9 @@ public class Lesson extends Audited {
     @Enumerated(EnumType.STRING)
     private DifficultyLevel diffLevel;
 
-    /**
-     * Tổng thời gian làm bài
-     */
-    private Duration totalTime;
-
-    @ManyToMany(mappedBy = "lessons")
+    @ManyToMany
     private Set<Question> questions = new HashSet<>();
 
     @OneToMany(mappedBy = "lesson")
-    private Set<UserLessonStatistic> userLessonStatistics = new HashSet<>();
-
-    public Lesson(String name, String description, String coverImage, DifficultyLevel diffLevel,
-            Duration totalTime, Float totalScore) {
-        this.name = name;
-        this.description = description;
-        this.coverImage = coverImage;
-        this.diffLevel = diffLevel;
-        this.totalTime = totalTime;
-        this.totalScore = totalScore;
-    }
+    private Set<LessonHistory> lessonHistories = new HashSet<>();
 }

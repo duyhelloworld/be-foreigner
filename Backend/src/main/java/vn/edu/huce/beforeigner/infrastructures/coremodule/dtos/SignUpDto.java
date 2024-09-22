@@ -26,5 +26,8 @@ public class SignUpDto {
     @NotNull(message = "AVATAR_MISSING")
     private MultipartFile avatar;
 
+    @NotNull(message = "NOTIFICATION_TOKEN_MISSING")
+    private String notificationToken;
+
     private UserLevel level = UserLevel.BEGINNER;
 }

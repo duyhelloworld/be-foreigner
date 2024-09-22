@@ -1,10 +1,17 @@
 package vn.edu.huce.beforeigner.domains.exam;
 
+/**
+ * Loại câu hỏi
+ */
 public enum QuestionType {
     /**
-     * Điền vào chỗ trống
+     * Sắp xếp lại từ
      */
-    FILL_IN_BLANK,
+    REARRANGE_WORDS,
+    /**
+     * Sắp xếp lại nghĩa
+     */
+    REARRANGE_MEANS,
     /**
      * Nối đáp án
      */
@@ -17,12 +24,4 @@ public enum QuestionType {
      * Chọn đáp án chứa từ đúng
      */
     CHOOSE_CORRECT_WORD,
-    /**
-     * Cho từ, ghi nghĩa
-     */
-    WORD_TO_MEAN,
-    /**
-     * Cho nghĩa, điền từ
-     */
-    MEAN_TO_WORD,
 }

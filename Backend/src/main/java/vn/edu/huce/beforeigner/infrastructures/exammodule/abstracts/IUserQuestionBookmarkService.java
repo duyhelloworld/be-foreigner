@@ -2,8 +2,8 @@ package vn.edu.huce.beforeigner.infrastructures.exammodule.abstracts;
 
 import vn.edu.huce.beforeigner.domains.core.User;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.QuestionDto;
-import vn.edu.huce.beforeigner.infrastructures.paging.PagingRequest;
-import vn.edu.huce.beforeigner.infrastructures.paging.PagingResult;
+import vn.edu.huce.beforeigner.utils.paging.PagingRequest;
+import vn.edu.huce.beforeigner.utils.paging.PagingResult;
 
 public interface IUserQuestionBookmarkService {
     

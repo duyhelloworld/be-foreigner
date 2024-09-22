@@ -16,16 +16,16 @@ public class TopicMapper {
     public TopicDto toDto(Topic topic) {
         return TopicDto.builder()
                 .id(topic.getId())
-                .name(topic.getName())
+                // .name(topic.getName())
                 .build();
     }
 
     public TopicDetailDto toDetailDto(Topic topic) {
         return TopicDetailDto.builder()
                 .id(topic.getId())
-                .name(topic.getName())
+                // .name(topic.getName())
                 .coverImage(topic.getCoverImage())
-                .description(topic.getDescription())
+                // .description(topic.getDescription())
                 .words(topic.getWords().stream().map(w -> wordMapper.toDto(w)).toList())
                 .build();
     }

@@ -5,17 +5,18 @@ import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import vn.edu.huce.beforeigner.domains.vocab.Example;
 import vn.edu.huce.beforeigner.domains.vocab.Topic;
 import vn.edu.huce.beforeigner.domains.vocab.Word;
 import vn.edu.huce.beforeigner.domains.vocab.repo.TopicRepository;
 import vn.edu.huce.beforeigner.domains.vocab.repo.WordRepository;
-import vn.edu.huce.beforeigner.enums.ResponseCode;
 import vn.edu.huce.beforeigner.exceptions.AppException;
-import vn.edu.huce.beforeigner.infrastructures.filemodule.abstracts.IFileService;
-import vn.edu.huce.beforeigner.infrastructures.paging.PagingRequest;
-import vn.edu.huce.beforeigner.infrastructures.paging.PagingResult;
+import vn.edu.huce.beforeigner.exceptions.ResponseCode;
+import vn.edu.huce.beforeigner.infrastructures.filemodule.abstracts.IImageService;
+import vn.edu.huce.beforeigner.infrastructures.filemodule.abstracts.ISoundService;
+import vn.edu.huce.beforeigner.infrastructures.filemodule.dtos.ImageType;
+import vn.edu.huce.beforeigner.infrastructures.filemodule.dtos.UploadResponse;
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.abstracts.IWordService;
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.dtos.WordDto;
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.dtos.creatation.CreateExampleDto;
@@ -23,18 +24,22 @@ import vn.edu.huce.beforeigner.infrastructures.vocabmodule.dtos.creatation.Creat
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.dtos.detail.WordDetailDto;
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.dtos.updatation.UpdateWordDto;
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.mappers.WordMapper;
+import vn.edu.huce.beforeigner.utils.paging.PagingRequest;
+import vn.edu.huce.beforeigner.utils.paging.PagingResult;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class WordService implements IWordService {
 
-    private WordRepository wordRepo;
+    private final WordRepository wordRepo;
 
-    private IFileService fileService;
+    private final TopicRepository topicRepo;
 
-    private TopicRepository topicRepo;
+    private final WordMapper wordMapper;
 
-    private WordMapper wordMapper;
+    private final IImageService imageService;
+
+    private final ISoundService soundService;
 
     @Override
     public PagingResult<WordDto> getAll(PagingRequest pagingRequest, Integer topicId) {
@@ -52,14 +57,11 @@ public class WordService implements IWordService {
     public void addNew(CreateWordDto createWordDto) {
         
         Word word = new Word();
-
-        if (createWordDto.getAudio() != null) {
-            String audio = fileService.save(createWordDto.getAudio());
-            word.setAudio(audio);
-        }
+        word.setAudio(soundService.getWordAudio(createWordDto.getValue()));
         if (createWordDto.getImage() != null) {
-            String image = fileService.save(createWordDto.getImage());
-            word.setImage(image);
+            UploadResponse response = imageService.save(createWordDto.getImage(), ImageType.WORD_IMAGE);
+            word.setImage(response.getFileUrl());
+            word.setPublicId(response.getPublicId());
         }
         Set<Topic> topics = topicRepo.findAllByIdIn(createWordDto.getTopicIds());
         word.setTopics(topics);
@@ -69,8 +71,6 @@ public class WordService implements IWordService {
             examples.add(new Example(createExampleDto.getSentense(), createExampleDto.getMean()));
         }
         word.setExamples(examples);
-
-        word.setMean(createWordDto.getMean());
         word.setPhonetic(createWordDto.getPhonetic());
         word.setValue(createWordDto.getValue());
         word.setWordType(createWordDto.getWordType());

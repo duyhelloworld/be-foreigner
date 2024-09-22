@@ -5,15 +5,15 @@ import java.util.Set;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import vn.edu.huce.beforeigner.domains.base.AuditedRepository;
 import vn.edu.huce.beforeigner.domains.vocab.Word;
 
 @Repository
-public interface WordRepository extends AuditedRepository<Word> {
+public interface WordRepository extends JpaRepository<Word, Integer> {
     
     Set<Word> findByIdIn(List<Integer> ids);
 

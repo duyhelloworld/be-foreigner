@@ -5,8 +5,8 @@ import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.LessonDto;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.creation.CreateLessonDto;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.detail.LessonDetailDto;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.updatation.UpdateLessonDto;
-import vn.edu.huce.beforeigner.infrastructures.paging.PagingRequest;
-import vn.edu.huce.beforeigner.infrastructures.paging.PagingResult;
+import vn.edu.huce.beforeigner.utils.paging.PagingRequest;
+import vn.edu.huce.beforeigner.utils.paging.PagingResult;
 
 public interface ILessonService {
     

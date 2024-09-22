@@ -1,20 +1,16 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react';
-import TodayWordExpandView from './TodayWordExpandView';
 
 interface TodayWordViewProp {
   word: Word
 }
 
-const TodayWordView = (prop: TodayWordViewProp) => {
-  const word = prop.word;
+const TodayWordView = ({word} : TodayWordViewProp) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Từ vựng hôm nay là :</Text>
       <Text style={styles.wordValue}>{word.value}</Text>
-      <Text style={styles.wordPhonetic}>/ {word.phonetic} /</Text>
-      <TodayWordExpandView title='Ý nghĩa' mean={word.mean} />
-      <TodayWordExpandView title='Ví dụ' examples={word.examples} />
+      <Text style={styles.wordPhonetic}>/{word.phonetic}/</Text>
     </View>
   );
 }

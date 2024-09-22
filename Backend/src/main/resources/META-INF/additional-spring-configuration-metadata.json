@@ -10,33 +10,23 @@
     "description": "Khoảng thời gian khả dụng của jwt"
   },
   {
-    "name": "application.auth.jwt.secretKey",
+    "name": "application.auth.jwt.secret-key",
     "type": "java.lang.String",
     "description": "Khóa bí mật của jwt"
-  },
-  {
-    "name": "application.auth.admin-user.username",
-    "type": "java.lang.String",
-    "description": "Tên tài khoản admin"
-  },
-  {
-    "name": "application.auth.admin-user.password",
-    "type": "java.lang.String",
-    "description": "Mật khẩu tài khoản admin"
-  },
-  {
-    "name": "application.auth.admin-user.email",
-    "type": "java.lang.String",
-    "description": "Email tài khoản admin"
-  },
-  {
-    "name": "application.auth.admin-user.fullname",
-    "type": "java.lang.String",
-    "description": "Họ tên đầy đủ tài khoản admin"
   },
   {
     "name": "application.notification.app-icon",
     "type": "java.lang.String",
     "description": "Icon ứng dụng"
+  },
+  {
+    "name": "unflash.access-key",
+    "type": "java.lang.String",
+    "description": "Access key của Unflash"
+  },
+  {
+    "name": "cloudinary.url",
+    "type": "java.lang.String",
+    "description": "API URL của cloudinary"
   }
 ]}

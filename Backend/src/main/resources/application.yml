@@ -29,14 +29,9 @@ spring:
 application:
   notification:
     app-icon: https://res.cloudinary.com/dqzwh7zvo/image/upload/v1726656428/be-foreigner-icon.png
-    
+
   auth:
-    admin-user: 
-      username: admin
-      password: password
-      email: admin@gmail.com
-      fullname: adminitrastor
     jwt:
       issuer: "beforeigner.huce.edu.vn"
-      expireDuration: "10m"
-      secretKey: "adjzfjdfndjmfgbdvjkfbzjxfn1o2u4q90wafheskedd"
+      expire-duration: "10m"
+      secret-key: adjzfjdfndjmfgbdvjkfbzjxfn1o2u4q90wafheskedd

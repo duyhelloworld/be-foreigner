@@ -2,8 +2,6 @@ package vn.edu.huce.beforeigner.domains.core;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -16,12 +14,9 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Setter;
-import vn.edu.huce.beforeigner.domains.exam.Bookmark;
-import vn.edu.huce.beforeigner.domains.statistic.UserLessonStatistic;
+import vn.edu.huce.beforeigner.domains.base.CloudinaryImage;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -29,8 +24,8 @@ import lombok.NoArgsConstructor;
 @Setter
 @Entity
 @NoArgsConstructor
-@Table(indexes = @Index(columnList = "id, username, email"))
-public class User implements UserDetails {
+@Table(indexes = @Index(columnList = "id, username, email", unique = true))
+public class User implements UserDetails, CloudinaryImage {
 
     @Id
     private String id = UUID.randomUUID().toString();
@@ -50,39 +45,37 @@ public class User implements UserDetails {
     @Column(length = 100)
     private String avatar;
 
-    @Column(length = 255)
-    private String firebaseToken;
+    @Column(length = 50)
+    private String publicId;
 
     @Enumerated(EnumType.STRING)
-    private TokenProvider provider;
+    private TokenProvider provider = TokenProvider.LOCAL;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role;
+    private Role role = Role.USER;
 
     @Column(nullable = false)
     private UserLevel level = UserLevel.BEGINNER;
 
-    @OneToOne(mappedBy = "user")
-    private InvalidToken invalidToken;
+    @Column(insertable = false)
+    private Integer experience = 0;
+
+    @Enumerated(EnumType.STRING)
+    private SubscriptionPlan plan = SubscriptionPlan.FREE;
     
-    @OneToMany(mappedBy = "user")
-    private Set<Bookmark> userQuestionBookmarks = new HashSet<>();
-
-    @OneToMany(mappedBy = "user")
-    private Set<UserLessonStatistic> userLessonStatistics = new HashSet<>();
-
-    public User(String username, String fullname, String email, String password, TokenProvider provider, Role role) {
-        this.username = username;
-        this.fullname = fullname;
-        this.email = email;
-        this.password = password;
-        this.provider = provider;
-        this.role = role;
-    }
+    @Column(insertable = false)
+    private Integer diamond = 0;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(role.name()));
+    }
+
+    public User(String username, String fullname, String email, String password) {
+        this.username = username;
+        this.fullname = fullname;
+        this.email = email;
+        this.password = password;
     }
 }

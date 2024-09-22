@@ -1,18 +1,16 @@
 package vn.edu.huce.beforeigner.infrastructures.vocabmodule.impls;
 
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import vn.edu.huce.beforeigner.domains.vocab.Topic;
-import vn.edu.huce.beforeigner.domains.vocab.Word;
 import vn.edu.huce.beforeigner.domains.vocab.repo.TopicRepository;
 import vn.edu.huce.beforeigner.domains.vocab.repo.WordRepository;
-import vn.edu.huce.beforeigner.enums.ResponseCode;
 import vn.edu.huce.beforeigner.exceptions.AppException;
+import vn.edu.huce.beforeigner.exceptions.ResponseCode;
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.abstracts.ITopicService;
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.dtos.TopicDto;
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.dtos.creatation.CreateTopicDto;
@@ -44,10 +42,7 @@ public class TopicService implements ITopicService {
     @Override
     public void addNew(CreateTopicDto createTopicDto) {
         Topic topic = new Topic();
-        topic.setName(createTopicDto.getName());
-        topic.setDescription(createTopicDto.getDescription());
-        Set<Word> words = wordRepo.findByIdIn(createTopicDto.getWordIds());
-        topic.setWords(words);
+        topic.setWords(wordRepo.findByIdIn(createTopicDto.getWordIds()));
         topicRepo.save(topic);
     }
 

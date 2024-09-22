@@ -1,54 +1,39 @@
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { StyleSheet, Text, View } from "react-native";
+import * as ProgressBar from "react-native-progress";
+import { MAIN } from "../../constants/Colors";
 
 interface AppIndicatorProp {
-  visible: boolean;
+  visible?: boolean;
 }
 
-type colors = "#023" | "#331";
+const AppIndicator = ({ visible = true } : AppIndicatorProp) => {
 
-function Indicator() {
-
-  const [color, setColor] = useState<colors>('#023');
-
-  useEffect(() => {
-    const id = setInterval(() => {
-      setColor((color) => color == '#023' ? '#331' : '#023');
-    }, 700);
-    return () => clearInterval(id);
-  }, []);
-
-  return (
-    <View style={styles.indicatorLocation}>
-      <ActivityIndicator size={'large'} color={color} />
-      <Text style={styles.text}>Chờ tui tí nhé</Text>
-    </View>
-  )
-}
-
-const AppIndicator = ({visible = true} : AppIndicatorProp) => {
-  const [isVisible, setIsVisible] = useState(visible);
+  if (!visible) {
+    return null;
+  }
 
   return (
     <View style={styles.container}>
-      {isVisible && <Indicator /> }
+      <Text style={styles.text}>Chờ tui tí nhé ...</Text>
+      <ProgressBar.Bar indeterminate borderWidth={3} borderRadius={10} unfilledColor={MAIN} />
     </View>
-  )
-}
+  );
+};
 
-export default AppIndicator
+export default AppIndicator;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
   },
   text: {
     fontSize: 20,
-    color: "#fff",
-  },
-  indicatorLocation: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    marginBottom: 10,
   },
 });

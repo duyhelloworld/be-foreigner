@@ -2,12 +2,15 @@ package vn.edu.huce.beforeigner.domains.vocab;
 
 import org.springframework.util.StringUtils;
 
+/**
+ * Loại từ
+ */
 public enum WordType {
     /**
      * Danh từ
      */
     NOUN,
-
+    
     /**
      * Động từ
      */

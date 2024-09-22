@@ -12,13 +12,9 @@ public class CreateWordDto {
     
     private String value;
     
-    private String mean;
-    
     private String phonetic;
 
     private MultipartFile image;
-    
-    private MultipartFile audio;
     
     private WordType wordType;
 

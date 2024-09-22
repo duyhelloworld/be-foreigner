@@ -28,10 +28,10 @@ public class TokenService implements ITokenService {
     @Value("${application.auth.jwt.issuer}")    
     private String issuer;
 
-    @Value("${application.auth.jwt.expireDuration}")
+    @Value("${application.auth.jwt.expire-duration}")
     private Duration expireDuration;
 
-    @Value("${application.auth.jwt.secretKey}")
+    @Value("${application.auth.jwt.secret-key}")
     private String secretKey;
 
     @Override

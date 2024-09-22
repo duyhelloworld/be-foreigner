@@ -13,7 +13,5 @@ public class LessonDto {
 
     public String coverImage;
 
-    public Integer learntCount;
-
     public DifficultyLevel diffLevel;
 }

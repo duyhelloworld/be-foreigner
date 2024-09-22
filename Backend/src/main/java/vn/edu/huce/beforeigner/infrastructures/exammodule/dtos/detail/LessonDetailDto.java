@@ -5,7 +5,6 @@ import java.util.Set;
 
 import lombok.Builder;
 import vn.edu.huce.beforeigner.domains.exam.DifficultyLevel;
-import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.UserDto;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.QuestionDto;
 
 @Builder
@@ -25,7 +24,5 @@ public class LessonDetailDto {
     
     public DifficultyLevel diffLevel;
     
-    public Set<UserDto> learners;
-
     public Set<QuestionDto> questions;
 }
