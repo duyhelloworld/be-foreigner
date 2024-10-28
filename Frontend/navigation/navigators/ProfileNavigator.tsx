@@ -15,12 +15,7 @@ export type ProfileNavigatorParams = {
   UserDetailScreen: { username?: string };
 };
 
-export function useLearnRoute<T extends keyof ProfileNavigatorParams>(
-  current: T
-): RouteProp<ProfileNavigatorParams, T>["params"] {
-  const route = useRoute<RouteProp<ProfileNavigatorParams, T>>();
-  return route.params;
-}
+
 
 const ProfileNavigator = () => {
   const Stack = createNativeStackNavigator<ProfileNavigatorParams>();

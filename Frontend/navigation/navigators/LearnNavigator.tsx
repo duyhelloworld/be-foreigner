@@ -15,10 +15,7 @@ export type LearnNavigatorParams = {
   };
 };
 
-export function useLearnRoute<T extends keyof LearnNavigatorParams>(current: T): RouteProp<LearnNavigatorParams, T>["params"] {
-  const route = useRoute<RouteProp<LearnNavigatorParams, T>>();
-  return route.params;
-}
+
 
 const LearnNavigator = () => {
   const Stack = createNativeStackNavigator<LearnNavigatorParams>();

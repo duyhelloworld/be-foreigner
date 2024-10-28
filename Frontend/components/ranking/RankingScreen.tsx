@@ -1,28 +1,47 @@
-import { FlatList, Image, StyleSheet, View } from "react-native";
-import React from "react";
+import { FlatList, Image, StyleSheet, Text, View } from "react-native";
+import React, { useEffect, useState } from "react";
 import { sampleRanking } from "../../utils/InitData";
 import RankingUserView from "./RankingUserView";
+import { Ionicons } from "@expo/vector-icons";
+import { AppColors } from "../../types/Colors";
 
 const RankingScreen = () => {
   const { users } = sampleRanking();
   const current = users[2];
 
+  const [showNotification, setShowNotification] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowNotification(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <View>
+    <View style={styles.container}>
       <View style={styles.headingContainer}>
-        <Image
-          source={{ uri: current.avatar, width: 40, height: 40 }}
-          style={styles.currentUserAvatar}
-        />
+        <Image source={{ uri: current.avatar }} style={styles.avatar} />
+        <Text style={styles.title}>Bảng xếp hạng</Text>
+        <Ionicons name="reload" color={AppColors.blue} size={30} />
+      </View>
+      <View style={styles.body}>
         <Image
           source={require("../../assets/ranking.png")}
           style={styles.rankingLogo}
         />
+        <FlatList
+          keyExtractor={(item) => item.username}
+          data={users}
+          renderItem={({ item }) => (
+            <RankingUserView
+              user={item}
+              isMe={item.username === current.username}
+              showNotification={
+                item.username === current.username && showNotification
+              }
+            />
+          )}
+        />
       </View>
-      <FlatList
-        data={users}
-        renderItem={({ item }) => <RankingUserView user={item} />}
-      />
     </View>
   );
 };
@@ -30,16 +49,30 @@ const RankingScreen = () => {
 export default RankingScreen;
 
 const styles = StyleSheet.create({
-  headingContainer: {
-    alignItems: "center",
+  container: {
     marginHorizontal: 20,
   },
-  currentUserAvatar: {
-    top: 20,
-    left: 20,
+  headingContainer: {
+    flexDirection: "row",
+    marginTop: 10,
+    justifyContent: "space-between",
+  },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "600",
+  },
+  body: {
+    alignItems: "center",
+    marginTop: 10,
   },
   rankingLogo: {
-    width: 200,
+    width: "50%",
     height: 180,
+    marginBottom: 20,
   },
 });

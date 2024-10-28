@@ -1,18 +1,26 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react';
 import { Word } from '../../types/apimodels';
+import { AppColors } from '../../types/Colors';
+import { playWordAudio } from '../../utils/AudioUtil';
 
 interface TodayWordViewProp {
   word: Word
 }
 
 const TodayWordView = ({word} : TodayWordViewProp) => {
+
+  function onPress() {
+    playWordAudio(word.audio);
+    
+  }
+
   return (
-    <View style={styles.container}>
+    <Pressable style={styles.container} onPress={onPress} >
       <Text style={styles.title}>Từ vựng hôm nay là :</Text>
       <Text style={styles.wordValue}>{word.value}</Text>
       <Text style={styles.wordPhonetic}>/{word.phonetic}/</Text>
-    </View>
+    </Pressable>
   );
 }
 
@@ -22,8 +30,8 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     borderWidth: 2,
-    borderColor: "#1C42D9",
-    backgroundColor: "#ddd",
+    borderColor: AppColors.blue,
+    backgroundColor: AppColors.light,
     borderRadius: 14,
     paddingHorizontal: 10,
     paddingVertical: 15,
@@ -33,13 +41,13 @@ const styles = StyleSheet.create({
     fontSize: 15,
     justifyContent: "center",
     textAlign: "center",
-    color: "#806AE3",
+    color: AppColors.purple,
   },
   wordValue: {
     fontSize: 50,
-    color: "#00FB54",
+    color: AppColors.green,
     textAlign: "center",
-    textShadowColor: "#888",
+    textShadowColor: AppColors.grayDark,
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 8,
   },
@@ -47,5 +55,4 @@ const styles = StyleSheet.create({
     fontSize: 15,
     textAlign: "center",
   },
-  
 });

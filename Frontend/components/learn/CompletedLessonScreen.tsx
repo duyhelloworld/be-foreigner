@@ -2,11 +2,14 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { AppColors } from '../../types/Colors'
-import { useLearnRoute } from '../../navigation/navigators/LearnNavigator'
-
+import { useAppParams } from '../../hook/AppNavigationHooks'
 const CompletedLessonScreen = () => {
 
-  const params = useLearnRoute('CompletedLessonScreen');
+  const params = useAppParams('LearnNav', 'CompletedLessonScreen');
+  
+  if (!params) {
+    return;
+  }
 
   return (
     <View style={styles.container}>

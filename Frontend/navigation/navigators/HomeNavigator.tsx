@@ -6,7 +6,6 @@ import {
 import HomeScreen from "../../components/home/HomeScreen";
 import ProfileScreen from "../../components/profile/ProfileScreen";
 import RankingScreen from "../../components/ranking/RankingScreen";
-import { RouteProp, useRoute } from "@react-navigation/native";
 import TaskScreen from "../../components/task/TaskScreen";
 import Tabbar from "../Tabbar";
 
@@ -16,13 +15,6 @@ export type HomeNavigatorParams = {
   RankingScreen: undefined;
   ProfileScreen: undefined;
 };
-
-export function useHomeRoute<T extends keyof HomeNavigatorParams>(
-  current: T
-): RouteProp<HomeNavigatorParams, T>["params"] {
-  const route = useRoute<RouteProp<HomeNavigatorParams, T>>();
-  return route.params;
-}
 
 const Tab = createBottomTabNavigator<HomeNavigatorParams>();
 

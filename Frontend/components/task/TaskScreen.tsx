@@ -1,8 +1,9 @@
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import { sampleTasks } from '../../utils/InitData';
-import CircularProgressBar from '../common/CircularProgressBar';
 import TaskItemView from './TaskItemView';
+import { AppColors } from '../../types/Colors';
+import CircularProgressBar from './CircularProgressBar';
 
 const TaskScreen = () => {
 
@@ -30,7 +31,7 @@ export default TaskScreen
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: "#58CC02",
+    backgroundColor: AppColors.green,
     padding: 20,
     flexDirection: "row",
     justifyContent: "space-between",

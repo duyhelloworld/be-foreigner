@@ -3,7 +3,7 @@ import React from "react";
 import { Lesson } from "../../types/apimodels";
 import ProgressBar from "../common/ProgressBar";
 import { AppColors } from "../../types/Colors";
-import {  Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { LessonStatus } from "../../types/enum";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { RootNavigatorParams } from "../../navigation/AppNavigation";
@@ -14,29 +14,30 @@ interface UserInfoViewProp {
 
 interface LessonStatusBadge {
   icon: keyof typeof Ionicons.glyphMap;
-  color: string
+  color: string;
 }
 
-function getBadge(status: LessonStatus) : LessonStatusBadge {
+function getBadge(status: LessonStatus): LessonStatusBadge {
   switch (status) {
     case LessonStatus.COMPLETED:
       return { icon: "trophy", color: AppColors.green };
     case LessonStatus.LOCKED:
-      return { icon: "lock-closed-outline", color: AppColors.grayDark};
+      return { icon: "lock-closed-outline", color: AppColors.grayDark };
     case LessonStatus.ONGOING:
       return { icon: "play", color: AppColors.yellow };
   }
 }
 
 const UserInfoView = ({ lesson }: UserInfoViewProp) => {
-
   const { color, icon } = getBadge(lesson.status);
 
   const navigator = useNavigation<NavigationProp<RootNavigatorParams>>();
-  
+
   function onItemPress() {
-    navigator.navigate("LearnNavigator", 
-    {screen: "SplashLearnScreen", params: {lessonId: lesson.id }});
+    navigator.navigate("LearnNavigator", {
+      screen: "SplashLearnScreen",
+      params: { lessonId: lesson.id },
+    });
   }
 
   return (
@@ -59,12 +60,7 @@ const UserInfoView = ({ lesson }: UserInfoViewProp) => {
       </View>
 
       <View style={styles.badgeContainer}>
-        <Ionicons
-          size={25}
-          name={icon}
-          color={color}
-          style={styles.badge}
-        />
+        <Ionicons size={25} name={icon} color={color} style={styles.badge} />
       </View>
     </Pressable>
   );
@@ -108,7 +104,7 @@ const styles = StyleSheet.create({
   },
   badge: {
     padding: 2,
-    textAlign: "center"
+    textAlign: "center",
   },
   progressbar: {
     width: "50%",

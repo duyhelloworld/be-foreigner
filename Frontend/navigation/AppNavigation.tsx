@@ -1,11 +1,7 @@
 import React from "react";
 import {
   NavigationContainer,
-  NavigationProp,
   NavigatorScreenParams,
-  RouteProp,
-  useNavigation,
-  useRoute,
 } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AuthNavigator, { AuthNavigatorParams } from "./navigators/AuthNavigator";
@@ -25,13 +21,12 @@ export type RootNavigatorParams = {
   ProfileNavigator: NavigatorScreenParams<ProfileNavigatorParams>;
 };
 
-export function useRootParams<T extends keyof RootNavigatorParams>(): RouteProp<
-  RootNavigatorParams,
-  T
->["params"] {
-  const route = useRoute<RouteProp<RootNavigatorParams, T>>();
-  return route.params;
-}
+export type AppParams = {
+  RootNav: RootNavigatorParams;
+  AuthNav: AuthNavigatorParams;
+  LearnNav: LearnNavigatorParams;
+  ProfileNav: ProfileNavigatorParams;
+};
 
 export default function AppNavigation() {
   const Stack = createNativeStackNavigator<RootNavigatorParams>();

@@ -8,12 +8,6 @@ export type AuthNavigatorParams = {
   LoginScreen: undefined;
 };
 
-export function useAuthRoute<T extends keyof AuthNavigatorParams>(current: T) : 
-RouteProp<AuthNavigatorParams, T>["params"] {
-  const route = useRoute<RouteProp<AuthNavigatorParams, T>>();
-  return route.params;
-}
-
 const AuthNavigator = () => {
   const Stack = createNativeStackNavigator<AuthNavigatorParams>();
 

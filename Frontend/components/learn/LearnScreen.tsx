@@ -13,9 +13,7 @@ import IncorrectBottomSheet from "./bottomsheet/IncorrectBottomSheet";
 import ProgressBar from "../common/ProgressBar";
 import { Ionicons } from "@expo/vector-icons";
 import { AppColors } from "../../types/Colors";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { LearnNavigatorParams } from "../../navigation/navigators/LearnNavigator";
-import { RootNavigatorParams } from "../../navigation/AppNavigation";
+import { useAppNavigation } from "../../hook/AppNavigationHooks";
 
 export type QuestionResult = {
   enabled: boolean;
@@ -27,32 +25,26 @@ export const LearnScreenContext = createContext(
   {} as React.MutableRefObject<QuestionResult>
 );
 
-enum DialogState {
-  Diabled,
-  Correct,
-  Incorrect
-}
-
 const LearnScreen = () => {
   const lesson = sampleLessonDetail();
   const questions = lesson.questions;
 
-  const navigator = useNavigation<NavigationProp<RootNavigatorParams>>();
+  const navigator = useAppNavigation();
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isCompleted, setIsCompleted] = useState(false);
-  const [dialogState, setDialogState] = useState(DialogState.Diabled);
+  const [dialogState, setDialogState] = useState<boolean>();
 
-  const questionResultRef = useRef<QuestionResult>({} as QuestionResult);
+  const resultRef = useRef<QuestionResult>({} as QuestionResult);
 
   useEffect(() => {
-    questionResultRef.current = {
+    resultRef.current = {
       enabled: false,
       isCorrect: false,
       message: "",
     };
-    setDialogState(DialogState.Diabled);
+    setDialogState(undefined);
     setProgress((currentIndex + 1) / questions.length);
     setIsCompleted(currentIndex >= questions.length);
   }, [currentIndex]);
@@ -103,16 +95,16 @@ const LearnScreen = () => {
   };
 
   const onCheckPress = () => {
-    const ref = questionResultRef.current;
+    const ref = resultRef.current;
     if (!ref.enabled) {
       return;
     }
-    setDialogState(ref.isCorrect ? DialogState.Correct : DialogState.Incorrect);
+    setDialogState(ref.isCorrect);
   };
 
   function nextQuestion() {
     if (!isCompleted) {
-      setDialogState(DialogState.Diabled);
+      setDialogState(false);
       setCurrentIndex(currentIndex + 1);
     } else {
       navigator.navigate("LearnNavigator", {screen: "LearnScreen", ...lesson });
@@ -133,21 +125,21 @@ const LearnScreen = () => {
       <Text style={styles.questionTitle}>{questions[currentIndex]?.type}</Text>
 
       <View style={styles.questionContainer}>
-        <LearnScreenContext.Provider value={questionResultRef}>
+        <LearnScreenContext.Provider value={resultRef}>
           {getQuestionViewByType(questions[currentIndex])}
         </LearnScreenContext.Provider>
       </View>
 
-      {dialogState === DialogState.Diabled ? (
+      {dialogState === undefined ? (
         <CheckButton onCheckPress={onCheckPress} />
-      ) : dialogState === DialogState.Correct ? (
+      ) : dialogState ? (
         <CorrectBottomSheet
           onContinuePress={nextQuestion}
-          message={questionResultRef.current.message}
+          message={resultRef.current.message}
         />
       ) : (
         <IncorrectBottomSheet
-          messageReason={questionResultRef.current.message}
+          messageReason={resultRef.current.message}
           onSkipPress={nextQuestion}
         />
       )}
