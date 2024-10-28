@@ -1,15 +1,11 @@
-import { StyleSheet, View } from "react-native";
-import { AlertNotificationRoot } from "react-native-alert-notification";
-import AppNavigation from "./components/navigation/AppNavigation";
+import { LogBox, View } from "react-native";
+import AppNavigation from "./navigation/AppNavigation";
 
 export default function App() {
+  LogBox.ignoreLogs(["Require cycle:"]);
   return (
-    <AlertNotificationRoot>
-      <View style={{ flex: 1, paddingTop: 30 }}>
-        <AppNavigation isFirstTime={false} isLogedIn={false} />
-      </View>
-    </AlertNotificationRoot>
+    <View style={{ flex: 1, paddingTop: 35 }}>
+      <AppNavigation />
+    </View>
   );
 }
-
-const styles = StyleSheet.create({});

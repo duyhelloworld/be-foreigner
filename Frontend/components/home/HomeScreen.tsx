@@ -1,37 +1,22 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { sampleTopics, sampleWord, sampleWords } from '../../utils/InitData';
-import TodayWordView from './todayword/TodayWordView';
-import ListTopicView from './topics/ListTopicView';
-import AppIndicator from '../common/AppIndicator';
+import { FlatList, StyleSheet, View } from "react-native";
+import React from "react";
+import { sampleLessons, sampleWord } from "../../utils/InitData";
+import TodayWordView from "./TodayWordView";
+import UserInfoView from "./UserInfoView";
 
 const HomeScreen = () => {
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    setIsLoading(true);
-    fetch("https://jsonplaceholder.typicode.com/todo")
-      .then((data) => {
-        console.log(data.json());
-        setIsLoading(false);
-    });
-  }, []);
-  
+  const lessons = sampleLessons();
   return (
     <View>
-      {isLoading ? (
-        <AppIndicator visible={isLoading} />
-      ) : (
-        <View>
-          <TodayWordView word={sampleWord()} />
-          <ListTopicView topics={sampleTopics()} title="Bộ thẻ gần đây" />
-          <ListTopicView topics={sampleTopics()} title="Bộ thẻ yêu thích" />
-        </View>
-      )}
+      <TodayWordView word={sampleWord()} />
+      <FlatList
+        data={lessons}
+        renderItem={({ item }) => <UserInfoView lesson={item} />}
+      />
     </View>
   );
-}
+};
 
-export default HomeScreen
+export default HomeScreen;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});

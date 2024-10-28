@@ -2,26 +2,21 @@
   "expo": {
     "name": "be-foreigner",
     "slug": "be-foreigner",
+    "description": "Ứng dụng học tiếng Anh hàng đầu cho người mới bắt đầu",
     "version": "1.0.0",
     "orientation": "portrait",
+    "backgroundColor": "#FFFFFF",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain"
-    },
+    "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true
     },
     "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
+      "backgroundColor": "#FFFFFF",
       "package": "com.anonymous.beforeigner"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/icon.png"
     },
     "extra": {
       "eas": {
