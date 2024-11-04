@@ -9,8 +9,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import lombok.Setter;
-import vn.edu.huce.beforeigner.domains.base.FullAudited;
-import vn.edu.huce.beforeigner.domains.core.UserLevel;
+import vn.edu.huce.beforeigner.domains.base.FullAuditedEntity;
+import vn.edu.huce.beforeigner.domains.common.UserLevel;
 import lombok.Getter;
 
 @Getter
@@ -19,7 +19,7 @@ import lombok.Getter;
 /**
  * Các bảng xếp hạng
  */
-public class Ranking extends FullAudited {
+public class Ranking extends FullAuditedEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

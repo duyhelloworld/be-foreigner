@@ -13,7 +13,7 @@ public class UserMapper {
         return UserDto.builder()
             .username(user.getUsername())
             .fullname(user.getFullname())
-            .avatar(user.getAvatar())
+            .avatar(user.getAvatar().getUrl())
             .build();
     }
 
@@ -21,7 +21,7 @@ public class UserMapper {
         return UserInfoDto.builder()
             .username(user.getUsername())
             .fullname(user.getFullname())
-            .avatar(user.getAvatar())
+            .avatar(user.getAvatar().getUrl())
             .email(user.getEmail())
             .build();
     }

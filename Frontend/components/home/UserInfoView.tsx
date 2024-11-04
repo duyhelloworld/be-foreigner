@@ -7,6 +7,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { LessonStatus } from "../../types/enum";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { RootNavigatorParams } from "../../navigation/AppNavigation";
+import { sampleTasks } from "../../utils/InitData";
 
 interface UserInfoViewProp {
   lesson: Lesson;

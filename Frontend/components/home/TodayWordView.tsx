@@ -12,7 +12,6 @@ const TodayWordView = ({word} : TodayWordViewProp) => {
 
   function onPress() {
     playWordAudio(word.audio);
-    
   }
 
   return (

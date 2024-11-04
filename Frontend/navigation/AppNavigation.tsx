@@ -1,15 +1,17 @@
 import React from "react";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import AuthNavigator, { AuthNavigatorParams } from "./navigators/AuthNavigator";
+import HomeNavigator, { HomeNavigatorParams } from "./navigators/HomeNavigator";
 import {
   NavigationContainer,
   NavigatorScreenParams,
 } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import AuthNavigator, { AuthNavigatorParams } from "./navigators/AuthNavigator";
 import LearnNavigator, {
   LearnNavigatorParams,
 } from "./navigators/LearnNavigator";
-import HomeNavigator, { HomeNavigatorParams } from "./navigators/HomeNavigator";
-import ProfileNavigator, { ProfileNavigatorParams } from "./navigators/ProfileNavigator";
+import ProfileNavigator, {
+  ProfileNavigatorParams,
+} from "./navigators/ProfileNavigator";
 
 export type RootNavigatorParams = {
   HomeNavigator: NavigatorScreenParams<HomeNavigatorParams>;
@@ -34,8 +36,8 @@ export default function AppNavigation() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="HomeNavigator" component={HomeNavigator} />
         <Stack.Screen name="AuthNavigator" component={AuthNavigator} />
+        <Stack.Screen name="HomeNavigator" component={HomeNavigator} />
         <Stack.Screen name="LearnNavigator" component={LearnNavigator} />
         <Stack.Screen name="ProfileNavigator" component={ProfileNavigator} />
       </Stack.Navigator>

@@ -3,7 +3,6 @@ package vn.edu.huce.beforeigner.infrastructures.vocabmodule.mappers;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import vn.edu.huce.beforeigner.domains.vocab.Word;
@@ -16,14 +15,11 @@ public class WordMapper {
     @Autowired
     private ExampleMapper exampleMapper;
 
-    @Lazy
-    private TopicMapper topicMapper;
-
     public WordDto toDto(Word word) {
         return WordDto.builder()
                 .id(word.getId())
-                .image(word.getImage())
-                .audio(word.getAudio())
+                .image(word.getImage().getUrl())
+                .audio(word.getAudio().getUrl())
                 .value(word.getValue())
                 .phonetic(word.getPhonetic())
                 .build();
@@ -32,13 +28,10 @@ public class WordMapper {
     public WordDetailDto toDetailDto(Word word) {
         return WordDetailDto.builder()
                 .id(word.getId())
-                .image(word.getImage())
-                .audio(word.getAudio())
+                .image(word.getImage().getUrl())
+                .audio(word.getAudio().getUrl())
                 .value(word.getValue())
                 .phonetic(word.getPhonetic())
-                .topic(word.getTopics().stream()
-                        .map(t -> topicMapper.toDto(t))
-                        .collect(Collectors.toSet()))
                 .examples(word.getExamples().stream()
                         .map(e -> exampleMapper.toDetailDto(e))
                         .collect(Collectors.toSet()))

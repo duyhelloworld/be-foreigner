@@ -26,7 +26,7 @@ public class AuditorConfig implements AuditorAware<String> {
     @Override
     public Optional<String> getCurrentAuditor() {
         User user = getUser();
-        return user == null ? Optional.empty() : Optional.of(user.getUsername());
+        return user == null ? Optional.empty() : Optional.of(user.getId());
     }
 
     public static User getUser() {

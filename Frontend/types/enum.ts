@@ -42,9 +42,9 @@ export enum WordType {
 
 export enum QuestionType {
   GIVE_AUDIO_REARRANGE_WORDS = "Sắp xếp lại các từ mà bạn nghe được",
-  GIVE_WORDS_REARRANGE_MEANS = "Sắp xếp lại các từ sau",
+  GIVE_SENTENSE_REARRANGE_WORDS = "Sắp xếp lại các từ để được câu bên dưới",
   GIVE_MEAN_CHOOSE_WORD = "Chọn đáp án đúng",
-  MATCH_WORDS_TO_MEANS = "Nối các từ với nghĩa của chúng",
+  MATCHING = "Nối các từ với nghĩa của chúng",
   GIVE_AUDIO_CHOOSE_WORD = "Cho file âm thanh, chọn từ chính xác"
 }
 

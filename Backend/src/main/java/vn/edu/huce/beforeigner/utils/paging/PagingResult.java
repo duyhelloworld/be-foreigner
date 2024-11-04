@@ -14,9 +14,9 @@ public class PagingResult<T> {
     
     private Collection<T> items;
     
-    public static <S, T> PagingResult<T> of(Page<S> items, Function<S, T> function) {
+    public static <S, T> PagingResult<T> of(Page<S> items, Function<S, T> mapFunction) {
         PagingResult<T> result = new PagingResult<>();
-        result.items = items.stream().map(s -> function.apply(s)).toList();
+        result.items = items.stream().map(s -> mapFunction.apply(s)).toList();
         result.totalPage = items.getTotalPages();
         return result;
     }

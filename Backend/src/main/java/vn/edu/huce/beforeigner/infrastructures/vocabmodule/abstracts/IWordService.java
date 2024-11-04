@@ -1,5 +1,6 @@
 package vn.edu.huce.beforeigner.infrastructures.vocabmodule.abstracts;
 
+import vn.edu.huce.beforeigner.domains.core.User;
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.dtos.WordDto;
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.dtos.creatation.CreateWordDto;
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.dtos.detail.WordDetailDto;
@@ -9,9 +10,11 @@ import vn.edu.huce.beforeigner.utils.paging.PagingResult;
 
 public interface IWordService {
     
-    PagingResult<WordDto> getAll(PagingRequest pagingRequest, Integer topicId);
+    WordDto getTodayWord(User user);
 
-    WordDetailDto getById(Integer id);
+    PagingResult<WordDto> getAll(PagingRequest pagingRequest);
+
+    WordDetailDto getDetailById(Integer id);
 
     void addNew(CreateWordDto createWordDto);
 

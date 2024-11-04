@@ -7,7 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import lombok.Setter;
-import vn.edu.huce.beforeigner.domains.base.FullAudited;
+import vn.edu.huce.beforeigner.domains.base.FullAuditedEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Setter
 @Entity
 @NoArgsConstructor
-public class Example extends FullAudited {
+public class Example extends FullAuditedEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +40,4 @@ public class Example extends FullAudited {
         this.sentense = sentense;
         this.mean = mean;
     }
-
-    
 }

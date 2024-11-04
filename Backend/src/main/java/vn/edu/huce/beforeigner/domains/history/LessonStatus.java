@@ -5,11 +5,15 @@ package vn.edu.huce.beforeigner.domains.history;
  */
 public enum LessonStatus {
     /**
+     * Khóa
+     */
+    LOCKED,
+    /**
      * Đang học
      */
-    LEARNING,
+    ONGOING,
     /**
      * Đã hoàn thành
      */
-    COMPLETED
+    COMPLETED,
 }

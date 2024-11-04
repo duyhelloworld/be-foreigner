@@ -1,4 +1,4 @@
-import { DiffLevel, LessonStatus, QuestionType, SubscriptionPlan, UserLevel, WordType } from "./enum";
+import { LessonStatus, QuestionType, SubscriptionPlan, UserLevel, WordType } from "./enum";
 
 export type Word = {
   id: number;
@@ -32,14 +32,11 @@ export type LessonDetail = {
 export type Question = {
   type: QuestionType;
   
-  correctOption?: QuestionOption;
   incorrectOptions?: QuestionOption[];
 
   mainSentense?: string[];
   mainSentenseAudio?: any;
   unrelatedWords?: string[];
-
-  correctAnswerAudio?: string;
 
   matching?: Map<string, string>;
 };
@@ -58,7 +55,6 @@ export type RankingUser = {
 export type QuestionOption = {
   text: string;
   image: string;
-  audio: string;
 }
 
 export type Task = {
@@ -77,23 +73,6 @@ export type TaskAward = {
 export type WordExample = {
   sentense: string;
   mean: string;
-};
-
-export type Topic = {
-  id: number;
-  name: string;
-  coverImage: string;
-  desc?: string;
-  learnCount: number;
-};
-
-export type TopicDetail = {
-  id: number;
-  name: string;
-  description?: string;
-  diffLevel: DiffLevel;
-  creator: User;
-  words: Word[];
 };
 
 export type User = {

@@ -3,20 +3,21 @@ package vn.edu.huce.beforeigner.infrastructures.vocabmodule.impls;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import vn.edu.huce.beforeigner.domains.core.User;
+import vn.edu.huce.beforeigner.domains.storage.CloudFile;
+import vn.edu.huce.beforeigner.domains.storage.CloudFileType;
 import vn.edu.huce.beforeigner.domains.vocab.Example;
-import vn.edu.huce.beforeigner.domains.vocab.Topic;
 import vn.edu.huce.beforeigner.domains.vocab.Word;
-import vn.edu.huce.beforeigner.domains.vocab.repo.TopicRepository;
 import vn.edu.huce.beforeigner.domains.vocab.repo.WordRepository;
 import vn.edu.huce.beforeigner.exceptions.AppException;
 import vn.edu.huce.beforeigner.exceptions.ResponseCode;
-import vn.edu.huce.beforeigner.infrastructures.filemodule.abstracts.IImageService;
-import vn.edu.huce.beforeigner.infrastructures.filemodule.abstracts.ISoundService;
-import vn.edu.huce.beforeigner.infrastructures.filemodule.dtos.ImageType;
-import vn.edu.huce.beforeigner.infrastructures.filemodule.dtos.UploadResponse;
+import vn.edu.huce.beforeigner.infrastructures.storagemodule.abstracts.ICloudFileService;
+import vn.edu.huce.beforeigner.infrastructures.storagemodule.abstracts.ISoundService;
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.abstracts.IWordService;
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.dtos.WordDto;
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.dtos.creatation.CreateExampleDto;
@@ -24,6 +25,7 @@ import vn.edu.huce.beforeigner.infrastructures.vocabmodule.dtos.creatation.Creat
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.dtos.detail.WordDetailDto;
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.dtos.updatation.UpdateWordDto;
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.mappers.WordMapper;
+import vn.edu.huce.beforeigner.utils.NumberUtils;
 import vn.edu.huce.beforeigner.utils.paging.PagingRequest;
 import vn.edu.huce.beforeigner.utils.paging.PagingResult;
 
@@ -33,23 +35,21 @@ public class WordService implements IWordService {
 
     private final WordRepository wordRepo;
 
-    private final TopicRepository topicRepo;
-
     private final WordMapper wordMapper;
 
-    private final IImageService imageService;
+    private final ICloudFileService imageService;
 
     private final ISoundService soundService;
 
     @Override
-    public PagingResult<WordDto> getAll(PagingRequest pagingRequest, Integer topicId) {
+    public PagingResult<WordDto> getAll(PagingRequest pagingRequest) {
         return PagingResult.of(
-            wordRepo.findByTopicId(topicId, pagingRequest.pageable()),
+            wordRepo.findAll(pagingRequest.pageable()),
             w -> wordMapper.toDto(w));
     }
 
     @Override
-    public WordDetailDto getById(Integer id) {
+    public WordDetailDto getDetailById(Integer id) {
         return wordMapper.toDetailDto(wordRepo.findById(id).orElse(null));
     }
 
@@ -57,17 +57,15 @@ public class WordService implements IWordService {
     public void addNew(CreateWordDto createWordDto) {
         
         Word word = new Word();
-        word.setAudio(soundService.getWordAudio(createWordDto.getValue()));
+        word.setAudio(soundService.getAndSaveWordAudio(createWordDto.getValue()));
+
         if (createWordDto.getImage() != null) {
-            UploadResponse response = imageService.save(createWordDto.getImage(), ImageType.WORD_IMAGE);
-            word.setImage(response.getFileUrl());
-            word.setPublicId(response.getPublicId());
+            CloudFile response = imageService.save(createWordDto.getImage(), CloudFileType.WORD_IMAGE);
+            word.setImage(response);
         }
-        Set<Topic> topics = topicRepo.findAllByIdIn(createWordDto.getTopicIds());
-        word.setTopics(topics);
         
         Set<Example> examples = new HashSet<>();
-        for (CreateExampleDto createExampleDto : createWordDto.getCreateExamples()) {
+        for (CreateExampleDto createExampleDto : createWordDto.getExamples()) {
             examples.add(new Example(createExampleDto.getSentense(), createExampleDto.getMean()));
         }
         word.setExamples(examples);
@@ -88,4 +86,15 @@ public class WordService implements IWordService {
         wordRepo.deleteById(id);
     }
 
+    @Override
+    public WordDto getTodayWord(User user) {
+        // Tạm thời user kệ, cứ lấy random word thôi
+        int total = (int) wordRepo.count();
+        int randomPos = NumberUtils.randomNumber(1, total);
+        Page<Word> page = wordRepo.findAll(Pageable.ofSize(1).withPage(randomPos));
+        if (page.hasContent()) {
+            return wordMapper.toDto(page.getContent().get(0));
+        }
+        return null;
+    }
 }

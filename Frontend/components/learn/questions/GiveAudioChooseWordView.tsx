@@ -4,7 +4,7 @@ import { QuestionOption } from "../../../types/apimodels";
 import { Ionicons } from "@expo/vector-icons";
 import { AppColors } from "../../../types/Colors";
 import { playWordAudio } from "../../../utils/AudioUtil";
-import { LearnScreenContext } from "../LearnScreen";
+import { LearnScreenContext } from "../../../hook/LearnScreenHooks";
 
 interface GiveAudioChooseWordViewProp {
   correctOption: QuestionOption;

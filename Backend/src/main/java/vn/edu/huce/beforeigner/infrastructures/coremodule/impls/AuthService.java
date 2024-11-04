@@ -16,6 +16,8 @@ import vn.edu.huce.beforeigner.domains.core.TokenType;
 import vn.edu.huce.beforeigner.domains.core.User;
 import vn.edu.huce.beforeigner.domains.core.repo.UserRepository;
 import vn.edu.huce.beforeigner.domains.core.repo.UserTokenRepository;
+import vn.edu.huce.beforeigner.domains.storage.CloudFile;
+import vn.edu.huce.beforeigner.domains.storage.CloudFileType;
 import vn.edu.huce.beforeigner.exceptions.AppException;
 import vn.edu.huce.beforeigner.exceptions.ResponseCode;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IAuthService;
@@ -24,9 +26,7 @@ import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IUserTokenSe
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.AuthDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.SignInDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.SignUpDto;
-import vn.edu.huce.beforeigner.infrastructures.filemodule.abstracts.IImageService;
-import vn.edu.huce.beforeigner.infrastructures.filemodule.dtos.ImageType;
-import vn.edu.huce.beforeigner.infrastructures.filemodule.dtos.UploadResponse;
+import vn.edu.huce.beforeigner.infrastructures.storagemodule.abstracts.ICloudFileService;
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +42,7 @@ public class AuthService implements IAuthService, UserDetailsService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final IImageService imageService;
+    private final ICloudFileService imageService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -72,9 +72,8 @@ public class AuthService implements IAuthService, UserDetailsService {
         }
         User user = new User(signUpDto.getUsername(), signUpDto.getFullname(), signUpDto.getEmail(), passwordEncoder.encode(signUpDto.getPassword()));
         
-        UploadResponse response = imageService.save(signUpDto.getAvatar(), ImageType.USER_AVATAR);
-        user.setAvatar(response.getFileUrl());
-        user.setPublicId(response.getPublicId());
+        CloudFile cloudFile = imageService.save(signUpDto.getAvatar(), CloudFileType.USER_AVATAR);
+        user.setAvatar(cloudFile);
         user.setLevel(signUpDto.getLevel());
 
         var refreshToken = new UserToken();

@@ -4,10 +4,12 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.validation.Valid;
 import lombok.Data;
 import vn.edu.huce.beforeigner.domains.vocab.WordType;
 
 @Data
+@Valid
 public class CreateWordDto {
     
     private String value;
@@ -18,7 +20,5 @@ public class CreateWordDto {
     
     private WordType wordType;
 
-    private List<CreateExampleDto> createExamples;
-    
-    private List<Integer> topicIds;
+    private List<CreateExampleDto> examples;
 }

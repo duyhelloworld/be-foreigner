@@ -1,23 +1,39 @@
 package vn.edu.huce.beforeigner.infrastructures.exammodule.abstracts;
 
 import vn.edu.huce.beforeigner.domains.core.User;
+import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.LessonDetailDto;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.LessonDto;
-import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.creation.CreateLessonDto;
-import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.detail.LessonDetailDto;
-import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.updatation.UpdateLessonDto;
 import vn.edu.huce.beforeigner.utils.paging.PagingRequest;
 import vn.edu.huce.beforeigner.utils.paging.PagingResult;
 
 public interface ILessonService {
     
-    LessonDetailDto learn(Integer lessonId, User user);
+    /**
+     * Lấy các lesson gợi ý cho user
+     */
+    PagingResult<LessonDto> getSuggestedLessons(PagingRequest pagingRequest, User user);
 
-    PagingResult<LessonDto> getAll(PagingRequest pagingRequest);
+    /**
+     * Học 1 bài học theo chỉ định
+     * @param lessonId Học bài học chỉ định
+     * @param user người học
+     * @return
+     */
+    LessonDetailDto examine(Integer lessonId, User user);
 
-    void addNew(CreateLessonDto createLessonDto);
+    /**
+     * Thử làm lại câu hỏi sai
+     * @param questionId
+     * @param user
+     */
+    void retry(Integer questionId, User user);
 
-    LessonDto update(Integer id, UpdateLessonDto updateLessonDto);
+    // PagingResult<LessonDto> getAll(PagingRequest pagingRequest);
 
-    void delete(Integer id);
+    // void addNew(CreateLessonDto createLessonDto);
+
+    // LessonDto update(Integer id, UpdateLessonDto updateLessonDto);
+
+    // void delete(Integer id);
     
 }

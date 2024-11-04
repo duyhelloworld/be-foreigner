@@ -5,10 +5,10 @@ import {
   View,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { LearnScreenContext } from "../LearnScreen";
 import { playWordAudio } from "../../../utils/AudioUtil";
 import { Ionicons } from "@expo/vector-icons";
 import { AppColors } from "../../../types/Colors";
+import { LearnScreenContext } from "../../../hook/LearnScreenHooks";
 
 interface GiveWordsRearrangeMeansViewProp {
   mainSentense: string[];

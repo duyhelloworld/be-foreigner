@@ -6,7 +6,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import vn.edu.huce.beforeigner.domains.core.UserLevel;
+import vn.edu.huce.beforeigner.domains.common.UserLevel;
 
 @Data
 @Valid

@@ -14,9 +14,11 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Setter;
-import vn.edu.huce.beforeigner.domains.base.CloudinaryImage;
+import vn.edu.huce.beforeigner.domains.common.UserLevel;
+import vn.edu.huce.beforeigner.domains.storage.CloudFile;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,7 +27,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @Table(indexes = @Index(columnList = "id, username, email", unique = true))
-public class User implements UserDetails, CloudinaryImage {
+public class User implements UserDetails {
 
     @Id
     private String id = UUID.randomUUID().toString();
@@ -42,30 +44,28 @@ public class User implements UserDetails, CloudinaryImage {
     @Column(length = 100)
     private String password;
 
-    @Column(length = 100)
-    private String avatar;
-
-    @Column(length = 50)
-    private String publicId;
+    @ManyToOne
+    private CloudFile avatar;
 
     @Enumerated(EnumType.STRING)
     private TokenProvider provider = TokenProvider.LOCAL;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private UserLevel level = UserLevel.BEGINNER;
 
     @Column(insertable = false)
-    private Integer experience = 0;
+    private Integer experiences = 0;
 
     @Enumerated(EnumType.STRING)
     private SubscriptionPlan plan = SubscriptionPlan.FREE;
     
     @Column(insertable = false)
-    private Integer diamond = 0;
+    private Integer diamonds = 0;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

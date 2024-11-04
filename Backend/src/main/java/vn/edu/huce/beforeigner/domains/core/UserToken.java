@@ -9,14 +9,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Setter;
-import vn.edu.huce.beforeigner.domains.base.OwnerAudited;
+import vn.edu.huce.beforeigner.domains.base.OwnerAuditedEntity;
 import lombok.Getter;
 
 @Getter
 @Setter
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class UserToken extends OwnerAudited {
+public class UserToken extends OwnerAuditedEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

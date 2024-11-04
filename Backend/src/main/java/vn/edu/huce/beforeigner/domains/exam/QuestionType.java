@@ -1,27 +1,24 @@
 package vn.edu.huce.beforeigner.domains.exam;
 
-/**
- * Loại câu hỏi
- */
 public enum QuestionType {
     /**
-     * Sắp xếp lại từ
+     * Cho file nghe TA, sắp xếp từ TA
      */
-    REARRANGE_WORDS,
+    GIVE_AUDIO_REARRANGE_WORDS,
     /**
-     * Sắp xếp lại nghĩa
+     * Cho câu từ TV, sắp xếp các từ TA
      */
-    REARRANGE_MEANS,
+    GIVE_SENTENSE_REARRANGE_WORDS,
     /**
-     * Nối đáp án
+     * Cho nghĩa TV, chọn từ TA
+     */
+    GIVE_MEAN_CHOOSE_WORD,
+    /**
+     * Nối từ 
      */
     MATCHING,
     /**
-     * Chọn đáp án chứa nghĩa đúng
+     * Cho audio TA, chọn từ được phát âm
      */
-    CHOOSE_CORRECT_MEAN,
-    /**
-     * Chọn đáp án chứa từ đúng
-     */
-    CHOOSE_CORRECT_WORD,
+    GIVE_AUDIO_CHOOSE_WORD
 }

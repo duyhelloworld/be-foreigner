@@ -6,13 +6,15 @@ import ForgotPasswordScreen from "../../components/profile/ForgotPasswordScreen"
 import NotificationSetttingScreen from "../../components/profile/NotificationSetttingScreen";
 import LogoutScreen from "../../components/profile/LogoutScreen";
 import UserDetailScreen from "../../components/ranking/UserDetailScreen";
+import UpgradePlanScreen from "../../components/profile/UpgradePlanScreen";
 
 export type ProfileNavigatorParams = {
   UpdateProfileScreen: undefined;
   ForgotPasswordScreen: undefined;
   NotificationSetttingScreen: undefined;
   LogoutScreen: undefined;
-  UserDetailScreen: { username?: string };
+  UserDetailScreen: { username?: string } | undefined;
+  UpgradePlanScreen: undefined;
 };
 
 
@@ -36,6 +38,7 @@ const ProfileNavigator = () => {
       />
       <Stack.Screen name="LogoutScreen" component={LogoutScreen} />
       <Stack.Screen name="UserDetailScreen" component={UserDetailScreen} />
+      <Stack.Screen name="UpgradePlanScreen" component={UpgradePlanScreen} />
     </Stack.Navigator>
   );
 };

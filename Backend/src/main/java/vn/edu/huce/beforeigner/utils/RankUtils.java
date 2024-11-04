@@ -5,7 +5,7 @@ import vn.edu.huce.beforeigner.domains.core.User;
 public class RankUtils {
     
     public static Integer getElo(User user) {
-        return user.getExperience();
+        return user.getExperiences();
     }
     
 }

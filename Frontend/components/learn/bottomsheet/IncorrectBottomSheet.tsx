@@ -4,19 +4,19 @@ import AbstractBottomSheet from "./AbstractBottomSheet";
 import { AppColors } from "../../../types/Colors";
 
 interface IncorrectBottomSheetProp {
-  messageReason: string;
+  message: string;
   onSkipPress: () => void;
 }
 
 const IncorrectBottomSheet = ({
-  messageReason,
+  message,
   onSkipPress,
 }: IncorrectBottomSheetProp) => {
   return (
     <AbstractBottomSheet
       backgroundColor={AppColors.red}
       title="Sai rồi nà!"
-      message={messageReason}
+      message={message}
       button={{
         text: "Bỏ qua",
         style: [styles.button, styles.skipButton],

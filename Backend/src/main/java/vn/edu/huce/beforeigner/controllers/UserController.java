@@ -3,6 +3,7 @@ package vn.edu.huce.beforeigner.controllers;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
+import vn.edu.huce.beforeigner.annotations.IsAdmin;
 import vn.edu.huce.beforeigner.annotations.IsUser;
 import vn.edu.huce.beforeigner.domains.core.User;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IUserService;
@@ -21,6 +22,7 @@ public class UserController {
     
     private IUserService userService;
 
+    @IsAdmin
     @GetMapping("/all")
     public List<UserDto> getAllUsers() {
         return userService.findAllUsers();

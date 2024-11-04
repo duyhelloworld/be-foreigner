@@ -1,4 +1,4 @@
-import { NavigationProp, ParamListBase, RouteProp, useNavigation, useRoute } from "@react-navigation/native";
+import { NavigationProp, RouteProp, useNavigation, useRoute } from "@react-navigation/native";
 import { AppParams, RootNavigatorParams } from "../navigation/AppNavigation";
 
 export const useAppNavigation = () => {
@@ -11,5 +11,8 @@ export function useAppParams<
   S extends keyof AppParams[N]
 >(navigator: N, screen: S) {
   const route = useRoute<RouteProp<AppParams[N], S>>();
-  return route.params;
+  if (!route.params) {
+    throw new Error("Unable access undefined params!");
+  }
+  return route.params!;
 }

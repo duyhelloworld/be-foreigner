@@ -1,10 +1,8 @@
 package vn.edu.huce.beforeigner.infrastructures.vocabmodule.dtos;
 
 import lombok.Builder;
-import lombok.ToString;
 
 @Builder
-@ToString
 public class WordDto {
 
     public Integer id;
@@ -12,8 +10,6 @@ public class WordDto {
     public String value;
 
     public String mean;
-
-    public String language;
 
     public String phonetic;
 

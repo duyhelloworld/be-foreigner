@@ -10,20 +10,24 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Setter;
-import vn.edu.huce.beforeigner.domains.base.FullAudited;
-import vn.edu.huce.beforeigner.domains.base.CloudinaryImage;
+import vn.edu.huce.beforeigner.domains.base.FullAuditedEntity;
+import vn.edu.huce.beforeigner.domains.common.UserLevel;
 import vn.edu.huce.beforeigner.domains.history.LessonHistory;
+import vn.edu.huce.beforeigner.domains.storage.CloudFile;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 /**
  * Bài học
  */
-public class Lesson extends FullAudited implements CloudinaryImage {
+public class Lesson extends FullAuditedEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,37 +44,38 @@ public class Lesson extends FullAudited implements CloudinaryImage {
     private String description;
 
     /**
-     * Ảnh bìa
-     */
-    private String coverImage;
-
-    private String publicId;
-
-    /**
-     * Màu ảnh nền (code)
-     */
-    private String background;
-
-    /**
-     * Tổng điểm
+     * Số kim cương khi hoàn thành
      */
     private Integer diamonds;
 
     /**
      * Điểm kinh nghiệm
      */
-    private Integer experience;
+    private Integer experiences;
 
     /**
      * Độ khó
-     * {@link DifficultyLevel}
+     * {@link UserLevel}
      */
     @Enumerated(EnumType.STRING)
-    private DifficultyLevel diffLevel;
+    private UserLevel level;
+
+    /**
+     * Ảnh bìa
+     */
+    @ManyToOne
+    private CloudFile coverImage;
+
+    @OneToMany(mappedBy = "lesson")
+    private Set<LessonHistory> lessonHistories = new HashSet<>();
 
     @ManyToMany
     private Set<Question> questions = new HashSet<>();
 
-    @OneToMany(mappedBy = "lesson")
-    private Set<LessonHistory> lessonHistories = new HashSet<>();
+    public Lesson(String name, Integer diamonds, Integer experiences, UserLevel level) {
+        this.name = name;
+        this.diamonds = diamonds;
+        this.experiences = experiences;
+        this.level = level;
+    }
 }

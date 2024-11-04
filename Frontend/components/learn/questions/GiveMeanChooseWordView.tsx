@@ -3,8 +3,8 @@ import React, { useContext, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { QuestionOption } from "../../../types/apimodels";
 import { AppColors } from "../../../types/Colors";
-import { LearnScreenContext } from "../LearnScreen";
 import { playAudio } from "../../../utils/AudioUtil";
+import { LearnScreenContext } from "../../../hook/LearnScreenHooks";
 
 interface GiveMeanChooseWordViewProp {
   incorrectOptions: QuestionOption[];
