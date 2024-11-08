@@ -23,22 +23,24 @@ public class AuditorConfig implements AuditorAware<String> {
         return new AuditorConfig();
     }
 
-    @Override
-    public Optional<String> getCurrentAuditor() {
-        User user = getUser();
-        return user == null ? Optional.empty() : Optional.of(user.getId());
+    public static String getAuditor(User user) {
+        return user.getUsername();
     }
 
-    public static User getUser() {
+    @Override
+    public Optional<String> getCurrentAuditor() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated() || authentication instanceof AnonymousAuthenticationToken) {
-            return null;
+        if (authentication == null ||
+            !authentication.isAuthenticated() || 
+            authentication instanceof AnonymousAuthenticationToken) {
+            return Optional.empty();
         }
         try {
-            return (User) authentication.getPrincipal();
+            return Optional.ofNullable((User) authentication.getPrincipal())
+                .map(u -> getAuditor(u));
         } catch (ClassCastException e) {
             log.error("Error when cast " + authentication.getPrincipal() + " to AuthenticatedUser", e);
-            return null;
+            return Optional.empty();
         }    
     }
 }

@@ -6,6 +6,7 @@ import java.util.Set;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -61,15 +62,20 @@ public class Lesson extends FullAuditedEntity {
     private UserLevel level;
 
     /**
+     * Loại bài học
+     */
+    private LessonType type;
+
+    /**
      * Ảnh bìa
      */
     @ManyToOne
     private CloudFile coverImage;
 
-    @OneToMany(mappedBy = "lesson")
+    @OneToMany(mappedBy = "lesson", fetch = FetchType.LAZY)
     private Set<LessonHistory> lessonHistories = new HashSet<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Question> questions = new HashSet<>();
 
     public Lesson(String name, Integer diamonds, Integer experiences, UserLevel level) {

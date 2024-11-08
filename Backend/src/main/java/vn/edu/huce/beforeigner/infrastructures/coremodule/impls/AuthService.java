@@ -1,7 +1,5 @@
 package vn.edu.huce.beforeigner.infrastructures.coremodule.impls;
 
-import java.util.UUID;
-
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,7 +19,7 @@ import vn.edu.huce.beforeigner.domains.storage.CloudFileType;
 import vn.edu.huce.beforeigner.exceptions.AppException;
 import vn.edu.huce.beforeigner.exceptions.ResponseCode;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IAuthService;
-import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.ITokenService;
+import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IJwtService;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IUserTokenService;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.AuthDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.SignInDto;
@@ -38,7 +36,7 @@ public class AuthService implements IAuthService, UserDetailsService {
 
     private final IUserTokenService userTokenService;
 
-    private final ITokenService tokenService;
+    private final IJwtService tokenService;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -76,16 +74,11 @@ public class AuthService implements IAuthService, UserDetailsService {
         user.setAvatar(cloudFile);
         user.setLevel(signUpDto.getLevel());
 
-        var refreshToken = new UserToken();
-        refreshToken.setToken(generateRefreshToken());
-        refreshToken.setOwner(user.getUsername());
-        refreshToken.setType(TokenType.REFRESH);
-        userTokenRepo.save(refreshToken);
-
+        String refreshToken = userTokenService.addNew(user, TokenType.REFRESH, null);
         userRepo.save(user);
         return AuthDto.builder()
                 .access(tokenService.buildToken(user))
-                .refresh(refreshToken.getToken())
+                .refresh(refreshToken)
                 .build();
     }
 
@@ -93,9 +86,5 @@ public class AuthService implements IAuthService, UserDetailsService {
     public void signOut(User user) {
         userTokenService.expired(user);
         SecurityContextHolder.getContext().setAuthentication(null);
-    }
-
-    private String generateRefreshToken() {
-        return UUID.randomUUID().toString();
     }
 }

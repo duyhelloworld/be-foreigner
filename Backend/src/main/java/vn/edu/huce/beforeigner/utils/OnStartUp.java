@@ -1,7 +1,13 @@
 package vn.edu.huce.beforeigner.utils;
 
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -9,20 +15,36 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import vn.edu.huce.beforeigner.domains.common.UserLevel;
 import vn.edu.huce.beforeigner.domains.core.Role;
+import vn.edu.huce.beforeigner.domains.core.TokenType;
 import vn.edu.huce.beforeigner.domains.core.User;
 import vn.edu.huce.beforeigner.domains.core.repo.UserRepository;
+import vn.edu.huce.beforeigner.domains.exam.Answer;
 import vn.edu.huce.beforeigner.domains.exam.Lesson;
+import vn.edu.huce.beforeigner.domains.exam.Question;
+import vn.edu.huce.beforeigner.domains.exam.QuestionType;
 import vn.edu.huce.beforeigner.domains.exam.repo.LessonRepository;
+import vn.edu.huce.beforeigner.domains.exam.repo.QuestionRepository;
+import vn.edu.huce.beforeigner.domains.history.LessonHistory;
+import vn.edu.huce.beforeigner.domains.history.LessonStatus;
+import vn.edu.huce.beforeigner.domains.history.repo.LessonHistoryRepository;
+import vn.edu.huce.beforeigner.domains.ranking.RankedUser;
+import vn.edu.huce.beforeigner.domains.ranking.Ranking;
+import vn.edu.huce.beforeigner.domains.ranking.repo.RankingRepository;
+import vn.edu.huce.beforeigner.domains.storage.CloudFileType;
+import vn.edu.huce.beforeigner.domains.system.Sysvar;
+import vn.edu.huce.beforeigner.domains.system.SysvarKey;
+import vn.edu.huce.beforeigner.domains.system.repo.SysvarRepository;
 import vn.edu.huce.beforeigner.domains.vocab.Example;
 import vn.edu.huce.beforeigner.domains.vocab.Word;
 import vn.edu.huce.beforeigner.domains.vocab.WordType;
 import vn.edu.huce.beforeigner.domains.vocab.repo.WordRepository;
-import vn.edu.huce.beforeigner.infrastructures.storagemodule.abstracts.IImageService;
-import vn.edu.huce.beforeigner.infrastructures.storagemodule.abstracts.ISoundService;
+import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IUserTokenService;
+import vn.edu.huce.beforeigner.infrastructures.storagemodule.abstracts.ICloudFileService;
 
 @Slf4j
 @Component
@@ -31,227 +53,320 @@ public class OnStartUp implements CommandLineRunner {
 
 	private final UserRepository userRepo;
 
-	private final PasswordEncoder passwordEncoder;
+	private final SysvarRepository sysvarRepo;
 
 	private final LessonRepository lessonRepo;
 
+	private final QuestionRepository questionRepo;
+
 	private final WordRepository wordRepo;
 
-	private final ISoundService soundService;
+	private final LessonHistoryRepository lessonHistoryRepo;
 
-	private final IImageService imageService;
+	private final RankingRepository rankingRepo;
+
+	private final IUserTokenService userTokenService;
+
+	private final ICloudFileService cloudFileService;
+
+	private final PasswordEncoder passwordEncoder;
+
+	private List<User> users = new ArrayList<>();
 
 	@Override
 	public void run(String... args) throws Exception {
-		User adminUser = extractAdmin();
-
-		var token = new UsernamePasswordAuthenticationToken(adminUser, null, adminUser.getAuthorities());
-		SecurityContextHolder.getContext().setAuthentication(token);
-
-		if (wordRepo.count() < 1) {
-			Word w1 = new Word("animal", "động vật, loài vật, thú vật",
-				"['anəm(ə)l]", WordType.NOUN);
-			Example e1_1 = new Example("Our world need animal",
-			"Thế giới này cần động vật");
-			Example e1_2 = new Example("Animals are important to the ecosystem",
-			"Động vật quan trọng với hệ sinh thái");
-			w1.setExamples(Set.of(e1_1, e1_2));
-
-			Word w2 = new Word("fast", "nhanh, mau, lâu phai", 
-			"[fæst]", WordType.ADJECTIVE);
-			Example e2_1 = new Example("He runs fast", "Anh ấy chạy nhanh");
-			Example e2_2 = new Example("The car is fast", "Chiếc xe chạy nhanh");
-			w2.setExamples(Set.of(e2_1, e2_2));
-
-			Word w3 = new Word("slow", "chậm, chậm chạp, buồn chán",
-				"[sloʊ]", WordType.ADJECTIVE);
-			Example e3_1 = new Example("The snail is slow", "Con ốc sên chậm");
-			Example e3_2 = new Example("The computer is slow", "Máy tính chậm");
-			w3.setExamples(Set.of(e3_1, e3_2));
-			Word w4 = new Word("big", "to, lớn, rộng, bự", 
-				"[bɪɡ]",  WordType.ADJECTIVE);
-			Example e4_1 = new Example("The elephant is big", "Con voi to lớn");
-			Example e4_2 = new Example("The house is big", "Ngôi nhà to lớn");
-			w4.setExamples(Set.of(e4_1, e4_2));
-			
-			Word w5 = new Word("small", "nhỏ, bé, vụn vặt",
-			 "[smɔːl]", WordType.ADJECTIVE);
-			Example e5_1 = new Example("The mouse is small", "Con chuột nhỏ");
-			Example e5_2 = new Example("The book is small", "Cuốn sách nhỏ");
-			w5.setExamples(Set.of(e5_1, e5_2));
-
-			Word w6 = new Word("cute", "dễ thương, đáng yêu, có duyên",
-				"[kjuːt]",WordType.ADJECTIVE);
-			Example e6_1 = new Example("The kitten is cute", "Con mèo con đáng yêu");
-			Example e6_2 = new Example("The puppy is cute", "Con chó con đáng yêu");
-			w6.setExamples(Set.of(e6_1, e6_2));
-
-			Word w7 = new Word("scary", "đáng sợ, ghê sợ, kinh khủng", 
-			"[ˈskɛri]", WordType.ADJECTIVE);
-			Example e7_1 = new Example("The tiger is scary", "Con hổ đáng sợ");
-			Example e7_2 = new Example("The movie is scary", "Bộ phim đáng sợ");
-			w7.setExamples(Set.of(e7_1, e7_2));
-
-			Word w8 = new Word("friendly", "thân thiện, thân mật",
-			"[ˈfrɛndli]", WordType.ADJECTIVE);
-			Example e8_1 = new Example("My dog is friendly",
-			"Chó của tôi thân thiện");
-			Example e8_2 = new Example("The people here are friendly",
-			"Những người ở đây thân thiện");
-			w8.setExamples(Set.of(e8_1, e8_2));
-
-			Word w9 = new Word("wild", "hoang dã", "[waɪld]", WordType.ADJECTIVE);
-			Example e9_1 = new Example("The lion is wild", "Con sư tử hoang dã");
-			Example e9_2 = new Example("The forest is wild", "Rừng hoang dã");
-			w9.setExamples(Set.of(e9_1, e9_2));
-
-			Word w10 = new Word("children", "bọn trẻ, trẻ em", "[children]",			WordType.NOUN);
-			Example e10_1 = new Example("The children are playing", "Những đứa trẻ đang chơi");
-			Example e10_2 = new Example("The children's toys","Đồ chơi của trẻ con");
-			w10.setExamples(Set.of(e10_1, e10_2));
-
-			Word w11 = new Word("monkey", "con khỉ", "[ˈmʌŋki]",
-			WordType.NOUN);
-			Example e11_1 = new Example("The monkey is climbing a tree", "Con khỉ đang leo cây");
-			Example e11_2 = new Example("The monkey is eating a banana", "Con khỉ đang ăn chuối");
-			w11.setExamples(Set.of(e11_1, e11_2));
-
-			Word w12 = new Word("is", "là", "[ɪz]",					 WordType.VERB);
-			Example e12_1 = new Example("The cat is black", "Con mèo màu đen");
-			Example e12_2 = new Example("He is a student", "Anh ấy là một sinh viên");
-			w12.setExamples(Set.of(e12_1, e12_2));
-
-			Word w13 = new Word("and", "và", "[ænd]",
-					 WordType.CONJUNCTION);
-			Example e13_1 = new Example("I like apples and oranges", "Tôi thích táo và cam");
-			Example e13_2 = new Example("He is tall and handsome", "Anh ấy cao và đẹp trai");
-			w13.setExamples(Set.of(e13_1, e13_2));
-
-			Word w14 = new Word("like", "thích", "[laɪk]",
-					WordType.VERB);
-			Example e14_1 = new Example("I like dogs", "Tôi thích chó");
-			Example e14_2 = new Example("She likes to dance", "Cô ấy thích nhảy");
-			w14.setExamples(Set.of(e14_1, e14_2));
-
-			Word w15 = new Word("banana", "chuối", "[bəˈnɑːnə]",
-					 WordType.NOUN);
-			Example e15_1 = new Example("The monkey is eating a banana", "Con khỉ đang ăn chuối");
-			Example e15_2 = new Example("I like bananas", "Tôi thích chuối");
-			w15.setExamples(Set.of(e15_1, e15_2));
-
-			Word w16 = new Word("run", "chạy", "[rʌn]",
-					 WordType.VERB);
-			Example e16_1 = new Example("The dog is running", "Con chó đang chạy");
-			Example e16_2 = new Example("Let's run together", "Hãy cùng nhau chạy");
-			w16.setExamples(Set.of(e16_1, e16_2));
-
-			Word w17 = new Word("look", "nhìn", "[lʊk]",
-					WordType.VERB);
-			Example e17_1 = new Example("Look at the bird", "Nhìn con chim");
-			Example e17_2 = new Example("She looks beautiful", "Cô ấy trông đẹp");
-			w17.setExamples(Set.of(e17_1, e17_2));
-
-			Word w18 = new Word("so", "rất, vì vậy", "[soʊ]",
-					 WordType.CONJUNCTION);
-			Example e18_1 = new Example("He is so tall", "Anh ấy rất cao");
-			Example e18_2 = new Example("I am so tired", "Tôi rất mệt");
-			w18.setExamples(Set.of(e18_1, e18_2));
-
-			Word w19 = new Word("I", "tôi", "[aɪ]",
-			WordType.PRONOUN);
-			Example e19_1 = new Example("I am a student", "Tôi là một sinh viên");
-			Example e19_2 = new Example("I like to eat pizza", "Tôi thích ăn pizza");
-			w19.setExamples(Set.of(e19_1, e19_2));
-			
-			Word w20 = new Word("you", "bạn", "[juː]",
-					 WordType.PRONOUN);
-			Example e20_1 = new Example("You are very kind", "Bạn rất tốt bụng");
-			Example e20_2 = new Example("Can you help me?", "Bạn có thể giúp tôi không?");
-			w20.setExamples(Set.of(e20_1, e20_2));
-			
-			Word w21 = new Word("we", "chúng tôi", "[wi]",
-					WordType.PRONOUN);
-			Example e21_1 = new Example("We are friends", "Chúng tôi là bạn bè");
-			Example e21_2 = new Example("We will go to the beach tomorrow", "Chúng tôi sẽ đi biển ngày mai");
-			w21.setExamples(Set.of(e21_1, e21_2));
-			
-			Word w22 = new Word("they", "họ", "[ðeɪ]",
-					 WordType.PRONOUN);
-			Example e22_1 = new Example("They are students", "Họ là sinh viên");
-			Example e22_2 = new Example("They like to play football", "Họ thích chơi bóng đá");
-			w22.setExamples(Set.of(e22_1, e22_2));
-			
-			Word w23 = new Word("he", "anh ấy, ông ấy", "[hiː]",
-					 WordType.PRONOUN);
-			Example e23_1 = new Example("He is a doctor", "Anh ấy là một bác sĩ");
-			Example e23_2 = new Example("He likes to read books", "Anh ấy thích đọc sách");
-			w23.setExamples(Set.of(e23_1, e23_2));
-			
-			Word w24 = new Word("she", "cô ấy, bà ấy", "[ʃiː]",
-					 WordType.PRONOUN);
-			Example e24_1 = new Example("She is a teacher", "Cô ấy là một giáo viên");
-			Example e24_2 = new Example("She likes to cook", "Cô ấy thích nấu ăn");
-			w24.setExamples(Set.of(e24_1, e24_2));
-			
-			Word w25 = new Word("it", "nó", "[ɪt]",
-					 WordType.PRONOUN);
-			Example e25_1 = new Example("It is a book", "Đó là một cuốn sách");
-			Example e25_2 = new Example("It is raining", "Trời đang mưa");
-			w25.setExamples(Set.of(e25_1, e25_2));
-			
-			Word w26 = new Word("can", "có thể", "[kæn]",
-					 WordType.VERB);
-			Example e26_1 = new Example("Can you swim?", "Bạn có biết bơi không?");
-			Example e26_2 = new Example("I can speak English", "Tôi có thể nói tiếng Anh");
-			w26.setExamples(Set.of(e26_1, e26_2));
-			
-			Word w27 = new Word("dog", "con chó", "[dɒɡ]",
-					 WordType.NOUN);
-			Example e27_1 = new Example("The dog is barking", "Con chó đang sủa");
-			Example e27_2 = new Example("I have a dog", "Tôi có một con chó");
-			w27.setExamples(Set.of(e27_1, e27_2));
-			
-			Word w28 = new Word("cat", "con mèo", "[kæt]",
-					 WordType.NOUN);
-			Example e28_1 = new Example("The cat is sleeping", "Con mèo đang ngủ");
-			Example e28_2 = new Example("I like cats", "Tôi thích mèo");
-			w28.setExamples(Set.of(e28_1, e28_2));
-
-			Word w29 = new Word("a", "một", "[ə]",
-			WordType.INDEFINITE_ARTICLE);
-			Word w30 = new Word("an", "một", "[æn]",
-			 WordType.INDEFINITE_ARTICLE);
-			Word w31 = new Word("the", "cái, những", "[ðə]",
-			 WordType.DEFINITE_ARTICLE);
-
-			var words = List.of(w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12, w13, w14, w15, w16, w17, w18, w19, w20, w21, w22, w23, w24, w25, w26, w27, w28, w29, w30, w31);
-			for (Word word : words) {
-				word.setAudio(soundService.getAndSaveWordAudio(word.getValue()));
-				word.setImage(imageService.getAndSaveWordImage(word.getValue()));
-			}
-			wordRepo.saveAll(words);
-			log.info("Saved 10 word");
-
-			Lesson l1 = new Lesson("Bài học các từ vựng cơ bản", 20, 5, UserLevel.BEGINNER);		
-			Lesson l2 = new Lesson("Bài học các đại từ nhân xưng", 20, 8, UserLevel.BEGINNER);
-			lessonRepo.saveAll(List.of(l1, l2));
-		}
-	}
-
-	private User extractAdmin() {
-		String adminUsername = "admin";
 		if (userRepo.count() < 1) {
-			String encodedPass = passwordEncoder.encode("1234");
-			User adminUser = new User(adminUsername, "Chủ thớt", "admin@gmail.com", encodedPass);
-			adminUser.setRole(Role.ADMIN);
-			User user = new User("duyhelloworld", "Duy Pham", "duy0184466@huce.edu.vn", adminUser.getPassword());
-			userRepo.saveAll(List.of(adminUser, user));
-			log.info("Saved user : {}", user.getUsername());
-			log.info("Saved admin account '{}' success", adminUser.getUsername());
-			return adminUser;
-		} else {
-			return userRepo.findByUsername(adminUsername).get();
+			initializeUsers();
+			audit(users.get(0));
+			var lessons = initializeLessons();
+			initializeLessonHistory(lessons);
+			initializeWords();
+			initializeSysvars();
+			initRanking(UserLevel.BEGINNER);
+			initRanking(UserLevel.MEDIUM);
 		}
 	}
 
+	private void initializeUsers() {
+		String adminUsername = "admin";
+		String encodedPass = passwordEncoder.encode("1234");
+		User adminUser = new User(adminUsername, "Chủ thớt", "admin@gmail.com", encodedPass);
+		adminUser.setRole(Role.ADMIN);
+		User user1 = new User("duyhelloworld", "Duy Pham", "duy0184466@huce.edu.vn", encodedPass);
+		User user2 = new User("plus", "Khách VIP", "khachvip@huce.edu.vn", encodedPass);
+		User user3 = new User("nguyenan", "Nguyễn An", "nguyenan@gmail.com", encodedPass);
+		User user4 = new User("tranbinh", "Trần Bình", "tranbinh@yahoo.com", encodedPass);
+		User user5 = new User("lechau", "Lê Châu", "lechau@outlook.com", encodedPass);
+		User user6 = new User("phamduy", "Phạm Duy", "phamduy@huce.edu.vn", encodedPass);
+		User user7 = new User("vuhoang", "Vũ Hoàng", "vuhoang@mail.com", encodedPass);
+		User user8 = new User("tranlinh", "Trần Linh", "tranlinh@protonmail.com", encodedPass);
+		User user9 = new User("nguyenminh", "Nguyễn Minh", "nguyenminh@icloud.com", encodedPass);
+		User user10 = new User("phanngoc", "Phan Ngọc", "phanngoc@hotmail.com", encodedPass);
+		User user11 = new User("nguyenhuong", "Nguyễn Hương", "nguyenhuong@zoho.com", encodedPass);
+		User user12 = new User("truongtuan", "Trương Tuấn", "truongtuan@gmail.com", encodedPass);
+		User user13 = new User("dangngoc", "Đặng Ngọc", "dangngoc@outlook.com", encodedPass);
+		User user14 = new User("hoangyen", "Hoàng Yến", "hoangyen@icloud.com", encodedPass);
+		User user15 = new User("dinhhung", "Đinh Hùng", "dinhhung@mail.com", encodedPass);
+		User user16 = new User("kimthoa", "Kim Thoa", "kimthoa@yahoo.com", encodedPass);
+		User user17 = new User("ngothang", "Ngô Thắng", "ngothang@aol.com", encodedPass);
+		User user18 = new User("phamthuy", "Phạm Thủy", "phamthuy@protonmail.com", encodedPass);
+		User user19 = new User("lelong", "Lê Long", "lelong@gmail.com", encodedPass);
+		User user20 = new User("buiha", "Bùi Hà", "buiha@live.com", encodedPass);
+		this.users.addAll(List.of(adminUser, user1, user2, user3, user4, user5, user6, user7, user8, user9, user10, user11,
+				user12, user13, user14, user15, user16, user17, user18, user19, user20));
+		userRepo.saveAll(users);
+		for (User user : users) {
+			userTokenService.addNew(user, TokenType.REFRESH, null);
+		}
+		log.info("Saved admin account '{}'", adminUser.getUsername());
+		log.info("Saved user : {}", users.stream().map(u -> u.getUsername()).toList());
+	}
+
+	private void audit(User user) {
+		var token = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+		SecurityContextHolder.getContext().setAuthentication(token);
+	}
+
+	private void initializeLessonHistory(Lesson[] lessons) {
+		lessonHistoryRepo.saveAll(
+				Stream.concat(
+						users.subList(0, users.size() / 2 - 1).stream()
+								.map(u -> createLessonHistory(lessons[0], LessonStatus.ONGOING, u)),
+						users.subList(users.size() / 2, users.size() - 1).stream()
+								.map(u -> createLessonHistory(lessons[1], LessonStatus.COMPLETED, u)))
+						.collect(Collectors.toList()));
+	}
+
+	private LessonHistory createLessonHistory(Lesson lesson, LessonStatus status, User user) {
+		LessonHistory lessonHistory = new LessonHistory();
+		lessonHistory.setOwner(user.getId());
+		lessonHistory.setLesson(lesson);
+		lessonHistory.setStatus(status);
+		return lessonHistory;
+	}
+
+	private void initRanking(UserLevel level) {
+		audit(users.get(0));
+		Ranking ranking = new Ranking();
+		ranking.setLevel(level);
+		for (int i = 0; i < users.size(); i++) {
+			var user = users.get(i);
+			if (user.getLevel() == level) {
+				ranking.getRankedUsers()
+				.add(new RankedUser(i + 1, 
+					(long) users.get(i).getDiamonds() + i,
+					users.get(i).getId()));
+			}
+		}
+		rankingRepo.save(ranking);
+	}
+
+	private void initializeWords() {
+		List<Word> words = List.of(
+				createWord("animal", "động vật", "['anəm(ə)l]", WordType.NOUN, "Our world needs animals",
+						"Thế giới này cần động vật", "Animals are important to the ecosystem",
+						"Động vật quan trọng với hệ sinh thái"),
+				createWord("fast", "nhanh", "[fæst]", WordType.ADJECTIVE, "He runs fast", "Anh ấy chạy nhanh",
+						"The car is fast", "Chiếc xe chạy nhanh"),
+				createWord("slow", "chậm", "[sloʊ]", WordType.ADJECTIVE, "The snail is slow", "Con ốc sên chậm",
+						"The computer is slow", "Máy tính chậm"),
+				createWord("big", "lớn", "[bɪɡ]", WordType.ADJECTIVE, "The elephant is big", "Con voi to lớn",
+						"The house is big", "Ngôi nhà to lớn"),
+				createWord("small", "nhỏ", "[smɔːl]", WordType.ADJECTIVE, "The mouse is small", "Con chuột nhỏ",
+						"The book is small", "Cuốn sách nhỏ"),
+				createWord("cute", "dễ thương", "[kjuːt]", WordType.ADJECTIVE, "The kitten is cute",
+						"Con mèo con đáng yêu", "The puppy is cute", "Con chó con đáng yêu"),
+				createWord("scary", "đáng sợ", "[ˈskɛri]", WordType.ADJECTIVE, "The tiger is scary", "Con hổ đáng sợ",
+						"The movie is scary", "Bộ phim đáng sợ"),
+				createWord("friendly", "thân thiện", "[ˈfrɛndli]", WordType.ADJECTIVE, "My dog is friendly",
+						"Chó của tôi thân thiện", "The people here are friendly", "Những người ở đây thân thiện"),
+				createWord("wild", "hoang dã", "[waɪld]", WordType.ADJECTIVE, "The lion is wild", "Con sư tử hoang dã",
+						"The forest is wild", "Rừng hoang dã"),
+				createWord("children", "bọn trẻ", "[children]", WordType.NOUN, "The children are playing",
+						"Những đứa trẻ đang chơi", "The children's toys", "Đồ chơi của trẻ con"),
+				createWord("monkey", "con khỉ", "[ˈmʌŋki]", WordType.NOUN, "The monkey is climbing a tree",
+						"Con khỉ đang leo cây", "The monkey is eating a banana", "Con khỉ đang ăn chuối"),
+				createWord("is", "là", "[ɪz]", WordType.VERB, "The cat is black", "Con mèo màu đen", "He is a student",
+						"Anh ấy là một sinh viên"),
+				createWord("and", "và", "[ænd]", WordType.CONJUNCTION, "I like apples and oranges",
+						"Tôi thích táo và cam", "He is tall and handsome", "Anh ấy cao và đẹp trai"),
+				createWord("like", "thích", "[laɪk]", WordType.VERB, "I like dogs", "Tôi thích chó",
+						"She likes to dance", "Cô ấy thích nhảy"),
+				createWord("banana", "chuối", "[bəˈnɑːnə]", WordType.NOUN, "The monkey is eating a banana",
+						"Con khỉ đang ăn chuối", "I like bananas", "Tôi thích chuối"),
+				createWord("run", "chạy", "[rʌn]", WordType.VERB, "The dog is running", "Con chó đang chạy",
+						"Let's run together", "Hãy cùng nhau chạy"),
+				createWord("look", "nhìn", "[lʊk]", WordType.VERB, "Look at the bird", "Nhìn con chim",
+						"She looks beautiful", "Cô ấy trông đẹp"),
+				createWord("so", "rất, vì vậy", "[soʊ]", WordType.CONJUNCTION, "He is so tall", "Anh ấy rất cao",
+						"I am so tired", "Tôi rất mệt"),
+				createWord("I", "tôi", "[aɪ]", WordType.PRONOUN, "I am a student", "Tôi là một sinh viên",
+						"I like to eat pizza", "Tôi thích ăn pizza"),
+				createWord("you", "bạn", "[juː]", WordType.PRONOUN, "You are very kind", "Bạn rất tốt bụng",
+						"Can you help me?", "Bạn có thể giúp tôi không?"));
+
+		for (Word word : words) {
+			word.setAudio(cloudFileService.saveAndGet(CloudFileType.WORD_AUDIO, word.getValue()));
+			word.setImage(cloudFileService.saveAndGet(CloudFileType.WORD_IMAGE, word.getValue()));
+		}
+		wordRepo.saveAll(words);
+		log.info("Saved {} words", words.size());
+	}
+
+	private Word createWord(String value, String meaning, String pronunciation, WordType type, String example1,
+			String translation1, String example2, String translation2) {
+		Word word = new Word(value, meaning, pronunciation, type);
+		word.setExamples(Set.of(new Example(example1, translation1), new Example(example2, translation2)));
+		return word;
+	}
+
+	private void initializeSysvars() {
+		List<Sysvar> sysvars = List.of(
+				new Sysvar(SysvarKey.DIAMONDS_PER_RETRY, "100"),
+				new Sysvar(SysvarKey.DIAMOND_PER_VND, "1"),
+				new Sysvar(SysvarKey.RETRY_PER_DAY, "5"));
+		sysvarRepo.saveAll(sysvars);
+		log.info("Saved 3 sysvars");
+	}
+
+	private Lesson[] initializeLessons() {
+		Lesson beginnerLesson1 = new Lesson("Kiểm tra level", 20, 5, UserLevel.BEGINNER);
+		Question question1ForLesson1 = new Question(QuestionType.GIVE_MEAN_CHOOSE_WORD);
+
+		Answer answerCorrect1ForQ1L1 = new Answer("run", cloudFileService.getUrl(CloudFileType.WORD_AUDIO, "run"),
+				cloudFileService.getUrl(CloudFileType.WORD_IMAGE, "run"), true);
+		Answer answerIncorrect1ForQ1L1 = new Answer("like", cloudFileService.getUrl(CloudFileType.WORD_AUDIO, "like"),
+				cloudFileService.getUrl(CloudFileType.WORD_IMAGE, "like"), false);
+		Answer answerIncorrect2ForQ1L1 = new Answer("wild", cloudFileService.getUrl(CloudFileType.WORD_AUDIO, "wild"),
+				cloudFileService.getUrl(CloudFileType.WORD_IMAGE, "wild"), false);
+		Answer answerIncorrect3ForQ1L1 = new Answer("scary", cloudFileService.getUrl(CloudFileType.WORD_AUDIO, "scary"),
+				cloudFileService.getUrl(CloudFileType.WORD_IMAGE, "scary"), false);
+
+		answerCorrect1ForQ1L1.setQuestion(question1ForLesson1);
+		answerIncorrect1ForQ1L1.setQuestion(question1ForLesson1);
+		answerIncorrect2ForQ1L1.setQuestion(question1ForLesson1);
+		answerIncorrect3ForQ1L1.setQuestion(question1ForLesson1);
+		question1ForLesson1.setAnswers(Set.of(answerCorrect1ForQ1L1, answerIncorrect1ForQ1L1, answerIncorrect2ForQ1L1,
+				answerIncorrect3ForQ1L1));
+
+		Question question2ForLesson1 = new Question(QuestionType.GIVE_AUDIO_CHOOSE_WORD);
+		Answer answerCorrect1ForQ2L1 = new Answer("run", cloudFileService.getUrl(CloudFileType.WORD_AUDIO, "run"),
+				cloudFileService.getUrl(CloudFileType.WORD_IMAGE, "run"), true);
+		Answer answerIncorrect1ForQ2L1 = new Answer("like", cloudFileService.getUrl(CloudFileType.WORD_AUDIO, "run"),
+				cloudFileService.getUrl(CloudFileType.WORD_IMAGE, "like"), false);
+		Answer answerIncorrect2ForQ2L1 = new Answer("wild", cloudFileService.getUrl(CloudFileType.WORD_AUDIO, "run"),
+				cloudFileService.getUrl(CloudFileType.WORD_IMAGE, "wild"), false);
+		Answer answerIncorrect3ForQ2L1 = new Answer("scary", cloudFileService.getUrl(CloudFileType.WORD_AUDIO, "run"),
+				cloudFileService.getUrl(CloudFileType.WORD_IMAGE, "scary"), false);
+
+		answerCorrect1ForQ2L1.setQuestion(question2ForLesson1);
+		answerIncorrect1ForQ2L1.setQuestion(question2ForLesson1);
+		answerIncorrect2ForQ2L1.setQuestion(question2ForLesson1);
+		answerIncorrect3ForQ2L1.setQuestion(question2ForLesson1);
+		question2ForLesson1.setAnswers(Set.of(answerCorrect1ForQ2L1, answerIncorrect1ForQ2L1, answerIncorrect2ForQ2L1,
+				answerIncorrect3ForQ2L1));
+
+		Question question3ForLesson1 = new Question(QuestionType.MATCHING);
+		Map<String, String> matchingPairsForQ3L1 = new HashMap<>();
+		matchingPairsForQ3L1.put("I", "tôi");
+		matchingPairsForQ3L1.put("like", "thích");
+		matchingPairsForQ3L1.put("friendly", "thân thiện");
+		matchingPairsForQ3L1.put("animal", "động vật");
+		question3ForLesson1.setMatching(LessonUtil.encode(matchingPairsForQ3L1));
+
+		Question question4ForLesson1 = new Question(QuestionType.GIVE_SENTENSE_REARRANGE_WORDS);
+		question4ForLesson1.setSentenseMeaning("Tôi thích động vật hoang dã");
+		question4ForLesson1.setSentenseWords("I like wild animal");
+
+		Question question5ForLesson1 = new Question(QuestionType.GIVE_SENTENSE_REARRANGE_WORDS);
+		question5ForLesson1.setSentenseMeaning("Tôi thích động vật hoang dã");
+		question5ForLesson1.setSentenseWords("I like wild animal");
+		question5ForLesson1.setUnrelatedWords("friendly run that");
+
+		Question question6ForLesson1 = new Question(QuestionType.GIVE_AUDIO_REARRANGE_WORDS);
+		question6ForLesson1.setSentenseAudio("https://tatoeba.org/en/audio/download/1110206");
+		question6ForLesson1.setSentenseWords("I like animals");
+
+		Question question7ForLesson1 = new Question(QuestionType.GIVE_AUDIO_REARRANGE_WORDS);
+		question7ForLesson1.setSentenseAudio("https://tatoeba.org/en/audio/download/1110206");
+		question7ForLesson1.setSentenseWords("I like animals");
+		question7ForLesson1.setUnrelatedWords("friendly run that");
+
+		var questionsForLesson1 = Set.of(question1ForLesson1, question2ForLesson1, question3ForLesson1,
+				question4ForLesson1, question5ForLesson1, question6ForLesson1, question7ForLesson1);
+		questionRepo.saveAll(questionsForLesson1);
+		beginnerLesson1.setQuestions(questionsForLesson1);
+		// Lesson 1
+
+		Lesson beginnerLesson2 = new Lesson("Các đại từ nhân xưng", 20, 8, UserLevel.BEGINNER);
+
+		Question question1ForLesson2 = new Question(QuestionType.GIVE_MEAN_CHOOSE_WORD);
+		Answer answerCorrect1ForQ1L2 = new Answer("I", cloudFileService.getUrl(CloudFileType.WORD_AUDIO, "I"),
+				cloudFileService.getUrl(CloudFileType.WORD_IMAGE, "I"), true);
+		Answer answerIncorrect1ForQ1L2 = new Answer("you", cloudFileService.getUrl(CloudFileType.WORD_AUDIO, "you"),
+				cloudFileService.getUrl(CloudFileType.WORD_IMAGE, "you"), false);
+		Answer answerIncorrect2ForQ1L2 = new Answer("he", cloudFileService.getUrl(CloudFileType.WORD_AUDIO, "he"),
+				cloudFileService.getUrl(CloudFileType.WORD_IMAGE, "he"), false);
+		Answer answerIncorrect3ForQ1L2 = new Answer("she", cloudFileService.getUrl(CloudFileType.WORD_AUDIO, "she"),
+				cloudFileService.getUrl(CloudFileType.WORD_IMAGE, "she"), false);
+
+		answerCorrect1ForQ1L2.setQuestion(question1ForLesson2);
+		answerIncorrect1ForQ1L2.setQuestion(question1ForLesson2);
+		answerIncorrect2ForQ1L2.setQuestion(question1ForLesson2);
+		answerIncorrect3ForQ1L2.setQuestion(question1ForLesson2);
+		question1ForLesson2.setAnswers(Set.of(answerCorrect1ForQ1L2, answerIncorrect1ForQ1L2, answerIncorrect2ForQ1L2,
+				answerIncorrect3ForQ1L2));
+
+		Question question2ForLesson2 = new Question(QuestionType.GIVE_AUDIO_CHOOSE_WORD);
+		Answer answerCorrect1ForQ2L2 = new Answer("I", cloudFileService.getUrl(CloudFileType.WORD_AUDIO, "I"),
+				cloudFileService.getUrl(CloudFileType.WORD_IMAGE, "I"), true);
+		Answer answerIncorrect1ForQ2L2 = new Answer("you", cloudFileService.getUrl(CloudFileType.WORD_AUDIO, "you"),
+				cloudFileService.getUrl(CloudFileType.WORD_IMAGE, "you"), false);
+		Answer answerIncorrect2ForQ2L2 = new Answer("he", cloudFileService.getUrl(CloudFileType.WORD_AUDIO, "he"),
+				cloudFileService.getUrl(CloudFileType.WORD_IMAGE, "he"), false);
+		Answer answerIncorrect3ForQ2L2 = new Answer("she", cloudFileService.getUrl(CloudFileType.WORD_AUDIO, "she"),
+				cloudFileService.getUrl(CloudFileType.WORD_IMAGE, "she"), false);
+
+		answerCorrect1ForQ2L2.setQuestion(question2ForLesson2);
+		answerIncorrect1ForQ2L2.setQuestion(question2ForLesson2);
+		answerIncorrect2ForQ2L2.setQuestion(question2ForLesson2);
+		answerIncorrect3ForQ2L2.setQuestion(question2ForLesson2);
+		question2ForLesson2.setAnswers(Set.of(answerCorrect1ForQ2L2, answerIncorrect1ForQ2L2, answerIncorrect2ForQ2L2,
+				answerIncorrect3ForQ2L2));
+
+		Question question3ForLesson2 = new Question(QuestionType.MATCHING);
+		Map<String, String> matchingPairsForQ3L2 = new HashMap<>();
+		matchingPairsForQ3L2.put("I", "tôi");
+		matchingPairsForQ3L2.put("you", "bạn");
+		matchingPairsForQ3L2.put("he", "anh ấy");
+		matchingPairsForQ3L2.put("she", "cô ấy");
+		question3ForLesson2.setMatching(LessonUtil.encode(matchingPairsForQ3L2));
+
+		Question question4ForLesson2 = new Question(QuestionType.GIVE_SENTENSE_REARRANGE_WORDS);
+		question4ForLesson2.setSentenseMeaning("Anh ấy rất thân thiện");
+		question4ForLesson2.setSentenseWords("He is very friendly");
+
+		Question question5ForLesson2 = new Question(QuestionType.GIVE_SENTENSE_REARRANGE_WORDS);
+		question5ForLesson2.setSentenseMeaning("Cô ấy thích bạn");
+		question5ForLesson2.setSentenseWords("She likes you");
+		question5ForLesson2.setUnrelatedWords("run eat big");
+
+		Question question6ForLesson2 = new Question(QuestionType.GIVE_AUDIO_REARRANGE_WORDS);
+		question6ForLesson2.setSentenseAudio("https://tatoeba.org/en/audio/download/1000202");
+		question6ForLesson2.setSentenseWords("They are students");
+
+		Question question7ForLesson2 = new Question(QuestionType.GIVE_AUDIO_REARRANGE_WORDS);
+		question7ForLesson2.setSentenseAudio("https://tatoeba.org/en/audio/download/1000202");
+		question7ForLesson2.setSentenseWords("They are students");
+		question7ForLesson2.setUnrelatedWords("fast slow big");
+
+		var questionsForLesson2 = Set.of(question1ForLesson2, question2ForLesson2, question3ForLesson2,
+				question4ForLesson2, question5ForLesson2, question6ForLesson2, question7ForLesson2);
+		questionRepo.saveAll(questionsForLesson2);
+		beginnerLesson2.setQuestions(questionsForLesson2);
+		var result = new Lesson[] { beginnerLesson1, beginnerLesson2 };
+		lessonRepo.saveAll(Arrays.asList(result));
+		log.info("Saved lessons : {}", result.toString());
+		return result;
+	}
 }

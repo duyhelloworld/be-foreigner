@@ -4,6 +4,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,9 +31,10 @@ public class Ranking extends FullAuditedEntity {
     /**
      * Cấp độ người dùng
      */
+    @Enumerated(EnumType.STRING)
     private UserLevel level;
 
-    @OneToMany(mappedBy = "ranking")
+    @OneToMany(mappedBy = "ranking", fetch = FetchType.LAZY)
     private Set<RankedUser> rankedUsers = new HashSet<>();
 
 }

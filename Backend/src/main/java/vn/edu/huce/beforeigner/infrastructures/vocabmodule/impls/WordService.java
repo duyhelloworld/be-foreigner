@@ -17,7 +17,6 @@ import vn.edu.huce.beforeigner.domains.vocab.repo.WordRepository;
 import vn.edu.huce.beforeigner.exceptions.AppException;
 import vn.edu.huce.beforeigner.exceptions.ResponseCode;
 import vn.edu.huce.beforeigner.infrastructures.storagemodule.abstracts.ICloudFileService;
-import vn.edu.huce.beforeigner.infrastructures.storagemodule.abstracts.ISoundService;
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.abstracts.IWordService;
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.dtos.WordDto;
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.dtos.creatation.CreateExampleDto;
@@ -39,7 +38,7 @@ public class WordService implements IWordService {
 
     private final ICloudFileService imageService;
 
-    private final ISoundService soundService;
+    private final ICloudFileService cloudFileService;
 
     @Override
     public PagingResult<WordDto> getAll(PagingRequest pagingRequest) {
@@ -57,7 +56,7 @@ public class WordService implements IWordService {
     public void addNew(CreateWordDto createWordDto) {
         
         Word word = new Word();
-        word.setAudio(soundService.getAndSaveWordAudio(createWordDto.getValue()));
+        word.setAudio(cloudFileService.saveAndGet(CloudFileType.VOICE_AUDIO, createWordDto.getValue()));
 
         if (createWordDto.getImage() != null) {
             CloudFile response = imageService.save(createWordDto.getImage(), CloudFileType.WORD_IMAGE);

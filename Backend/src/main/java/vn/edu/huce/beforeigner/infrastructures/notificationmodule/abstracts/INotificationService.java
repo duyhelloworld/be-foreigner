@@ -7,5 +7,6 @@ public interface INotificationService {
     
     void remind(LearnRemindDto learnReminderDto, User targetUser);
 
+    void test(String token);
     
 }

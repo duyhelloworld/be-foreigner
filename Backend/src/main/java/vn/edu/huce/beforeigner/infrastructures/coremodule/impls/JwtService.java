@@ -18,14 +18,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import vn.edu.huce.beforeigner.domains.core.ClaimTypes;
 import vn.edu.huce.beforeigner.domains.core.User;
-import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.ITokenService;
+import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IJwtService;
 import vn.edu.huce.beforeigner.utils.DatetimeUtils;
 
 @Slf4j
 @Service
-public class TokenService implements ITokenService {
-    
-    @Value("${application.auth.jwt.issuer}")    
+public class JwtService implements IJwtService {
+
+    @Value("${application.auth.jwt.issuer}")
     private String issuer;
 
     @Value("${application.auth.jwt.expire-duration}")
@@ -40,26 +40,28 @@ public class TokenService implements ITokenService {
         return Jwts.builder()
                 .claim(ClaimTypes.USERNAME.name(), user.getUsername())
                 .claim(ClaimTypes.EMAIL.name(), user.getEmail())
-                .claim(ClaimTypes.ROLE.name(), user.getRole())
+                .claim(ClaimTypes.USERID.name(), user.getId())
                 .issuer(issuer)
+                .issuedAt(DatetimeUtils.getDate(now))
+                .expiration(DatetimeUtils.getDate(now.plus(expireDuration)))
                 .signWith(getKey(), Jwts.SIG.HS256)
-                .issuedAt(DatetimeUtils.getJavaSqlDate(now))
-                .expiration(DatetimeUtils.getJavaSqlDate(now.plus(expireDuration)))
-                .compact(); 
+                .compact();
     }
 
     @Override
     public String getToken(HttpServletRequest request) {
-        String header = request.getHeader("Authentication");
+        String header = request.getHeader("Authorization");
         if (StringUtils.hasText(header) && header.contains("Bearer ")) {
-            String token = header.substring(7);
-            return token;
+            return header.substring(7);
         }
         return null;
     }
 
     @Override
     public boolean isValidToken(String token) {
+        if (token == null) {
+            return false;
+        }
         try {
             getParser().parseSignedClaims(token);
             return true;
@@ -76,18 +78,18 @@ public class TokenService implements ITokenService {
     @Override
     public String extractUsername(String token) {
         return getParser().parseSignedClaims(token)
-            .getPayload().get(ClaimTypes.USERNAME.name(), String.class);
+                .getPayload().get(ClaimTypes.USERNAME.name(), String.class);
     }
 
     private SecretKey getKey() {
         return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
-    
+
     private JwtParser getParser() {
         return Jwts
-            .parser()
-            .verifyWith(getKey())
-            .requireIssuer(issuer)
-            .build();
+                .parser()
+                .verifyWith(getKey())
+                .requireIssuer(issuer)
+                .build();
     }
 }

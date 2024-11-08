@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import lombok.AllArgsConstructor;
 import vn.edu.huce.beforeigner.domains.exam.Lesson;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.LessonDetailDto;
-import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.LessonDto;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.questions.QuestionDto;
 
 @Component
@@ -20,15 +19,6 @@ public class LessonMapper {
             .diamonds(lesson.getDiamonds())
             .experiences(lesson.getExperiences())
             .questions(questionDtos)
-            .build();
-    }
-
-    public LessonDto toDto(Lesson lesson) {
-        return LessonDto.builder()
-            .cover(lesson.getCoverImage().getUrl())
-            .name(lesson.getName())
-            .id(lesson.getId())
-            .totalQuestion(lesson.getQuestions().size())
             .build();
     }
 }

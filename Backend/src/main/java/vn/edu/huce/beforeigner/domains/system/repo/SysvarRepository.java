@@ -11,5 +11,5 @@ import java.util.Optional;
 @Repository
 public interface SysvarRepository extends JpaRepository<Sysvar, Integer> {
 
-    Optional<Sysvar> findByKey(SysvarKey key);
+    Optional<Sysvar> findBySysvarKey(SysvarKey key);
 }

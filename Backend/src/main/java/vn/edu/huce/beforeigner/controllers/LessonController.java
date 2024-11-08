@@ -21,10 +21,10 @@ public class LessonController {
     private final ILessonService lessonService;
 
     @IsUser
-    @GetMapping("examine/{id}")
+    @GetMapping("exam/{id}")
     public LessonDetailDto examine(
         @AuthenticationPrincipal User user,
-        @PathVariable(required = false) Integer id) {
+        @PathVariable Integer id) {
             return lessonService.examine(id, user);
     }
 

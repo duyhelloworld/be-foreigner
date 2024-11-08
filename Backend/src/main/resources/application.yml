@@ -6,12 +6,6 @@ spring:
     username: be-foreigner
     password: password
 
-  profiles:
-    active:
-    - dev
-    - prod
-    default: dev
-  
   jpa:
     open-in-view: false
     show-sql: false
@@ -26,6 +20,11 @@ spring:
     ansi:
       enabled: always
 
+  sql:
+    init:
+      mode:  always
+      encoding: UTF-8
+      
 application:
   notification:
     app-icon: https://res.cloudinary.com/dqzwh7zvo/image/upload/v1726656428/be-foreigner-icon.png

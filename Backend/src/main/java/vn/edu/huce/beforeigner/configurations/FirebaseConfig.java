@@ -23,29 +23,20 @@ public class FirebaseConfig {
         GoogleCredentials credentials = null;
         try {
             var classPath = new ClassPathResource("firebase-service-account.json");
-            credentials = classPath != null 
-                ? GoogleCredentials.fromStream(classPath.getInputStream())
-                : GoogleCredentials.getApplicationDefault();
+            credentials = GoogleCredentials.fromStream(classPath.getInputStream());
+            FirebaseOptions options = FirebaseOptions.builder()
+                    .setCredentials(credentials)
+                    .build();
+            return FirebaseApp.initializeApp(options, "be-foreigner");
         } catch (IOException e) {
             // Not file key exist / Docker env config
             log.error("Error when load firebase : {}", e.getMessage());
             return null;
         }
-
-        FirebaseOptions options = FirebaseOptions.builder()
-                .setCredentials(credentials)
-                .build();
-        return FirebaseApp.initializeApp(options, "be-foreigner");
     }
 
     @Bean
     FirebaseMessaging firebaseMessaging() {
         return FirebaseMessaging.getInstance(firebaseApp());
     }
-
-    // @Bean
-    // FirebaseDatabase firebaseDatabase() {
-    //     return FirebaseDatabase.getInstance(firebaseApp());
-    // }
-
 }

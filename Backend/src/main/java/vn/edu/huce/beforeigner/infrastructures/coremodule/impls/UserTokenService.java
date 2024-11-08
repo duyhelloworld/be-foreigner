@@ -1,6 +1,7 @@
 package vn.edu.huce.beforeigner.infrastructures.coremodule.impls;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
@@ -11,7 +12,7 @@ import vn.edu.huce.beforeigner.domains.core.User;
 import vn.edu.huce.beforeigner.domains.core.repo.UserTokenRepository;
 import vn.edu.huce.beforeigner.exceptions.AppException;
 import vn.edu.huce.beforeigner.exceptions.ResponseCode;
-import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.ITokenService;
+import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IJwtService;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IUserTokenService;
 
 @Service
@@ -20,7 +21,7 @@ public class UserTokenService implements IUserTokenService {
 
     private final UserTokenRepository userTokenRepo;
 
-    private final ITokenService tokenService;
+    private final IJwtService tokenService;
 
     @Override
     public boolean isValid(String token) {
@@ -29,11 +30,17 @@ public class UserTokenService implements IUserTokenService {
     }
 
     @Override
-    public void addNew(String token, User user) {
+    public String addNew(User user, TokenType type, String token) {
         UserToken userToken = new UserToken();
-        userToken.setToken(token);
+        if (type == TokenType.REFRESH) {
+            userToken.setToken(generateRefreshToken());
+        } else {
+            userToken.setToken(token);
+        }
         userToken.setOwner(user.getUsername());
+        userToken.setType(type);
         userTokenRepo.save(userToken);
+        return userToken.getToken();
     }
 
     @Override
@@ -55,4 +62,7 @@ public class UserTokenService implements IUserTokenService {
         return tokenService.buildToken(user);
     }
 
+    public String generateRefreshToken() {
+        return UUID.randomUUID().toString();
+    }
 }

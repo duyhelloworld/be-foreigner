@@ -22,16 +22,18 @@ public class GlobalExceptionHandler {
         log.error("Throwed a {} with message : '{}'", ex.getClass().getSimpleName(), ex.getMessage());
         
         ErrorResponse response = new ErrorResponse();
-        ResponseCode responseCode = ResponseCode.UNEXPECTED_ERROR;
-
+        response.setErrorCode(ResponseCode.UNEXPECTED_ERROR.getCode());
+        
         // Custom Exception đã định nghĩa
         if (ex instanceof AppException appEx) {
-            responseCode = appEx.getResponseCode();
+            response.setErrorCode(appEx.getResponseCode().getCode());
+            response.setMessages(appEx.getResponseCode().getMessage());
         }
         
         // Security
-        if (ex instanceof AccessDeniedException) {
-            responseCode = ResponseCode.FORBIDDEN;
+        if (ex instanceof AccessDeniedException accessDeniedException) {
+            response.setErrorCode(ResponseCode.FORBIDDEN.getCode());
+            response.setMessages(accessDeniedException.getMessage());
         }
 
         // @Valid
@@ -45,7 +47,7 @@ public class GlobalExceptionHandler {
                 .body(response);
             } catch (IllegalArgumentException e) {
                 log.error("Invalid key : {}", e.getMessage());
-                responseCode = ResponseCode.UNEXPECTED_ERROR;
+                response.setErrorCode(ResponseCode.UNEXPECTED_ERROR.getCode());
             }
         }
 
@@ -53,8 +55,6 @@ public class GlobalExceptionHandler {
         if (ex instanceof FileNotFoundException || ex instanceof NoResourceFoundException) {
             response.setMessages(ex.getMessage());
         }
-
-        response.setErrorCode(responseCode.getCode());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(response);
     }

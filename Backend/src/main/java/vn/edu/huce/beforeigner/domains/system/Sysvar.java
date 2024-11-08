@@ -10,10 +10,12 @@ import jakarta.persistence.Id;
 import lombok.Setter;
 import vn.edu.huce.beforeigner.domains.base.FullAuditedEntity;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 public class Sysvar extends FullAuditedEntity {
     
     @Id
@@ -22,8 +24,13 @@ public class Sysvar extends FullAuditedEntity {
 
     @Column(unique = true)
     @Enumerated(EnumType.STRING)
-    private SysvarKey key;
+    private SysvarKey sysvarKey;
     
     @Column(nullable = false)
-    private String value;
+    private String sysvarValue;
+
+    public Sysvar(SysvarKey sysvarKey, String sysvarValue) {
+        this.sysvarKey = sysvarKey;
+        this.sysvarValue = sysvarValue;
+    }
 }

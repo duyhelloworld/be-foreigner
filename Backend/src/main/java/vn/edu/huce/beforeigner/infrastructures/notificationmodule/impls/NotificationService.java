@@ -57,4 +57,21 @@ public class NotificationService implements INotificationService {
                     e.getMessage());
         }
     }
+
+    @Override
+    public void test(String token) {
+        try {
+            firebaseMessaging.send(Message.builder()
+            .setToken(token)
+            .setNotification(Notification.builder()
+                .setTitle("Be Foreigner")
+                .setBody("Hê nhô xin chào bạn nhớ")
+                .setImage("https://res.cloudinary.com/dqzwh7zvo/image/upload/v1726656428/be-foreigner-icon.png")
+                .build())
+            .build());
+        } catch (FirebaseMessagingException e) {
+            log.error("Error when sending message: {}",
+                    e.getMessage());
+        }
+    }
 }

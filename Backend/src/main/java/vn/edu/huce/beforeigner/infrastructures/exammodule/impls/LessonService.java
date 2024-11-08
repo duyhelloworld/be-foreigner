@@ -1,6 +1,6 @@
 package vn.edu.huce.beforeigner.infrastructures.exammodule.impls;
 
-import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -9,11 +9,16 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import vn.edu.huce.beforeigner.domains.core.SubscriptionPlan;
 import vn.edu.huce.beforeigner.domains.core.User;
 import vn.edu.huce.beforeigner.domains.core.repo.UserRepository;
+import vn.edu.huce.beforeigner.domains.exam.Answer;
 import vn.edu.huce.beforeigner.domains.exam.Lesson;
-import vn.edu.huce.beforeigner.domains.exam.Question;
+import vn.edu.huce.beforeigner.domains.exam.LessonType;
+import vn.edu.huce.beforeigner.domains.exam.QuestionType;
 import vn.edu.huce.beforeigner.domains.exam.repo.LessonRepository;
+import vn.edu.huce.beforeigner.domains.history.LessonHistory;
+import vn.edu.huce.beforeigner.domains.history.repo.LessonHistoryRepository;
 import vn.edu.huce.beforeigner.domains.system.SysvarKey;
 import vn.edu.huce.beforeigner.domains.system.repo.SysvarRepository;
 import vn.edu.huce.beforeigner.exceptions.AppException;
@@ -24,6 +29,7 @@ import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.LessonDto;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.questions.QuestionDto;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.mappers.AnswerMapper;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.mappers.LessonMapper;
+import vn.edu.huce.beforeigner.utils.LessonUtil;
 import vn.edu.huce.beforeigner.utils.paging.PagingRequest;
 import vn.edu.huce.beforeigner.utils.paging.PagingResult;
 
@@ -32,92 +38,96 @@ import vn.edu.huce.beforeigner.utils.paging.PagingResult;
 @RequiredArgsConstructor
 public class LessonService implements ILessonService {
 
-    private final LessonRepository lessonRepo;
+	private final LessonHistoryRepository lessonHistoryRepo;
 
-    private final UserRepository userRepo;
+	private final LessonRepository lessonRepo;
 
-    private final SysvarRepository systemVariableRepo;
+	private final UserRepository userRepo;
 
-    private final LessonMapper lessonMapper;
+	private final SysvarRepository systemVariableRepo;
 
-    private final AnswerMapper answerMapper;
+	private final LessonMapper lessonMapper;
 
-    @Override
-    public LessonDetailDto examine(Integer lessonId, User user) {
-        Lesson lesson = lessonRepo.findById(lessonId)
-                    .orElseThrow(() -> new AppException(ResponseCode.LESSON_NOT_FOUND));
-        Set<QuestionDto> questionDtos = new HashSet<>();
-        for (Question question : lesson.getQuestions()) {
-            QuestionDto questionDto = new QuestionDto();
-            questionDto.setType(question.getType());
+	private final AnswerMapper answerMapper;
 
-            switch (question.getType()) {
-                case GIVE_AUDIO_CHOOSE_WORD:
-                    // sau fix bằng groupBy  
-                    questionDto.setCorrectOption(answerMapper.toOptionDto(question.getAnswers().stream()
-                        .filter(a -> a.getIsTrue())
-                        .findFirst().orElse(null)));
-                    questionDto.setIncorrectOptions(question.getAnswers().stream()
-                        .filter(a -> !a.getIsTrue())
-                        .map(a -> answerMapper.toOptionDto(a))
-                        .collect(Collectors.toSet()));
-                    break;
-                case GIVE_AUDIO_REARRANGE_WORDS:
-                    questionDto.setCorrectSentenseAudio(question.getSentenseAudio());
-                    questionDto.setCorrectSentenseWords(question.getAnswers().stream()
-                        .sorted((a1, a2) -> a1.getIndex().compareTo(a2.getIndex()))
-                        .map(a -> a.getTxt())
-                        .collect(Collectors.toSet()));
-                    break;
-                case GIVE_MEAN_CHOOSE_WORD:
-                    // var answers = question.getAnswers().stream().collect(Collectors.);
-                    questionDto.setCorrectOption(answerMapper.toOptionDto(question.getAnswers().stream()
-                        .filter(a -> a.getIsTrue()).findFirst().orElse(null)));
-                    questionDto.setIncorrectOptions(question.getAnswers().stream()
-                        .filter(a -> !a.getIsTrue())
-                        .map(a -> answerMapper.toOptionDto(a))
-                        .collect(Collectors.toSet()));
-                    break;
-                case GIVE_SENTENSE_REARRANGE_WORDS:
-                    questionDto.setCorrectSentenseWords(question.getAnswers().stream()
-                        .filter(a -> a.getIsTrue())
-                        .sorted((a1, a2) -> a1.getIndex().compareTo(a2.getIndex()))
-                        .map(a -> a.getTxt())
-                        .collect(Collectors.toSet()));
-                    questionDto.setUnrelatedWords(question.getAnswers().stream()
-                        .filter(a -> !a.getIsTrue())
-                        .map(a -> a.getTxt())
-                        .collect(Collectors.toSet()));
-                    break;
-                case MATCHING:
-                    questionDto.setMatchingAnswers(question.getAnswers().stream()
-                        .map(a -> a.getTxt().split(":"))
-                        .collect(Collectors.toMap(a -> a[0], b -> b[1])));
-                default:
-                    break;
-            }
-            questionDtos.add(questionDto);
-        }
-        return lessonMapper.toDetailDto(lesson, questionDtos);
-    }
+	@Override
+	public LessonDetailDto examine(Integer lessonId, User user) {
+		Lesson lesson = lessonRepo.findById(lessonId)
+				.orElseThrow(() -> new AppException(ResponseCode.LESSON_NOT_FOUND));
+		if (lesson.getType() == LessonType.PLUS_ONLY
+				&& user.getPlan() == SubscriptionPlan.FREE) {
+			throw new AppException(ResponseCode.LESSON_IS_PLUS_ONLY);
+		}
+		Optional<LessonHistory> optLessonHistory = lessonHistoryRepo.findByLessonIdAndOwner(lessonId, user.getId());
+		// Nếu đã học trước đó rồi thì ko làm gì
+		if (optLessonHistory.isEmpty() ) {
+			// Nếu chưa học -> thêm 1 dòng mới
+			LessonHistory history = new LessonHistory();
+			history.setLesson(lesson);
+			lessonHistoryRepo.save(history);
+		}
 
-    @Override
-    @Transactional
-    public void retry(Integer questionId, User user) {
-        Integer currentUserDiamonds = user.getDiamonds();
-        Integer requiredRetryDiamonds = systemVariableRepo.findByKey(SysvarKey.DIAMONDS_PER_RETRY)
-            .map(sv -> Integer.parseInt(sv.getValue()))
-            .orElseThrow(() -> new AppException(ResponseCode.SYSTEM_VARIABLE_INVALID_DATA));
+		Set<QuestionDto> questionDtos = lesson.getQuestions().stream()
+				.map(question -> {
+					QuestionDto questionDto = QuestionDto.builder()
+							.type(question.getType())
+							.sentenseMeaning(question.getSentenseMeaning()) // đề
+							.sentenseAudio(question.getSentenseAudio()) // đề
+							.sentenseWords(Optional.ofNullable(question.getSentenseWords()).map(sw -> sw.split(" "))
+									.orElse(null)) // các từ của đáp án
+							.unrelatedWords(Optional.ofNullable(question.getUnrelatedWords()).map(uw -> uw.split(" "))
+									.orElse(null)) // từ ko liên quan của đáp án
+							.matchingAnswers(Optional.ofNullable(question.getMatching())
+									.map(match -> LessonUtil.decode(match)).orElse(null))
+							.build();
 
-        if (currentUserDiamonds < requiredRetryDiamonds) {
-            throw new AppException(ResponseCode.NOT_ENOUGH_DIAMOND);
-        }
-        user.setDiamonds(currentUserDiamonds - requiredRetryDiamonds);
-        userRepo.save(user);
-    }
+					if (question.getType() == QuestionType.GIVE_AUDIO_CHOOSE_WORD
+							|| question.getType() == QuestionType.GIVE_MEAN_CHOOSE_WORD) {
+						var options = question.getAnswers()
+								.stream()
+								.collect(Collectors.groupingBy(Answer::getIsTrue,
+										Collectors.mapping(answerMapper::toOptionDto, Collectors.toList())));
+						questionDto.option = options.get(true).stream()
+								.findFirst()
+								.orElse(null);
+						questionDto.unrelatedOptions = options.get(false);
+					}
+					return questionDto;
+				}).collect(Collectors.toSet());
+		return lessonMapper.toDetailDto(lesson, questionDtos);
+	}
 
-    @Override
-    public PagingResult<LessonDto> getSuggestedLessons(PagingRequest pagingRequest, User user) {
-        return PagingResult.of(lessonRepo.findByUser(pagingRequest.pageable(), user), lesson -> lessonMapper.toDto(lesson));
-    }
+	@Override
+	@Transactional
+	public void retry(Integer questionId, User user) {
+		Integer currentUserDiamonds = user.getDiamonds();
+		Integer requiredRetryDiamonds = systemVariableRepo.findBySysvarKey(SysvarKey.DIAMONDS_PER_RETRY)
+				.map(sv -> Integer.parseInt(sv.getSysvarValue()))
+				.orElseThrow(() -> new AppException(ResponseCode.SYSTEM_VARIABLE_INVALID_DATA));
+		if (currentUserDiamonds < requiredRetryDiamonds) {
+			throw new AppException(ResponseCode.NOT_ENOUGH_DIAMOND);
+		}
+		user.setDiamonds(currentUserDiamonds - requiredRetryDiamonds);
+		userRepo.save(user);
+	}
+
+	@Override
+	public void completed(Integer lessonId, User user) {
+
+	}
+
+	@Override
+	public PagingResult<LessonDto> getSuggestedLessons(PagingRequest pagingRequest, User user) {
+		return PagingResult.of(lessonRepo.getRecentLessonsAndLessonsWithSameLevel(pagingRequest.pageable(), user.getId(), user.getLevel()),
+				lesson -> {
+					return LessonDto.builder()
+							.id(lesson.getId())
+							.name(lesson.getName())
+							.cover(lesson.getCoverImage().getUrl())
+							.type(lesson.getType())
+							.status(lesson.getLessonHistories().stream()
+									.findFirst().get().getStatus())
+							.build();
+				});
+	}
 }

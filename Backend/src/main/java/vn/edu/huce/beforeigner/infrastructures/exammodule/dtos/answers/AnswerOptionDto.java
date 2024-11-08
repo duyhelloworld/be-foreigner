@@ -3,7 +3,7 @@ package vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.answers;
 import lombok.Builder;
 
 @Builder
-public class AnswerOption {
+public class AnswerOptionDto {
     
     public String text;
 

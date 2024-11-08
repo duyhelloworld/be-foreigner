@@ -43,6 +43,7 @@ export type Question = {
 
 export type Ranking = {
   users: RankingUser[],
+  fetchedOn: Date
 }
 
 export type RankingUser = {

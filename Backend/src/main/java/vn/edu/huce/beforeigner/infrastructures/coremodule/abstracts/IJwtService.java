@@ -3,7 +3,7 @@ package vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts;
 import jakarta.servlet.http.HttpServletRequest;
 import vn.edu.huce.beforeigner.domains.core.User;
 
-public interface ITokenService {
+public interface IJwtService {
     
     String buildToken(User user);
 

@@ -14,24 +14,24 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
-import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.ITokenService;
+import lombok.RequiredArgsConstructor;
+import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IJwtService;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SecurityFilter extends OncePerRequestFilter {
     
-    private ITokenService tokenService;
+    private final IJwtService tokenService;
 
-    private UserDetailsService appUserDetailService;
+    private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String accessToken = tokenService.getToken(request);
 
-        if (accessToken != null && tokenService.isValidToken(accessToken)) {
-            UserDetails user = appUserDetailService.loadUserByUsername(tokenService.extractUsername(accessToken));
+        if (tokenService.isValidToken(accessToken)) {
+            UserDetails user = userDetailsService.loadUserByUsername(tokenService.extractUsername(accessToken));
             var authToken = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authToken);

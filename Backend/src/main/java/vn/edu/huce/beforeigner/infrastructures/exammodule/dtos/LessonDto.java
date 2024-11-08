@@ -1,20 +1,23 @@
 package vn.edu.huce.beforeigner.infrastructures.exammodule.dtos;
 
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import vn.edu.huce.beforeigner.domains.exam.LessonType;
 import vn.edu.huce.beforeigner.domains.history.LessonStatus;
 
+@Getter
+@Setter
 @Builder
 public class LessonDto {
 
-    public Integer id;
+    private Integer id;
 
-    public String name;
+    private String name;
 
-    public String cover;
+    private String cover;
 
-    public Integer lastLearnIndex;
-    
-    public Integer totalQuestion;
+    private LessonStatus status;
 
-    public LessonStatus status;
+    private LessonType type;
 }

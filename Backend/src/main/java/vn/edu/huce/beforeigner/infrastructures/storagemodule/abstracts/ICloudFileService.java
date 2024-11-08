@@ -10,5 +10,10 @@ public interface ICloudFileService {
     CloudFile save(MultipartFile file, CloudFileType type);
 
     void delete(CloudFile cloudFile);
+
+    // Dùng trong OnStartup
+    CloudFile saveAndGet(CloudFileType type, String word);
+
+    String getUrl(CloudFileType type, String word);
     
 }

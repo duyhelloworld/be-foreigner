@@ -1,10 +1,8 @@
 package vn.edu.huce.beforeigner.utils.paging;
 
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 
 import lombok.Builder;
-import lombok.Getter;
 import lombok.Setter;
 import vn.edu.huce.beforeigner.constants.PagingConstants;
 
@@ -17,10 +15,6 @@ public class PagingRequest {
     
     @Builder.Default
     private Integer pageNumber = PagingConstants.DEFAULT_PAGE_NUMBER;
-
-    @Getter
-    @Builder.Default
-    private String sortBy = PagingConstants.DEFAULT_SORT_BY;
 
     public Integer getPageSize() {
         if (pageSize > PagingConstants.MAX_PAGE_SIZE) {
@@ -39,7 +33,6 @@ public class PagingRequest {
 
     public PageRequest pageable() {
         return PageRequest.ofSize(getPageSize())
-            .withPage(getPageNumber())
-            .withSort(Sort.by(sortBy));
+            .withPage(getPageNumber());
     }
 }

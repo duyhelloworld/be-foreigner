@@ -2,6 +2,7 @@ package vn.edu.huce.beforeigner.controllers;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import vn.edu.huce.beforeigner.annotations.IsAdmin;
 import vn.edu.huce.beforeigner.annotations.IsUser;
@@ -18,9 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequestMapping("api/user")
+@RequiredArgsConstructor
 public class UserController {
     
-    private IUserService userService;
+    private final IUserService userService;
 
     @IsAdmin
     @GetMapping("/all")

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.cloudinary.Cloudinary;
@@ -18,6 +20,7 @@ import vn.edu.huce.beforeigner.exceptions.AppException;
 import vn.edu.huce.beforeigner.exceptions.ResponseCode;
 import vn.edu.huce.beforeigner.infrastructures.storagemodule.abstracts.ICloudFileService;
 import vn.edu.huce.beforeigner.infrastructures.storagemodule.dtos.ResourceResponse;
+import vn.edu.huce.beforeigner.infrastructures.storagemodule.dtos.unflash.UnflashImageDto;
 import vn.edu.huce.beforeigner.utils.CloudinaryUtils;
 
 @Slf4j
@@ -30,6 +33,8 @@ public class CloudFileService implements ICloudFileService {
     private final CloudFileRepository cloudFileRepo;
 
     private final AppObjectMapper objectMapper;
+
+    private final RestTemplate restTemplate;
 
     @Override
     public CloudFile save(MultipartFile file, CloudFileType type) {
@@ -75,5 +80,44 @@ public class CloudFileService implements ICloudFileService {
         } catch (IOException e) {
             log.error("Error when delete {} : ", cloudFile.getPublicId(), e.getMessage());
         }
+    }
+
+    @Override
+    public CloudFile saveAndGet(CloudFileType type, String word) {
+        if (type == CloudFileType.WORD_IMAGE) {
+            try {
+                var response = restTemplate.getForObject(
+                        "https://api.unsplash.com/search/photos?per_page=1&page=1&&client_id=8z25mu-4OIYz1oxWPZcc-XWu27nh-q-19Rogk38rSzA&query="
+                                + word,
+                        UnflashImageDto.class)
+                        .getResults().get(0);
+                CloudFile cloudFile = new CloudFile();
+                cloudFile.setFilename(word);
+                cloudFile.setUrl(response.getUrls().getRaw());
+                cloudFile.setType(CloudFileType.WORD_IMAGE);
+                return cloudFileRepo.save(cloudFile);
+            } catch (RestClientException e) {
+                log.error("Request image error : {}", e.getMessage());
+                return null;
+            }
+        } else if (type == CloudFileType.WORD_AUDIO) {
+            CloudFile cloudFile = new CloudFile();
+            cloudFile.setFilename(word + ".mp3");
+            cloudFile.setUrl("https://d1qx7pbj0dvboc.cloudfront.net/" + word + ".mp3");
+            cloudFile.setType(CloudFileType.WORD_AUDIO);
+            return cloudFileRepo.save(cloudFile);
+        } else {
+            return null;
+        }
+    } 
+
+    @Override
+    public String getUrl(CloudFileType type, String word) {
+        if (type == CloudFileType.WORD_AUDIO) {
+            word += ".mp3";
+        }
+        return cloudFileRepo.findByFilename(word)
+                .map(f -> f.getUrl())
+                .orElse("");
     }
 }

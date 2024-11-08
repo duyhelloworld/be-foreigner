@@ -17,6 +17,8 @@ public class CreateWordDto {
     private String phonetic;
 
     private MultipartFile image;
+
+    private MultipartFile audio;
     
     private WordType wordType;
 

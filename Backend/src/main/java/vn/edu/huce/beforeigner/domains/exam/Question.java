@@ -3,13 +3,16 @@ package vn.edu.huce.beforeigner.domains.exam;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import lombok.Setter;
 import vn.edu.huce.beforeigner.domains.base.FullAuditedEntity;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,6 +22,7 @@ import jakarta.persistence.OneToMany;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 public class Question extends FullAuditedEntity {
 
     @Id
@@ -30,14 +34,44 @@ public class Question extends FullAuditedEntity {
     private QuestionType type;
 
     /**
-     * Dùng trong câu rearrange by audio
+     * URL file audio của câu hỏi
      * @see QuestionType#GIVE_AUDIO_REARRANGE_WORDS
      */
     private String sentenseAudio;
 
-    @ManyToMany(mappedBy = "questions")
+    /**
+     * Các từ tạo nên câu hỏi , liên kết bởi " "
+     * @see QuestionType#GIVE_SENTENSE_REARRANGE_WORDS
+     */
+    private String sentenseWords;
+
+    /**
+     * Nghĩa câu hỏi 
+     * @see QuestionType#GIVE_SENTENSE_REARRANGE_WORDS
+     */
+    private String sentenseMeaning;
+
+
+    /**
+     * Các từ không liên quan
+     * @see QuestionType#GIVE_SENTENSE_REARRANGE_WORDS
+     */
+    private String unrelatedWords;
+
+    /**
+     * Câu từ nối với nghĩa
+     * @see QuestionType#MATCHING
+     * "I:tôi;You:bạn;"
+     */
+    private String matching;
+
+    public Question(QuestionType type) {
+        this.type = type;
+    }
+
+    @ManyToMany(mappedBy = "questions", fetch = FetchType.EAGER)
     private Set<Lesson> lessons = new HashSet<>();
 
-    @OneToMany(mappedBy = "question")
+    @OneToMany(mappedBy = "question", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Answer> answers = new HashSet<>();
 }

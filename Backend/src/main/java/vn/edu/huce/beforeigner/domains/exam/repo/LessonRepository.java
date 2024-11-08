@@ -7,15 +7,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import vn.edu.huce.beforeigner.domains.core.User;
+import vn.edu.huce.beforeigner.domains.common.UserLevel;
 import vn.edu.huce.beforeigner.domains.exam.Lesson;
 
 @Repository
 public interface LessonRepository extends JpaRepository<Lesson, Integer> {
     
-    @Query("SELECT l FROM Lesson l JOIN l.lessonHistories lh")
-    // AND lh.status <> LessonStatus.LOCKED
-    // AND l.level = :user.level
-    // WHERE lh.createdBy = :user.id
-    Page<Lesson> findByUser(Pageable pageable, @Param("user") User user);
+    @Query("SELECT l FROM Lesson l JOIN l.lessonHistories lh WHERE l.level = :level OR lh.owner = :userId")
+    Page<Lesson> getRecentLessonsAndLessonsWithSameLevel(Pageable pageable,
+    @Param("userId") String userId, @Param("level") UserLevel level);
+    
 }

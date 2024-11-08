@@ -28,6 +28,12 @@ public interface ILessonService {
      */
     void retry(Integer questionId, User user);
 
+    /**
+     * Đánh dấu hoàn thành bài học
+     * @param lessonId
+     */
+    void completed(Integer lessonId, User user);
+
     // PagingResult<LessonDto> getAll(PagingRequest pagingRequest);
 
     // void addNew(CreateLessonDto createLessonDto);

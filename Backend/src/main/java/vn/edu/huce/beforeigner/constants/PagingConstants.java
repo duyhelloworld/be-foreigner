@@ -1,11 +1,19 @@
 package vn.edu.huce.beforeigner.constants;
 
 public class PagingConstants {
-    public static final Integer DEFAULT_PAGE_SIZE = 10;
+    /**
+     * Cỡ trang mặc định = 10
+     */
+    public static final Integer DEFAULT_PAGE_SIZE = 5;
 
+    /**
+     * Cỡ trang tối đa = 20
+     */
     public static final Integer MAX_PAGE_SIZE = 20;
 
+    /**
+     * Số trang mặc định = 1
+     */
     public static final Integer DEFAULT_PAGE_NUMBER = 1;
 
-    public static final String DEFAULT_SORT_BY = "id";
 }

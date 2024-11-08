@@ -38,6 +38,6 @@ public abstract class OwnerAuditedEntity {
     private String owner;
 
     @SoftDelete(columnName = "is_disabled")
-    @Column(insertable = false)
+    @Column(nullable = false)
     private boolean isDisabled = false;
 }

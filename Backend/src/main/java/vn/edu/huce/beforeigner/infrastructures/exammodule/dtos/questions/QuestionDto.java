@@ -1,32 +1,31 @@
 package vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.questions;
 
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
 import vn.edu.huce.beforeigner.domains.exam.QuestionType;
-import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.answers.AnswerOption;
+import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.answers.AnswerOptionDto;
 
-@Getter
-@Setter
-@JsonInclude(content = Include.NON_NULL)
+@Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class QuestionDto {
     
-    private QuestionType type;
+    public QuestionType type;
 
-    private AnswerOption correctOption;
+    public AnswerOptionDto option;
 
-    private Set<AnswerOption> incorrectOptions;
+    public List<AnswerOptionDto> unrelatedOptions;
 
-    private Set<String> correctSentenseWords;
+    public String sentenseAudio;
 
-    private String correctSentenseAudio;
+    public String sentenseMeaning;
 
-    private Set<String> unrelatedWords;
+    public String[] sentenseWords;
 
-    private Map<String, String> matchingAnswers;
+    public String[] unrelatedWords;
+
+    public Map<String, String> matchingAnswers;
 }

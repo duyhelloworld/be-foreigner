@@ -12,10 +12,19 @@ public class Notification {
     
     @Id
     /**
-     * Mã thông báo. Hiện tại là messageId khi gửi noti bằng firebaseMessaging
+     * Mã thông báo. Dùng luôn trường messageId khi gửi notification bằng firebaseMessaging
      */
     private String id;
 
+    /**
+     * Tiêu đề
+     */
     private String title;
 
+    /**
+     * Nội dung
+     */
+    private String content;
+
+    private Integer lessonId;
 }
