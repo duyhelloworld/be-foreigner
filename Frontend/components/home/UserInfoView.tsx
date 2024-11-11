@@ -2,7 +2,7 @@ import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { Lesson } from "../../types/apimodels";
 import ProgressBar from "../common/ProgressBar";
-import { AppColors } from "../../types/Colors";
+import { AppColors } from "../../types/colors";
 import { Ionicons } from "@expo/vector-icons";
 import { LessonStatus } from "../../types/enum";
 import { NavigationProp, useNavigation } from "@react-navigation/native";

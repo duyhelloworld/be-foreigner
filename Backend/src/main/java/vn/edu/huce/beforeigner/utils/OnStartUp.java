@@ -34,6 +34,7 @@ import vn.edu.huce.beforeigner.domains.history.LessonStatus;
 import vn.edu.huce.beforeigner.domains.history.repo.LessonHistoryRepository;
 import vn.edu.huce.beforeigner.domains.ranking.RankedUser;
 import vn.edu.huce.beforeigner.domains.ranking.Ranking;
+import vn.edu.huce.beforeigner.domains.ranking.repo.RankedUserRepository;
 import vn.edu.huce.beforeigner.domains.ranking.repo.RankingRepository;
 import vn.edu.huce.beforeigner.domains.storage.CloudFileType;
 import vn.edu.huce.beforeigner.domains.system.Sysvar;
@@ -65,6 +66,8 @@ public class OnStartUp implements CommandLineRunner {
 
 	private final RankingRepository rankingRepo;
 
+	private final RankedUserRepository rankedUserRepo;
+
 	private final IUserTokenService userTokenService;
 
 	private final ICloudFileService cloudFileService;
@@ -76,6 +79,7 @@ public class OnStartUp implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		if (userRepo.count() < 1) {
+			log.info("Initial data....");
 			initializeUsers();
 			audit(users.get(0));
 			var lessons = initializeLessons();
@@ -116,6 +120,9 @@ public class OnStartUp implements CommandLineRunner {
 				user12, user13, user14, user15, user16, user17, user18, user19, user20));
 		userRepo.saveAll(users);
 		for (User user : users) {
+			audit(user);
+			user.setAvatar(cloudFileService.saveAndGet(CloudFileType.USER_AVATAR, null));
+			userRepo.save(user);
 			userTokenService.addNew(user, TokenType.REFRESH, null);
 		}
 		log.info("Saved admin account '{}'", adminUser.getUsername());
@@ -146,19 +153,19 @@ public class OnStartUp implements CommandLineRunner {
 	}
 
 	private void initRanking(UserLevel level) {
-		audit(users.get(0));
 		Ranking ranking = new Ranking();
 		ranking.setLevel(level);
-		for (int i = 0; i < users.size(); i++) {
-			var user = users.get(i);
-			if (user.getLevel() == level) {
-				ranking.getRankedUsers()
-				.add(new RankedUser(i + 1, 
-					(long) users.get(i).getDiamonds() + i,
-					users.get(i).getId()));
+		ranking = rankingRepo.save(ranking);
+		for (int i = 1; i < users.size(); i++) {
+			User currentUser = users.get(i);
+			if (currentUser.getLevel() == level) {
+				var rankedUser = new RankedUser(i, (long) 2100 - i * 100);
+				rankedUser.setRanking(ranking);
+				audit(currentUser);
+				rankedUserRepo.save(rankedUser);
 			}
 		}
-		rankingRepo.save(ranking);
+		log.info("Saved ranking for level {}", level);
 	}
 
 	private void initializeWords() {
@@ -366,7 +373,7 @@ public class OnStartUp implements CommandLineRunner {
 		beginnerLesson2.setQuestions(questionsForLesson2);
 		var result = new Lesson[] { beginnerLesson1, beginnerLesson2 };
 		lessonRepo.saveAll(Arrays.asList(result));
-		log.info("Saved lessons : {}", result.toString());
+		log.info("Saved lessons : {}", Arrays.stream(result).map(r -> r.getName()).toList());
 		return result;
 	}
 }

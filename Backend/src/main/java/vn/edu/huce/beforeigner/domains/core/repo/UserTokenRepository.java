@@ -17,6 +17,6 @@ public interface UserTokenRepository extends JpaRepository<UserToken, Integer> {
 
     Optional<UserToken> findByToken(String token);
 
-    @Query("select t from UserToken t where t.owner = :username and type = :type")
-    Optional<UserToken> findByUsernameAndType(@Param("username") String username, @Param("type") TokenType type);
+    @Query("select t from UserToken t where t.userId = :userId and t.type = :type")
+    Optional<UserToken> findByUserIdAndType(@Param("userId") String userId, @Param("type") TokenType type);
 }

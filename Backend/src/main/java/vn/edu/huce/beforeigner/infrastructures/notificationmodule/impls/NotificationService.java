@@ -42,7 +42,7 @@ public class NotificationService implements INotificationService {
                 .setImage(appIcon)
                 .build();
 
-        UserToken userToken = userTokenRepo.findByUsernameAndType(targetUser.getUsername(), TokenType.NOTIFICATION)
+        UserToken userToken = userTokenRepo.findByUserIdAndType(targetUser.getId(), TokenType.NOTIFICATION)
             .orElseThrow(() -> new AppException(ResponseCode.NOTIFICATION_TOKEN_NOT_FOUND));
         Message message = Message.builder()
                 .setNotification(notification)

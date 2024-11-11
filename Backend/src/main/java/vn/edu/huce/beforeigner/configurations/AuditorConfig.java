@@ -23,7 +23,7 @@ public class AuditorConfig implements AuditorAware<String> {
         return new AuditorConfig();
     }
 
-    public static String getAuditor(User user) {
+    private String getAuditor(User user) {
         return user.getUsername();
     }
 
@@ -39,7 +39,7 @@ public class AuditorConfig implements AuditorAware<String> {
             return Optional.ofNullable((User) authentication.getPrincipal())
                 .map(u -> getAuditor(u));
         } catch (ClassCastException e) {
-            log.error("Error when cast " + authentication.getPrincipal() + " to AuthenticatedUser", e);
+            log.error("Error when cast " + authentication.getPrincipal() + " to User ", e);
             return Optional.empty();
         }    
     }

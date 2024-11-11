@@ -2,7 +2,7 @@ package vn.edu.huce.beforeigner.infrastructures.rankingmodule.dtos;
 
 public class RankedUserDto {
 
-    public Integer rank;
+    public Integer userRank;
 
     public Long elo;
 
@@ -10,8 +10,8 @@ public class RankedUserDto {
     
     public String avatar;
 
-    public RankedUserDto(Integer rank, Long elo, String username, String avatar) {
-        this.rank = rank;
+    public RankedUserDto(Integer userRank, Long elo, String username, String avatar) {
+        this.userRank = userRank;
         this.elo = elo;
         this.username = username;
         this.avatar = avatar;

@@ -46,7 +46,7 @@ public class CloudFileService implements ICloudFileService {
             options.put("asset_folder", folderName);
             options.put("resource_type", "auto");
             options.put("return_error", true);
-            var uploadResponse = cloudinary.uploader().upload(file.getInputStream(), options);
+            var uploadResponse = cloudinary.uploader().upload(file.getBytes(), options);
             if (uploadResponse.containsKey("error")) {
                 throw new AppException(ResponseCode.FILE_UPLOAD_ERROR);
             }
@@ -60,7 +60,7 @@ public class CloudFileService implements ICloudFileService {
             cloudFile.setUrl(resource.getUrl());
             return cloudFileRepo.save(cloudFile);
         } catch (IOException e) {
-            log.error("Error when read and write content of '{}' : ", file.getOriginalFilename(), e);
+            log.error("Error when read and write content of '{}' : ", file.getOriginalFilename(), e.getMessage());
             throw new AppException(ResponseCode.FILE_UPLOAD_ERROR);
         }
     }
@@ -84,6 +84,8 @@ public class CloudFileService implements ICloudFileService {
 
     @Override
     public CloudFile saveAndGet(CloudFileType type, String word) {
+        CloudFile cloudFile = new CloudFile();
+        cloudFile.setType(type);
         if (type == CloudFileType.WORD_IMAGE) {
             try {
                 var response = restTemplate.getForObject(
@@ -91,23 +93,21 @@ public class CloudFileService implements ICloudFileService {
                                 + word,
                         UnflashImageDto.class)
                         .getResults().get(0);
-                CloudFile cloudFile = new CloudFile();
                 cloudFile.setFilename(word);
                 cloudFile.setUrl(response.getUrls().getRaw());
-                cloudFile.setType(CloudFileType.WORD_IMAGE);
                 return cloudFileRepo.save(cloudFile);
             } catch (RestClientException e) {
                 log.error("Request image error : {}", e.getMessage());
                 return null;
             }
         } else if (type == CloudFileType.WORD_AUDIO) {
-            CloudFile cloudFile = new CloudFile();
             cloudFile.setFilename(word + ".mp3");
             cloudFile.setUrl("https://d1qx7pbj0dvboc.cloudfront.net/" + word + ".mp3");
-            cloudFile.setType(CloudFileType.WORD_AUDIO);
             return cloudFileRepo.save(cloudFile);
         } else {
-            return null;
+            cloudFile.setFilename(type.name().toLowerCase().replaceAll("_", ""));
+            cloudFile.setUrl("https://www.w3schools.com/w3images/avatar2.png");
+            return cloudFileRepo.save(cloudFile);
         }
     } 
 

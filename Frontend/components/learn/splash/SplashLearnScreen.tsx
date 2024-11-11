@@ -9,7 +9,7 @@ import {
 import { sampleLesson } from "../../../utils/InitData";
 import { useEffect, useRef } from "react";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { AppColors } from "../../../types/Colors";
+import { AppColors } from "../../../types/colors";
 import { LearnNavigatorParams } from "../../../navigation/navigators/LearnNavigator";
 import SplashBubbleView from "./SplashBubbleView";
 

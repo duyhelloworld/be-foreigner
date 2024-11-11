@@ -1,7 +1,6 @@
 package vn.edu.huce.beforeigner.domains.ranking;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -9,10 +8,12 @@ import jakarta.persistence.ManyToOne;
 import lombok.Setter;
 import vn.edu.huce.beforeigner.domains.base.OwnerAuditedEntity;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 /**
  * Xếp hạng user, dùng audit  để định danh 
  */
@@ -25,19 +26,18 @@ public class RankedUser extends OwnerAuditedEntity {
     /**
      * Chỉ số trên BXH của user
      */
-    private Integer rank;
+    private Integer userRank;
 
     /**
      * Điểm để xếp hạng
      */
     private Long elo;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Ranking ranking;
 
-    public RankedUser(Integer rank, Long elo, String owner) {
-        this.rank = rank;
+    public RankedUser(Integer userRank, Long elo) {
+        this.userRank = userRank;
         this.elo = elo;
-        this.setOwner(owner);
     }
 }

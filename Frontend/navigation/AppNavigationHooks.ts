@@ -1,5 +1,5 @@
 import { NavigationProp, RouteProp, useNavigation, useRoute } from "@react-navigation/native";
-import { AppParams, RootNavigatorParams } from "../navigation/AppNavigation";
+import { AppParams, RootNavigatorParams } from "./AppNavigation";
 
 export const useAppNavigation = () => {
   const navigation = useNavigation<NavigationProp<RootNavigatorParams>>();

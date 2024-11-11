@@ -42,9 +42,8 @@ public class AuthController {
         authService.signOut(user);
     }
 
-    @IsAuthenticated
     @PutMapping("renew")
-    public String renew(@AuthenticationPrincipal User user, @RequestBody RenewTokenDto renewTokenDto) {
+    public AuthDto renew(@AuthenticationPrincipal User user, @RequestBody RenewTokenDto renewTokenDto) {
         return userTokenService.renewAccess(user, renewTokenDto.getRefreshToken());
     }
     

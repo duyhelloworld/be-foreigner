@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import TabbarIcon from "./TabbarIcon";
 import { HomeNavigatorParams } from "./navigators/HomeNavigator";
-import { AppColors } from "../types/Colors";
+import { AppColors } from "../types/colors";
 import { useState } from "react";
 
 export default function Tabbar({ state, navigation }: BottomTabBarProps) {

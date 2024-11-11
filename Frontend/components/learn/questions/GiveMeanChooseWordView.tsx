@@ -2,9 +2,9 @@ import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import React, { useContext, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { QuestionOption } from "../../../types/apimodels";
-import { AppColors } from "../../../types/Colors";
+import { AppColors } from "../../../types/colors";
 import { playAudio } from "../../../utils/AudioUtil";
-import { LearnScreenContext } from "../../../hook/LearnScreenHooks";
+import { LearnScreenContext } from "../LearnScreenHooks";
 
 interface GiveMeanChooseWordViewProp {
   incorrectOptions: QuestionOption[];

@@ -8,9 +8,9 @@ import {
   ImageBackground,
 } from "react-native";
 import BottomButton from "./BottomButton";
-import { AppColors } from "../../../types/Colors";
+import { AppColors } from "../../../types/colors";
 import fireImage from "../../../assets/fire-transparent.png";
-import { useAppNavigation } from "../../../hook/AppNavigationHooks";
+import { useAppNavigation } from "../../../navigation/AppNavigationHooks";
 
 interface StreakAnimationProps {
   streakDays?: number;

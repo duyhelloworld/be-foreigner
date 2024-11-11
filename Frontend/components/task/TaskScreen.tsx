@@ -2,7 +2,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import { sampleTasks } from '../../utils/InitData';
 import TaskItemView from './TaskItemView';
-import { AppColors } from '../../types/Colors';
+import { AppColors } from '../../types/colors';
 import CircularProgressBar from './CircularProgressBar';
 
 const TaskScreen = () => {

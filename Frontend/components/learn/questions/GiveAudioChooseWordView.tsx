@@ -2,9 +2,9 @@ import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import React, { useContext, useState } from "react";
 import { QuestionOption } from "../../../types/apimodels";
 import { Ionicons } from "@expo/vector-icons";
-import { AppColors } from "../../../types/Colors";
+import { AppColors } from "../../../types/colors";
 import { playWordAudio } from "../../../utils/AudioUtil";
-import { LearnScreenContext } from "../../../hook/LearnScreenHooks";
+import { LearnScreenContext } from "../LearnScreenHooks";
 
 interface GiveAudioChooseWordViewProp {
   correctOption: QuestionOption;

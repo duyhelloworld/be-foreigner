@@ -1,5 +1,5 @@
 import { Svg, Circle, Text as SvgText } from "react-native-svg";
-import { AppColors } from "../../types/Colors";
+import { AppColors } from "../../types/colors";
 
 interface CircularProgressBarProp {
   progress: number;

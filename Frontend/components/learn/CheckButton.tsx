@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { AppColors } from "../../types/Colors";
+import { AppColors } from "../../types/colors";
 
 interface CheckButtonProp {
   onCheckPress: () => void;

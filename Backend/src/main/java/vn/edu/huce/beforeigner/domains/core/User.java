@@ -58,13 +58,13 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserLevel level = UserLevel.BEGINNER;
 
-    @Column(insertable = false)
+    @Column(nullable = false)
     private Integer experiences = 0;
 
     @Enumerated(EnumType.STRING)
     private SubscriptionPlan plan = SubscriptionPlan.FREE;
     
-    @Column(insertable = false)
+    @Column(nullable = false)
     private Integer diamonds = 0;
 
     @Override

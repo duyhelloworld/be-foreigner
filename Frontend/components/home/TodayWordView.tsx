@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react';
 import { Word } from '../../types/apimodels';
-import { AppColors } from '../../types/Colors';
+import { AppColors } from '../../types/colors';
 import { playWordAudio } from '../../utils/AudioUtil';
 
 interface TodayWordViewProp {

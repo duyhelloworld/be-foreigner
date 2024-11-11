@@ -1,5 +1,6 @@
 package vn.edu.huce.beforeigner.infrastructures.coremodule.impls;
 
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -54,11 +55,11 @@ public class AuthService implements IAuthService, UserDetailsService {
         if (!passwordEncoder.matches(signInDto.getPassword(), user.getPassword())) {
             throw new AppException(ResponseCode.USERNAME_OR_PASSWORD_INCORRECT);
         }
-        UserToken userToken = userTokenRepo.findByUsernameAndType(user.getUsername(), TokenType.REFRESH)
-            .orElseThrow(() -> new AppException(ResponseCode.REFRESH_TOKEN_NOT_FOUND));
+        UserToken userToken = userTokenRepo.findByUserIdAndType(user.getId(), TokenType.REFRESH)
+                .orElseThrow(() -> new AppException(ResponseCode.REFRESH_TOKEN_NOT_FOUND));
         return AuthDto.builder()
-                .access(tokenService.buildToken(user))
-                .refresh(userToken.getToken())
+                .accessToken(tokenService.buildToken(user))
+                .refreshToken(userToken.getToken())
                 .build();
     }
 
@@ -68,17 +69,18 @@ public class AuthService implements IAuthService, UserDetailsService {
         if (userRepo.existsByUsername(signUpDto.getUsername())) {
             throw new AppException(ResponseCode.USERNAME_EXISTED);
         }
-        User user = new User(signUpDto.getUsername(), signUpDto.getFullname(), signUpDto.getEmail(), passwordEncoder.encode(signUpDto.getPassword()));
-        
+        User user = new User(signUpDto.getUsername(), signUpDto.getFullname(), signUpDto.getEmail(),
+                passwordEncoder.encode(signUpDto.getPassword()));
+        userRepo.save(user);
+        SecurityContextHolder.getContext()
+                .setAuthentication(new UsernamePasswordAuthenticationToken(user,
+                    null, user.getAuthorities()));
         CloudFile cloudFile = imageService.save(signUpDto.getAvatar(), CloudFileType.USER_AVATAR);
         user.setAvatar(cloudFile);
-        user.setLevel(signUpDto.getLevel());
-
         String refreshToken = userTokenService.addNew(user, TokenType.REFRESH, null);
-        userRepo.save(user);
         return AuthDto.builder()
-                .access(tokenService.buildToken(user))
-                .refresh(refreshToken)
+                .accessToken(tokenService.buildToken(user))
+                .refreshToken(refreshToken)
                 .build();
     }
 

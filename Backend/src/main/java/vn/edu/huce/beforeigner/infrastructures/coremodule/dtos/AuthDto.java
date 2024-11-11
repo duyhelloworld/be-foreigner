@@ -5,7 +5,7 @@ import lombok.Builder;
 @Builder
 public class AuthDto {
     
-    public String access;
+    public String accessToken;
 
-    public String refresh;
+    public String refreshToken;
 }

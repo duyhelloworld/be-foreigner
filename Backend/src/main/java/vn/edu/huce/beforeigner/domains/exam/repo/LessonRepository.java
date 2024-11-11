@@ -13,8 +13,8 @@ import vn.edu.huce.beforeigner.domains.exam.Lesson;
 @Repository
 public interface LessonRepository extends JpaRepository<Lesson, Integer> {
     
-    @Query("SELECT l FROM Lesson l JOIN l.lessonHistories lh WHERE l.level = :level OR lh.owner = :userId")
+    @Query("SELECT l FROM Lesson l JOIN l.lessonHistories lh WHERE l.level = :level OR lh.owner = :username")
     Page<Lesson> getRecentLessonsAndLessonsWithSameLevel(Pageable pageable,
-    @Param("userId") String userId, @Param("level") UserLevel level);
+    @Param("username") String username, @Param("level") UserLevel level);
     
 }

@@ -1,5 +1,5 @@
 import { Animated } from "react-native";
-import { AppColors } from "../../../types/Colors";
+import { AppColors } from "../../../types/colors";
 
 interface SplashBubbleViewProp {
   bubblesAnim: Animated.Value;

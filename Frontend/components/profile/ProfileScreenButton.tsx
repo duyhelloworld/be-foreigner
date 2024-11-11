@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { ProfileNavigatorParams } from "../../navigation/navigators/ProfileNavigator";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { RootNavigatorParams } from "../../navigation/AppNavigation";
-import { AppColors } from "../../types/Colors";
+import { AppColors } from "../../types/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 interface ProfileScreenButtonProp {

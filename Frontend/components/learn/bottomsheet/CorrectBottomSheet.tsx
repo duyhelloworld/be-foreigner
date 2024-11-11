@@ -1,7 +1,7 @@
 import React from "react";
 import {  StyleSheet } from "react-native";
 import AbstractBottomSheet from "./AbstractBottomSheet";
-import { AppColors } from "../../../types/Colors";
+import { AppColors } from "../../../types/colors";
 
 interface CorrectBottomSheetProp {
   message: string;

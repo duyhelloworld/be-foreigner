@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TextInput, View, Pressable } from "react-native";
 import React, { useState } from "react";
-import { AppColors } from "../../types/Colors";
+import { AppColors } from "../../types/colors";
 import { Ionicons } from "@expo/vector-icons";
 
 interface InputTextViewProp {

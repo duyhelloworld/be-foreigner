@@ -1,10 +1,10 @@
 import { FlatList, Image, StyleSheet, Text, View } from "react-native";
 import React from "react";
-import { AppColors } from "../../../types/Colors";
+import { AppColors } from "../../../types/colors";
 import {
   useAppNavigation,
   useAppParams,
-} from "../../../hook/AppNavigationHooks";
+} from "../../../navigation/AppNavigationHooks";
 import BottomButton from "./BottomButton";
 import TaskItemView from "../../task/TaskItemView";
 

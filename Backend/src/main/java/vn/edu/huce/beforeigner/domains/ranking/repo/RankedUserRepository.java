@@ -15,11 +15,10 @@ import vn.edu.huce.beforeigner.infrastructures.rankingmodule.dtos.RankedUserDto;
 @Repository
 public interface RankedUserRepository extends JpaRepository<RankedUser, Integer> {
     
-    @Query("SELECT new vn.edu.huce.beforeigner.infrastructures.rankingmodule.dtos.RankedUserDto(ru.rank, ru.elo, u.username, avatar.url)"
+    @Query("SELECT new vn.edu.huce.beforeigner.infrastructures.rankingmodule.dtos.RankedUserDto(ru.userRank, ru.elo, u.username, avatar.url)"
     + " FROM RankedUser ru"
-    + " JOIN User u ON u.id = ru.owner"
+    + " JOIN User u ON u.username = ru.owner"
     + " JOIN u.avatar avatar" 
-    + " JOIN ru.ranking r ")
-    // + " WHERE r.level = :level")
-    List<RankedUserDto> getUserRankings(@Param("level") UserLevel level);
+    + " JOIN ru.ranking r WHERE r.level = :level")
+    List<RankedUserDto> getRankedUserDtos(@Param("level") UserLevel level);
 }

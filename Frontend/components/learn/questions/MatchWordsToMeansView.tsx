@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useContext } from 'react'
-import { LearnScreenContext } from '../../../hook/LearnScreenHooks';
+import { LearnScreenContext } from '../LearnScreenHooks';
 
 interface MatchWordsToMeansViewProp {
   matchings: Map<string, string>;

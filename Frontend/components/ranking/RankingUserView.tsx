@@ -3,7 +3,7 @@ import React from "react";
 import { RankingUser } from "../../types/apimodels";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { RootNavigatorParams } from "../../navigation/AppNavigation";
-import { AppColors } from "../../types/Colors";
+import { AppColors } from "../../types/colors";
 
 interface RankingUserViewProp {
   user: RankingUser;

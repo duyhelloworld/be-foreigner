@@ -1,8 +1,8 @@
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import ProfileScreenButton from './ProfileScreenButton'
-import { useUserStorage } from '../../hook/GlobalStorageHooks'
-import { AppColors } from '../../types/Colors'
+import { useUserStorage } from '../../storage/UserStorageHooks'
+import { AppColors } from '../../types/colors'
 import { Ionicons } from '@expo/vector-icons'
 import SubscriptionPlanView from '../common/SubscriptionPlanView'
 

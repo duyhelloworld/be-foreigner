@@ -7,8 +7,8 @@ import {
 import React, { useContext, useEffect, useState } from "react";
 import { playWordAudio } from "../../../utils/AudioUtil";
 import { Ionicons } from "@expo/vector-icons";
-import { AppColors } from "../../../types/Colors";
-import { LearnScreenContext } from "../../../hook/LearnScreenHooks";
+import { AppColors } from "../../../types/colors";
+import { LearnScreenContext } from "../LearnScreenHooks";
 
 interface GiveWordsRearrangeMeansViewProp {
   mainSentense: string[];

@@ -1,8 +1,8 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { SubscriptionPlan } from '../../types/enum'
-import { useUserStorage } from '../../hook/GlobalStorageHooks'
-import { AppColors } from '../../types/Colors';
+import { useUserStorage } from '../../storage/UserStorageHooks'
+import { AppColors } from '../../types/colors';
 
 interface SubscriptionPlanViewProp {
   plan: SubscriptionPlan,

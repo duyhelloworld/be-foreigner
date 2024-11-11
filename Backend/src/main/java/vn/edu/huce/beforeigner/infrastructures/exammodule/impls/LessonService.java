@@ -118,7 +118,7 @@ public class LessonService implements ILessonService {
 
 	@Override
 	public PagingResult<LessonDto> getSuggestedLessons(PagingRequest pagingRequest, User user) {
-		return PagingResult.of(lessonRepo.getRecentLessonsAndLessonsWithSameLevel(pagingRequest.pageable(), user.getId(), user.getLevel()),
+		return PagingResult.of(lessonRepo.getRecentLessonsAndLessonsWithSameLevel(pagingRequest.pageable(), user.getUsername(), user.getLevel()),
 				lesson -> {
 					return LessonDto.builder()
 							.id(lesson.getId())

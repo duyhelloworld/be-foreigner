@@ -12,13 +12,13 @@ import {
 import googleIcon from "../../assets/google-icon.png";
 import facebookIcon from "../../assets/facebook-icon.png";
 import appleIcon from "../../assets/apple-icon.png";
-import { AppColors } from "../../types/Colors";
-import { useAppNavigation } from "../../hook/AppNavigationHooks";
+import { AppColors } from "../../types/colors";
+import { useAppNavigation } from "../../navigation/AppNavigationHooks";
 import AppIconView from "./AppIconView";
 import SubmitButtonView from "./SubmitButtonView";
 import InputTextView from "./InputTextView";
-
-interface LoginScreenProp {}
+import useAuthService from "../../services/AuthService";
+import useAuthStorage from "../../storage/AuthStorageHooks";
 
 const LoginScreen = () => {
   const [username, setUsername] = useState("");
@@ -26,7 +26,9 @@ const LoginScreen = () => {
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-  const navigator = useAppNavigation();
+  const navigator = useAppNavigation(); 
+  const authService = useAuthService();
+  const authStorage = useAuthStorage();
 
   const validateForm = () => {
     let isValid = true;
@@ -45,10 +47,10 @@ const LoginScreen = () => {
     return isValid;
   };
 
-  function handleLogin() {
+  async function handleLogin() {
     if (validateForm()) {
-      // Proceed with login
-      console.log("Login with", username, password);
+      await authService.signIn(username, password);
+      navigator.navigate("HomeNavigator", {screen: "HomeScreen"});
     }
   }
 

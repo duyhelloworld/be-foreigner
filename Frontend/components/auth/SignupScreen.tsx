@@ -13,11 +13,12 @@ import appIcon from "../../assets/icon-transparent.png";
 import googleIcon from "../../assets/google-icon.png";
 import facebookIcon from "../../assets/facebook-icon.png";
 import appleIcon from "../../assets/apple-icon.png";
-import { AppColors } from "../../types/Colors";
-import { useAppNavigation } from "../../hook/AppNavigationHooks";
+import { AppColors } from "../../types/colors";
+import { useAppNavigation } from "../../navigation/AppNavigationHooks";
 import AppIconView from "./AppIconView";
 import SubmitButtonView from "./SubmitButtonView";
 import InputTextView from "./InputTextView";
+import useAuthService from "../../services/AuthService";
 
 const SignupScreen = () => {
   const [username, setUsername] = useState("");
@@ -30,7 +31,8 @@ const SignupScreen = () => {
   const [passwordError, setPasswordError] = useState("");
 
   const navigator = useAppNavigation();
-
+  const authService = useAuthService();
+  
   const validateForm = () => {
     let isValid = true;
     if (!username) {
@@ -57,10 +59,9 @@ const SignupScreen = () => {
     return isValid;
   };
 
-  function handleSignup() {
+  async function handleSignup() {
     if (validateForm()) {
-      // Proceed with login
-      console.log("singup with", username, password, email);
+      await authService.signUp(username, password, email, fullname);
     }
   }
 

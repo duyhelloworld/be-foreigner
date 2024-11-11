@@ -1,6 +1,6 @@
 import React from "react";
 import { View, StyleSheet, ViewStyle, StyleProp } from "react-native";
-import { AppColors } from "../../types/Colors";
+import { AppColors } from "../../types/colors";
 
 interface ProgressBarProps {
   progress: number; // Giá trị từ 0 đến 1

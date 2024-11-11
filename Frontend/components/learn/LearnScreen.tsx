@@ -12,12 +12,12 @@ import CorrectBottomSheet from "./bottomsheet/CorrectBottomSheet";
 import IncorrectBottomSheet from "./bottomsheet/IncorrectBottomSheet";
 import ProgressBar from "../common/ProgressBar";
 import { Ionicons } from "@expo/vector-icons";
-import { AppColors } from "../../types/Colors";
-import { useAppNavigation } from "../../hook/AppNavigationHooks";
+import { AppColors } from "../../types/colors";
+import { useAppNavigation } from "../../navigation/AppNavigationHooks";
 import {
   QuestionResult,
   LearnScreenContext,
-} from "../../hook/LearnScreenHooks";
+} from "./LearnScreenHooks";
 
 const renderQuestionView = (question: Question) => {
   switch (question.type) {

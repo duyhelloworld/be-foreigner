@@ -1,6 +1,6 @@
 package vn.edu.huce.beforeigner.infrastructures.coremodule.impls;
 
-import java.util.Optional;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -14,6 +14,7 @@ import vn.edu.huce.beforeigner.exceptions.AppException;
 import vn.edu.huce.beforeigner.exceptions.ResponseCode;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IJwtService;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IUserTokenService;
+import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.AuthDto;
 
 @Service
 @RequiredArgsConstructor
@@ -24,9 +25,10 @@ public class UserTokenService implements IUserTokenService {
     private final IJwtService tokenService;
 
     @Override
-    public boolean isValid(String token) {
-        Optional<UserToken> userToken = userTokenRepo.findByToken(token);
-        return userToken.isPresent() && userToken.get().isDisabled();
+    public boolean isValidRefreshToken(String token) {
+        UserToken userToken = userTokenRepo.findByToken(token)
+                .orElse(null);
+        return userToken != null && !userToken.isDisabled();
     }
 
     @Override
@@ -37,7 +39,7 @@ public class UserTokenService implements IUserTokenService {
         } else {
             userToken.setToken(token);
         }
-        userToken.setOwner(user.getUsername());
+        userToken.setUserId(user.getId());
         userToken.setType(type);
         userTokenRepo.save(userToken);
         return userToken.getToken();
@@ -45,21 +47,25 @@ public class UserTokenService implements IUserTokenService {
 
     @Override
     public void expired(User user) {
-        UserToken userToken = userTokenRepo.findByUsernameAndType(user.getUsername(), TokenType.REFRESH).orElseThrow(() ->
-            new AppException(ResponseCode.UNAUTHORIZED));
-        userToken.setDisabled(true);
-        userTokenRepo.save(userToken);
+        UserToken userToken = userTokenRepo.findByUserIdAndType(user.getId(), TokenType.REFRESH)
+                .orElseThrow(() -> new AppException(ResponseCode.UNAUTHORIZED));
+        userTokenRepo.delete(userToken);
     }
 
     @Override
-    public String renewAccess(User user, String refreshToken) {
-        UserToken userToken = userTokenRepo.findByUsernameAndType(user.getUsername(), TokenType.REFRESH)
-            .orElseThrow(() -> new AppException(ResponseCode.UNAUTHORIZED));
+    public AuthDto renewAccess(User user, String refreshToken) {
+        UserToken userToken = userTokenRepo.findByUserIdAndType(user.getId(), TokenType.REFRESH)
+                .orElseThrow(() -> new AppException(ResponseCode.UNAUTHORIZED));
 
         if (userToken.isDisabled()) {
             throw new AppException(ResponseCode.REFRESH_TOKEN_EXPIRED);
         }
-        return tokenService.buildToken(user);
+        userToken.setToken(generateRefreshToken());
+        userToken.setCreatedAt(LocalDateTime.now());
+        return AuthDto.builder()
+                .accessToken(tokenService.buildToken(user))
+                .refreshToken(userToken.getToken())
+                .build();
     }
 
     public String generateRefreshToken() {

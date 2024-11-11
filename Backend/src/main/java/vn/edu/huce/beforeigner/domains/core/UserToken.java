@@ -1,8 +1,17 @@
 package vn.edu.huce.beforeigner.domains.core;
 
+import java.time.LocalDateTime;
+
+import org.hibernate.annotations.SoftDelete;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -10,7 +19,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import lombok.Setter;
-import vn.edu.huce.beforeigner.domains.base.OwnerAuditedEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,7 +26,8 @@ import lombok.NoArgsConstructor;
 @Setter
 @Entity
 @NoArgsConstructor
-public class UserToken extends OwnerAuditedEntity {
+@EntityListeners(AuditingEntityListener.class)
+public class UserToken {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,6 +40,18 @@ public class UserToken extends OwnerAuditedEntity {
     @Enumerated(EnumType.STRING)
     private TokenType type;
 
+    @CreatedDate
+    @LastModifiedDate
+    private LocalDateTime createdAt = LocalDateTime.now();
+
+    @CreatedBy
+    @LastModifiedBy
+    private String userId;
+
+    @SoftDelete(columnName = "is_disabled")
+    @Column(nullable = false)
+    private boolean isDisabled = false;
+    
     public UserToken(String token, TokenType type) {
         this.token = token;
         this.type = type;

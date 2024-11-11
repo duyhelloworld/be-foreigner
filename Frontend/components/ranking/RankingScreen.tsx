@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { sampleRanking } from "../../utils/InitData";
 import RankingUserView from "./RankingUserView";
 import { Ionicons } from "@expo/vector-icons";
-import { AppColors } from "../../types/Colors";
+import { AppColors } from "../../types/colors";
 
 const RankingScreen = () => {
   const { users } = sampleRanking();

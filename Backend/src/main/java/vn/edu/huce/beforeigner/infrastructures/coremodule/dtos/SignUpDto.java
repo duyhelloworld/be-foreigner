@@ -6,7 +6,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import vn.edu.huce.beforeigner.domains.common.UserLevel;
 
 @Data
 @Valid
@@ -26,8 +25,6 @@ public class SignUpDto {
     @NotNull(message = "AVATAR_MISSING")
     private MultipartFile avatar;
 
-    @NotNull(message = "NOTIFICATION_TOKEN_MISSING")
-    private String notificationToken;
-
-    private UserLevel level = UserLevel.BEGINNER;
+    // @NotNull(message = "NOTIFICATION_TOKEN_MISSING")
+    // private String notificationToken;
 }

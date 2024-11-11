@@ -1,5 +1,16 @@
 import { LessonStatus, QuestionType, SubscriptionPlan, UserLevel, WordType } from "./enum";
 
+export interface ApiErrorResponse {
+  errorCode: number;
+  messages: string[];
+}
+
+export function isApiErrorResponse(obj: any): obj is ApiErrorResponse {
+  return (
+    obj && typeof obj.errorCode === "number" && Array.isArray(obj.messages)
+  );
+}
+
 export type Word = {
   id: number;
   value: string;
@@ -80,9 +91,6 @@ export type User = {
   id: string;
   username: string;
   avatar: string;
-  fullname: string;
-  email: string;
-  plan: SubscriptionPlan;
 };
 
 export type UserInfo = {
@@ -100,3 +108,9 @@ export type Auth = {
   refreshToken: string;
   accessToken: string;
 };
+
+export function isAuth(obj: any): obj is Auth {
+  return (
+    obj && typeof obj.refreshToken === "string" && obj.accessToken === "string"
+  );
+}

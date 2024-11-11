@@ -10,7 +10,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { HomeNavigatorParams } from "./navigators/HomeNavigator";
 import { Feather, Ionicons } from "@expo/vector-icons";
-import { AppColors } from "../types/Colors";
+import { AppColors } from "../types/colors";
 
 interface TabbarIconProp {
   onPress: () => void;

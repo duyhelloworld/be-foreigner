@@ -18,8 +18,9 @@ public class RankingService implements IRankingService {
 
     @Override
     public RankingDto fetch(User user) {
+        var rankedusers = rankedUserRepo.getRankedUserDtos(user.getLevel());
         return RankingDto.builder()
-                .users(rankedUserRepo.getUserRankings(user.getLevel()))
+                .users(rankedusers)
                 .fetchedOn(LocalDateTime.now())
                 .build();
     }

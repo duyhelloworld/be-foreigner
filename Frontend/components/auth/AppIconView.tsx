@@ -1,7 +1,7 @@
 import { Image, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import appIcon from "../../assets/icon-transparent.png";
-import { AppColors } from "../../types/Colors";
+import { AppColors } from "../../types/colors";
 
 const AppIconView = () => {
   return (

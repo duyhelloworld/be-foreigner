@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Task } from "../../types/apimodels";
 import { Ionicons } from "@expo/vector-icons";
-import { AppColors } from "../../types/Colors";
+import { AppColors } from "../../types/colors";
 
 interface TaskItemViewProp {
   task: Task;
