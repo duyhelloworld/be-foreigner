@@ -6,6 +6,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import lombok.RequiredArgsConstructor;
 import vn.edu.huce.beforeigner.annotations.IsAuthenticated;
 import vn.edu.huce.beforeigner.domains.core.User;
+import vn.edu.huce.beforeigner.exceptions.ApiResponse;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IAuthService;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IUserTokenService;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.AuthDto;
@@ -27,24 +28,26 @@ public class AuthController {
     private final IUserTokenService userTokenService;
 
     @PostMapping("sign-in")
-    public AuthDto signIn(@RequestBody SignInDto signInDto) {
-        return authService.signIn(signInDto);
+    public ApiResponse<AuthDto> signIn(@RequestBody SignInDto signInDto) {
+        return ApiResponse.ok(authService.signIn(signInDto));
     }
 
     @PostMapping("sign-up")
-    public AuthDto signUp(SignUpDto signUpDto) {
-        return authService.signUp(signUpDto);
+    public ApiResponse<AuthDto> signUp(SignUpDto signUpDto) {
+        return ApiResponse.ok(authService.signUp(signUpDto));
     }
 
     @IsAuthenticated
     @PutMapping("sign-out")
-    public void signOut(@AuthenticationPrincipal User user) {
+    public ApiResponse<Void> signOut(@AuthenticationPrincipal User user) {
         authService.signOut(user);
+        return ApiResponse.ok();
     }
 
+    @IsAuthenticated
     @PutMapping("renew")
-    public AuthDto renew(@AuthenticationPrincipal User user, @RequestBody RenewTokenDto renewTokenDto) {
-        return userTokenService.renewAccess(user, renewTokenDto.getRefreshToken());
+    public ApiResponse<AuthDto> renew(@AuthenticationPrincipal User user, @RequestBody RenewTokenDto renewTokenDto) {
+        return ApiResponse.ok(userTokenService.renewAccess(user, renewTokenDto.getRefreshToken()));
     }
     
 }

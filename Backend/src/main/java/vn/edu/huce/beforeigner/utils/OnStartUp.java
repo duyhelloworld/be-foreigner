@@ -1,7 +1,6 @@
 package vn.edu.huce.beforeigner.utils;
 
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -74,24 +73,22 @@ public class OnStartUp implements CommandLineRunner {
 
 	private final PasswordEncoder passwordEncoder;
 
-	private List<User> users = new ArrayList<>();
-
 	@Override
 	public void run(String... args) throws Exception {
 		if (userRepo.count() < 1) {
 			log.info("Initial data....");
-			initializeUsers();
+			var users = initializeUsers();
 			audit(users.get(0));
 			var lessons = initializeLessons();
-			initializeLessonHistory(lessons);
+			initializeLessonHistory(users, lessons);
 			initializeWords();
 			initializeSysvars();
-			initRanking(UserLevel.BEGINNER);
-			initRanking(UserLevel.MEDIUM);
+			initRanking(users, UserLevel.BEGINNER);
+			initRanking(users, UserLevel.MEDIUM);
 		}
 	}
 
-	private void initializeUsers() {
+	private List<User> initializeUsers() {
 		String adminUsername = "admin";
 		String encodedPass = passwordEncoder.encode("1234");
 		User adminUser = new User(adminUsername, "Chủ thớt", "admin@gmail.com", encodedPass);
@@ -116,17 +113,17 @@ public class OnStartUp implements CommandLineRunner {
 		User user18 = new User("phamthuy", "Phạm Thủy", "phamthuy@protonmail.com", encodedPass);
 		User user19 = new User("lelong", "Lê Long", "lelong@gmail.com", encodedPass);
 		User user20 = new User("buiha", "Bùi Hà", "buiha@live.com", encodedPass);
-		this.users.addAll(List.of(adminUser, user1, user2, user3, user4, user5, user6, user7, user8, user9, user10, user11,
-				user12, user13, user14, user15, user16, user17, user18, user19, user20));
-		userRepo.saveAll(users);
+		var users = userRepo.saveAll(List.of(adminUser, user1, user2, user3, user4, user5, user6, user7, user8, user9, user10, user11,
+		user12, user13, user14, user15, user16, user17, user18, user19, user20));
 		for (User user : users) {
 			audit(user);
 			user.setAvatar(cloudFileService.saveAndGet(CloudFileType.USER_AVATAR, null));
+			userTokenService.addNew(TokenType.REFRESH, userTokenService.generateRefreshToken());
 			userRepo.save(user);
-			userTokenService.addNew(user, TokenType.REFRESH, null);
 		}
 		log.info("Saved admin account '{}'", adminUser.getUsername());
 		log.info("Saved user : {}", users.stream().map(u -> u.getUsername()).toList());
+		return users;
 	}
 
 	private void audit(User user) {
@@ -134,7 +131,7 @@ public class OnStartUp implements CommandLineRunner {
 		SecurityContextHolder.getContext().setAuthentication(token);
 	}
 
-	private void initializeLessonHistory(Lesson[] lessons) {
+	private void initializeLessonHistory(List<User> users, Lesson[] lessons) {
 		lessonHistoryRepo.saveAll(
 				Stream.concat(
 						users.subList(0, users.size() / 2 - 1).stream()
@@ -152,7 +149,7 @@ public class OnStartUp implements CommandLineRunner {
 		return lessonHistory;
 	}
 
-	private void initRanking(UserLevel level) {
+	private void initRanking(List<User> users, UserLevel level) {
 		Ranking ranking = new Ranking();
 		ranking.setLevel(level);
 		ranking = rankingRepo.save(ranking);
@@ -238,6 +235,7 @@ public class OnStartUp implements CommandLineRunner {
 
 	private Lesson[] initializeLessons() {
 		Lesson beginnerLesson1 = new Lesson("Kiểm tra level", 20, 5, UserLevel.BEGINNER);
+		beginnerLesson1.setCoverImage(cloudFileService.saveAndGet(CloudFileType.LESSON_COVER, "test"));
 		Question question1ForLesson1 = new Question(QuestionType.GIVE_MEAN_CHOOSE_WORD);
 
 		Answer answerCorrect1ForQ1L1 = new Answer("run", cloudFileService.getUrl(CloudFileType.WORD_AUDIO, "run"),
@@ -303,9 +301,10 @@ public class OnStartUp implements CommandLineRunner {
 				question4ForLesson1, question5ForLesson1, question6ForLesson1, question7ForLesson1);
 		questionRepo.saveAll(questionsForLesson1);
 		beginnerLesson1.setQuestions(questionsForLesson1);
-		// Lesson 1
-
+		
+		// Lesson 2
 		Lesson beginnerLesson2 = new Lesson("Các đại từ nhân xưng", 20, 8, UserLevel.BEGINNER);
+		beginnerLesson2.setCoverImage(cloudFileService.saveAndGet(CloudFileType.LESSON_COVER, ""));
 
 		Question question1ForLesson2 = new Question(QuestionType.GIVE_MEAN_CHOOSE_WORD);
 		Answer answerCorrect1ForQ1L2 = new Answer("I", cloudFileService.getUrl(CloudFileType.WORD_AUDIO, "I"),

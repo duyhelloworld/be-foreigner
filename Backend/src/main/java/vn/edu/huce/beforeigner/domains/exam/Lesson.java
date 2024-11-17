@@ -72,7 +72,7 @@ public class Lesson extends FullAuditedEntity {
     @ManyToOne
     private CloudFile coverImage;
 
-    @OneToMany(mappedBy = "lesson", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "lesson", fetch = FetchType.EAGER)
     private Set<LessonHistory> lessonHistories = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER)

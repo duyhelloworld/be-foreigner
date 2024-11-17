@@ -28,40 +28,36 @@ public class UserTokenService implements IUserTokenService {
     public boolean isValidRefreshToken(String token) {
         UserToken userToken = userTokenRepo.findByToken(token)
                 .orElse(null);
-        return userToken != null && !userToken.isDisabled();
+        return userToken != null;
     }
 
     @Override
-    public String addNew(User user, TokenType type, String token) {
+    public String addNew(TokenType type, String token) {
         UserToken userToken = new UserToken();
-        if (type == TokenType.REFRESH) {
-            userToken.setToken(generateRefreshToken());
-        } else {
-            userToken.setToken(token);
-        }
-        userToken.setUserId(user.getId());
+        userToken.setToken(token);
+        userToken.setLastModifiedAt(LocalDateTime.now());
         userToken.setType(type);
         userTokenRepo.save(userToken);
         return userToken.getToken();
     }
 
     @Override
-    public void expired(User user) {
-        UserToken userToken = userTokenRepo.findByUserIdAndType(user.getId(), TokenType.REFRESH)
+    public void delete(User user) {
+        UserToken userToken = userTokenRepo.findByLastModifiedByAndType(user.getUsername(), TokenType.REFRESH)
                 .orElseThrow(() -> new AppException(ResponseCode.UNAUTHORIZED));
         userTokenRepo.delete(userToken);
     }
 
     @Override
     public AuthDto renewAccess(User user, String refreshToken) {
-        UserToken userToken = userTokenRepo.findByUserIdAndType(user.getId(), TokenType.REFRESH)
+        UserToken userToken = userTokenRepo.findByLastModifiedByAndType(user.getUsername(), TokenType.REFRESH)
                 .orElseThrow(() -> new AppException(ResponseCode.UNAUTHORIZED));
 
         if (userToken.isDisabled()) {
             throw new AppException(ResponseCode.REFRESH_TOKEN_EXPIRED);
         }
         userToken.setToken(generateRefreshToken());
-        userToken.setCreatedAt(LocalDateTime.now());
+        userToken.setLastModifiedAt(LocalDateTime.now());
         return AuthDto.builder()
                 .accessToken(tokenService.buildToken(user))
                 .refreshToken(userToken.getToken())

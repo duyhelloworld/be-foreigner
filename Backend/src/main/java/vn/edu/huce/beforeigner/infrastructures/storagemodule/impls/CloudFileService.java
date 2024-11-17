@@ -86,7 +86,7 @@ public class CloudFileService implements ICloudFileService {
     public CloudFile saveAndGet(CloudFileType type, String word) {
         CloudFile cloudFile = new CloudFile();
         cloudFile.setType(type);
-        if (type == CloudFileType.WORD_IMAGE) {
+        if (type == CloudFileType.WORD_IMAGE || type == CloudFileType.LESSON_COVER) {
             try {
                 var response = restTemplate.getForObject(
                         "https://api.unsplash.com/search/photos?per_page=1&page=1&&client_id=8z25mu-4OIYz1oxWPZcc-XWu27nh-q-19Rogk38rSzA&query="

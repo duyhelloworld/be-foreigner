@@ -1,6 +1,7 @@
 package vn.edu.huce.beforeigner.infrastructures.exammodule.abstracts;
 
 import vn.edu.huce.beforeigner.domains.core.User;
+import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.CompletedLessonDto;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.LessonDetailDto;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.LessonDto;
 import vn.edu.huce.beforeigner.utils.paging.PagingRequest;
@@ -22,17 +23,10 @@ public interface ILessonService {
     LessonDetailDto examine(Integer lessonId, User user);
 
     /**
-     * Thử làm lại câu hỏi sai
-     * @param questionId
-     * @param user
-     */
-    void retry(Integer questionId, User user);
-
-    /**
      * Đánh dấu hoàn thành bài học
      * @param lessonId
      */
-    void completed(Integer lessonId, User user);
+    void completed(CompletedLessonDto completedLessonDto, User user);
 
     // PagingResult<LessonDto> getAll(PagingRequest pagingRequest);
 

@@ -1,29 +1,29 @@
 package vn.edu.huce.beforeigner.infrastructures.exammodule.impls;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import vn.edu.huce.beforeigner.domains.core.SubscriptionPlan;
 import vn.edu.huce.beforeigner.domains.core.User;
-import vn.edu.huce.beforeigner.domains.core.repo.UserRepository;
 import vn.edu.huce.beforeigner.domains.exam.Answer;
 import vn.edu.huce.beforeigner.domains.exam.Lesson;
 import vn.edu.huce.beforeigner.domains.exam.LessonType;
 import vn.edu.huce.beforeigner.domains.exam.QuestionType;
 import vn.edu.huce.beforeigner.domains.exam.repo.LessonRepository;
 import vn.edu.huce.beforeigner.domains.history.LessonHistory;
+import vn.edu.huce.beforeigner.domains.history.LessonStatus;
 import vn.edu.huce.beforeigner.domains.history.repo.LessonHistoryRepository;
-import vn.edu.huce.beforeigner.domains.system.SysvarKey;
-import vn.edu.huce.beforeigner.domains.system.repo.SysvarRepository;
 import vn.edu.huce.beforeigner.exceptions.AppException;
 import vn.edu.huce.beforeigner.exceptions.ResponseCode;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.abstracts.ILessonService;
+import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.CompletedLessonDto;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.LessonDetailDto;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.LessonDto;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.questions.QuestionDto;
@@ -42,10 +42,6 @@ public class LessonService implements ILessonService {
 
 	private final LessonRepository lessonRepo;
 
-	private final UserRepository userRepo;
-
-	private final SysvarRepository systemVariableRepo;
-
 	private final LessonMapper lessonMapper;
 
 	private final AnswerMapper answerMapper;
@@ -58,9 +54,9 @@ public class LessonService implements ILessonService {
 				&& user.getPlan() == SubscriptionPlan.FREE) {
 			throw new AppException(ResponseCode.LESSON_IS_PLUS_ONLY);
 		}
-		Optional<LessonHistory> optLessonHistory = lessonHistoryRepo.findByLessonIdAndOwner(lessonId, user.getId());
+		Optional<LessonHistory> optLessonHistory = lessonHistoryRepo.findByLessonAndOwner(lesson, user.getUsername());
 		// Nếu đã học trước đó rồi thì ko làm gì
-		if (optLessonHistory.isEmpty() ) {
+		if (optLessonHistory.isEmpty()) {
 			// Nếu chưa học -> thêm 1 dòng mới
 			LessonHistory history = new LessonHistory();
 			history.setLesson(lesson);
@@ -98,27 +94,25 @@ public class LessonService implements ILessonService {
 	}
 
 	@Override
-	@Transactional
-	public void retry(Integer questionId, User user) {
-		Integer currentUserDiamonds = user.getDiamonds();
-		Integer requiredRetryDiamonds = systemVariableRepo.findBySysvarKey(SysvarKey.DIAMONDS_PER_RETRY)
-				.map(sv -> Integer.parseInt(sv.getSysvarValue()))
-				.orElseThrow(() -> new AppException(ResponseCode.SYSTEM_VARIABLE_INVALID_DATA));
-		if (currentUserDiamonds < requiredRetryDiamonds) {
-			throw new AppException(ResponseCode.NOT_ENOUGH_DIAMOND);
+	public void completed(CompletedLessonDto completedLessonDto, User user) {
+		Lesson lesson = lessonRepo.findById(completedLessonDto.getLessonId())
+				.orElseThrow(() -> new AppException(ResponseCode.LESSON_NOT_FOUND));
+		LessonHistory lessonHistory = lessonHistoryRepo
+				.findByLessonAndOwner(lesson, user.getUsername())
+				.orElseThrow(() -> new AppException(ResponseCode.LESSON_HISTORY_NOT_FOUND));
+		if (lessonHistory.getStatus() == LessonStatus.ONGOING) {
+			lessonHistory.setAccuracy(completedLessonDto.getAccuracy());
+			lessonHistory.setTotalTime(Duration.between(LocalDateTime.now(), lessonHistory.getCreatedAt()));
+			lessonHistory.setStatus(LessonStatus.COMPLETED);
+			lessonHistoryRepo.save(lessonHistory);
 		}
-		user.setDiamonds(currentUserDiamonds - requiredRetryDiamonds);
-		userRepo.save(user);
-	}
-
-	@Override
-	public void completed(Integer lessonId, User user) {
-
 	}
 
 	@Override
 	public PagingResult<LessonDto> getSuggestedLessons(PagingRequest pagingRequest, User user) {
-		return PagingResult.of(lessonRepo.getRecentLessonsAndLessonsWithSameLevel(pagingRequest.pageable(), user.getUsername(), user.getLevel()),
+		return PagingResult.of(
+				lessonRepo.getRecentLessonsAndLessonsWithSameLevel(pagingRequest.pageable(), user.getUsername(),
+						user.getLevel()),
 				lesson -> {
 					return LessonDto.builder()
 							.id(lesson.getId())

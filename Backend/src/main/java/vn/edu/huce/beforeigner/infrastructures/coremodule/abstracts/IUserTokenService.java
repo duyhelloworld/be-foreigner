@@ -15,18 +15,17 @@ public interface IUserTokenService {
 
     /**
      * Thêm mới 1 token
-     * @param user người được thêm
      * @param type loại token
      * @param token giá trị token
      * @return token vừa được thêm vào
      */
-    String addNew(User user, TokenType type, String token);
+    String addNew(TokenType type, String token);
 
     /**
-     * Đặt cờ disable token
+     * Xóa token hiện tại
      * @param user
      */
-    void expired(User user);
+    void delete(User user);
 
     /**
      * Làm mới mã làm mới

@@ -19,6 +19,8 @@ public class SecurityConfig {
 
     private SecurityFilter securityFilter;
 
+    private SecurityExceptionHandler securityExceptionHandler; 
+
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
@@ -27,6 +29,7 @@ public class SecurityConfig {
                 .sessionManagement(ss -> ss.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(r -> r.anyRequest().permitAll())
                 .formLogin(f -> f.disable())
+                .exceptionHandling(t -> t.accessDeniedHandler(securityExceptionHandler))
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

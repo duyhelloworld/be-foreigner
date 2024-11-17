@@ -7,8 +7,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ResponseCode {
     OK(1000, "OK"),
-    UNEXPECTED_ERROR(9999, "Lỗi không xác định"),
+    ERROR_WHEN_VALIDATE(999, "Lỗi kiểm tra thông tin"),
     SYSTEM_VARIABLE_INVALID_DATA(9900, "Error when access server config"),
+    UNEXPECTED_ERROR(9999, "Lỗi không xác định"),
     
     // AUTH
     UNAUTHORIZED(1001, "Không thể xác thực"), 
@@ -60,6 +61,8 @@ public enum ResponseCode {
     QUESTION_MATCHING_MISSING(5014, "Thiếu các đáp án cho câu hỏi nối"),
     CORRECT_ANSWER_NOT_FOUND(5015, "Không tìm thấy đáp án đúng"),
 
+    // HISTORY
+    LESSON_HISTORY_NOT_FOUND(6000, "Không tìm thấy lịch sử học với bài học này"),
     NOT_ENOUGH_DIAMOND(3001, "Bạn không đủ kim cương cho thao tác này");
 
     private int code;

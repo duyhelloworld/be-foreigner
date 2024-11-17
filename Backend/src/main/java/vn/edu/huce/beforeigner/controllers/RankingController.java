@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import vn.edu.huce.beforeigner.annotations.IsAuthenticated;
 import vn.edu.huce.beforeigner.domains.core.User;
+import vn.edu.huce.beforeigner.exceptions.ApiResponse;
 import vn.edu.huce.beforeigner.infrastructures.rankingmodule.abstracts.IRankingService;
 import vn.edu.huce.beforeigner.infrastructures.rankingmodule.dtos.RankingDto;
 
@@ -21,8 +22,8 @@ public class RankingController {
 
     @GetMapping
     @IsAuthenticated
-    public RankingDto fetchRank(
+    public ApiResponse<RankingDto> fetchRank(
             @AuthenticationPrincipal User user) {
-        return rankingService.fetch(user);
+        return ApiResponse.ok(rankingService.fetch(user));
     }
 }

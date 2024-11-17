@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import vn.edu.huce.beforeigner.annotations.IsAdmin;
 import vn.edu.huce.beforeigner.annotations.IsUser;
 import vn.edu.huce.beforeigner.domains.core.User;
+import vn.edu.huce.beforeigner.exceptions.ApiResponse;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IUserService;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.UserDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.UserInfoDto;
@@ -26,13 +27,13 @@ public class UserController {
 
     @IsAdmin
     @GetMapping("/all")
-    public List<UserDto> getAllUsers() {
-        return userService.findAllUsers();
+    public ApiResponse<List<UserDto>> getAllUsers() {
+        return ApiResponse.ok(userService.findAllUsers());
     }
     
     @IsUser
     @GetMapping
-    public UserInfoDto getMyInfo(@AuthenticationPrincipal User user) {
-        return userService.getInfo(user);
+    public ApiResponse<UserInfoDto> getMyInfo(@AuthenticationPrincipal User user) {
+        return ApiResponse.ok(userService.getInfo(user));
     }
 }

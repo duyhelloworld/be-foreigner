@@ -32,5 +32,5 @@ application:
   auth:
     jwt:
       issuer: "beforeigner.huce.edu.vn"
-      expire-duration: "10m"
+      expire-duration: "10d"
       secret-key: adjzfjdfndjmfgbdvjkfbzjxfn1o2u4q90wafheskedd

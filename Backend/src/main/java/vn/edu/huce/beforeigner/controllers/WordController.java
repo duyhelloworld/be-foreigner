@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import vn.edu.huce.beforeigner.annotations.IsAdmin;
 import vn.edu.huce.beforeigner.annotations.IsUser;
 import vn.edu.huce.beforeigner.domains.core.User;
+import vn.edu.huce.beforeigner.exceptions.ApiResponse;
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.abstracts.IWordService;
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.dtos.WordDto;
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.dtos.creatation.CreateWordDto;
@@ -22,7 +23,6 @@ import vn.edu.huce.beforeigner.infrastructures.vocabmodule.dtos.detail.WordDetai
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.dtos.updatation.UpdateWordDto;
 import vn.edu.huce.beforeigner.utils.paging.PagingRequest;
 import vn.edu.huce.beforeigner.utils.paging.PagingResult;
-
 
 @RestController
 @RequestMapping("api/word")
@@ -33,39 +33,41 @@ public class WordController {
 
     @IsUser
     @GetMapping("today")
-    public WordDto getTodayWord(@AuthenticationPrincipal User user) {
-        return wordService.getTodayWord(user);
+    public ApiResponse<WordDto> getTodayWord(@AuthenticationPrincipal User user) {
+        return ApiResponse.ok(wordService.getTodayWord(user));
     }
     
     @IsAdmin
     @GetMapping("/all")
-    public PagingResult<WordDto> getAll(
+    public ApiResponse<PagingResult<WordDto>> getAll(
         @RequestParam(required = false) PagingRequest pagingRequest) {
-            return wordService.getAll(pagingRequest);
+        return ApiResponse.ok(wordService.getAll(pagingRequest));
     }
 
     @IsAdmin
     @GetMapping("{id}")
-    public WordDetailDto getDetailById(@PathVariable Integer id) {
-        return wordService.getDetailById(id);
+    public ApiResponse<WordDetailDto> getDetailById(@PathVariable Integer id) {
+        return ApiResponse.ok(wordService.getDetailById(id));
     }
 
     @IsAdmin
     @PostMapping("/")
-    public void addNew(@RequestBody CreateWordDto createWordDto) {
+    public ApiResponse<Void> addNew(@RequestBody CreateWordDto createWordDto) {
         wordService.addNew(createWordDto);
+        return ApiResponse.ok();
     }
 
     @IsAdmin
     @PutMapping("{id}")
-    public WordDetailDto update(@PathVariable Integer id,
+    public ApiResponse<WordDetailDto> update(@PathVariable Integer id,
     @RequestBody UpdateWordDto updateWordDto) {
-        return wordService.update(id, updateWordDto);
+        return ApiResponse.ok(wordService.update(id, updateWordDto));
     }
 
     @IsAdmin
     @DeleteMapping("{id}")
-    public void delete(@PathVariable Integer id) {
+    public ApiResponse<Void> delete(@PathVariable Integer id) {
         wordService.delete(id);
+        return ApiResponse.ok();
     }
 }

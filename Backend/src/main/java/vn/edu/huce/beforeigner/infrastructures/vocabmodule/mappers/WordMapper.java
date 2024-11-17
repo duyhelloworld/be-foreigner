@@ -21,6 +21,7 @@ public class WordMapper {
                 .image(word.getImage().getUrl())
                 .audio(word.getAudio().getUrl())
                 .value(word.getValue())
+                .mean(word.getMean())
                 .phonetic(word.getPhonetic())
                 .build();
     }

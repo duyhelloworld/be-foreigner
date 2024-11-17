@@ -1,10 +1,9 @@
 package vn.edu.huce.beforeigner.exceptions;
 
 import java.io.FileNotFoundException;
+import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -17,45 +16,41 @@ import lombok.extern.slf4j.Slf4j;
 public class GlobalExceptionHandler {
     
     @ExceptionHandler({ Exception.class })
-    ResponseEntity<ErrorResponse> handleAppException(Exception ex) {
+    ResponseEntity<ApiResponse<List<String>>> handleAppException(Exception ex) {
         
         log.error("Throwed a {} with message : '{}'", ex.getClass().getSimpleName(), ex.getMessage());
         
-        ErrorResponse response = new ErrorResponse();
-        response.setErrorCode(ResponseCode.UNEXPECTED_ERROR.getCode());
+        ApiResponse<List<String>> response = new ApiResponse<>();
         
         // Custom Exception đã định nghĩa
         if (ex instanceof AppException appEx) {
-            response.setErrorCode(appEx.getResponseCode().getCode());
-            response.setMessages(appEx.getResponseCode().getMessage());
+            response.setCode(appEx.getResponseCode().getCode());
+            response.setData(List.of(appEx.getResponseCode().getMessage()));
+            return ResponseEntity.ok(response);
         }
         
-        // Security
-        if (ex instanceof AccessDeniedException accessDeniedException) {
-            response.setErrorCode(ResponseCode.FORBIDDEN.getCode());
-            response.setMessages(accessDeniedException.getMessage());
-        }
-
         // @Valid
         if (ex instanceof MethodArgumentNotValidException invalidException) {
             try {
-                response.setMessages(invalidException.getBindingResult().getAllErrors()
+                response.setCode(ResponseCode.ERROR_WHEN_VALIDATE.getCode());
+                response.setData(invalidException.getBindingResult().getAllErrors()
                     .stream()
                     .map(e -> ResponseCode.valueOf(e.getDefaultMessage()).getMessage())
-                    .toArray(String[]::new));
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(response);
+                    .toList());
+                return ResponseEntity.ok(response);
             } catch (IllegalArgumentException e) {
                 log.error("Invalid key : {}", e.getMessage());
-                response.setErrorCode(ResponseCode.UNEXPECTED_ERROR.getCode());
+                response.setCode(ResponseCode.UNEXPECTED_ERROR.getCode());
+                response.setData(List.of(ResponseCode.UNEXPECTED_ERROR.getMessage()));
+                return ResponseEntity.ok(response);
             }
         }
 
         // Url invalid
         if (ex instanceof FileNotFoundException || ex instanceof NoResourceFoundException) {
-            response.setMessages(ex.getMessage());
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-            .body(response);
+
+        return ResponseEntity.ok(response);
     }
 }

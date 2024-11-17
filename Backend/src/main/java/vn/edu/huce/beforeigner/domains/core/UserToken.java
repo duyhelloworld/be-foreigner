@@ -42,11 +42,11 @@ public class UserToken {
 
     @CreatedDate
     @LastModifiedDate
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime lastModifiedAt;
 
     @CreatedBy
     @LastModifiedBy
-    private String userId;
+    private String lastModifiedBy;
 
     @SoftDelete(columnName = "is_disabled")
     @Column(nullable = false)

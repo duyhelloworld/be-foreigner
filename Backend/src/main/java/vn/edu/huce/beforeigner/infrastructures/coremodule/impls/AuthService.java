@@ -41,7 +41,7 @@ public class AuthService implements IAuthService, UserDetailsService {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final ICloudFileService imageService;
+    private final ICloudFileService cloudFileService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -51,11 +51,11 @@ public class AuthService implements IAuthService, UserDetailsService {
     @Override
     public AuthDto signIn(SignInDto signInDto) {
         User user = userRepo.findByUsername(signInDto.getUsername())
-                .orElseThrow(() -> new AppException(ResponseCode.UNAUTHORIZED));
+                .orElseThrow(() -> new AppException(ResponseCode.USERNAME_NOT_FOUND));
         if (!passwordEncoder.matches(signInDto.getPassword(), user.getPassword())) {
             throw new AppException(ResponseCode.USERNAME_OR_PASSWORD_INCORRECT);
         }
-        UserToken userToken = userTokenRepo.findByUserIdAndType(user.getId(), TokenType.REFRESH)
+        UserToken userToken = userTokenRepo.findByLastModifiedByAndType(user.getUsername(), TokenType.REFRESH)
                 .orElseThrow(() -> new AppException(ResponseCode.REFRESH_TOKEN_NOT_FOUND));
         return AuthDto.builder()
                 .accessToken(tokenService.buildToken(user))
@@ -75,9 +75,14 @@ public class AuthService implements IAuthService, UserDetailsService {
         SecurityContextHolder.getContext()
                 .setAuthentication(new UsernamePasswordAuthenticationToken(user,
                     null, user.getAuthorities()));
-        CloudFile cloudFile = imageService.save(signUpDto.getAvatar(), CloudFileType.USER_AVATAR);
-        user.setAvatar(cloudFile);
-        String refreshToken = userTokenService.addNew(user, TokenType.REFRESH, null);
+        if (signUpDto.getAvatar() != null) {
+            CloudFile cloudFile = cloudFileService.save(signUpDto.getAvatar(), CloudFileType.USER_AVATAR);
+            user.setAvatar(cloudFile);
+        } else {
+            CloudFile cloudFile = cloudFileService.saveAndGet(CloudFileType.USER_AVATAR, null);
+            user.setAvatar(cloudFile);
+        }
+        String refreshToken = userTokenService.addNew(TokenType.REFRESH, null);
         return AuthDto.builder()
                 .accessToken(tokenService.buildToken(user))
                 .refreshToken(refreshToken)
@@ -86,7 +91,7 @@ public class AuthService implements IAuthService, UserDetailsService {
 
     @Override
     public void signOut(User user) {
-        userTokenService.expired(user);
+        userTokenService.delete(user);
         SecurityContextHolder.getContext().setAuthentication(null);
     }
 }
