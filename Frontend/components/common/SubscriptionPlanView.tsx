@@ -1,15 +1,14 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { SubscriptionPlan } from '../../types/enum'
-import { useUserStorage } from '../../storage/UserStorageHooks'
 import { AppColors } from '../../types/colors';
 
 interface SubscriptionPlanViewProp {
-  plan: SubscriptionPlan,
+  plan?: SubscriptionPlan,
 }
 
 
-function handleBackgroundColor(plan: SubscriptionPlan) : string {
+function handleBackgroundColor(plan?: SubscriptionPlan) : string {
   switch (plan) {
     case SubscriptionPlan.FREE:
       return AppColors.yellow;
@@ -18,18 +17,15 @@ function handleBackgroundColor(plan: SubscriptionPlan) : string {
     case SubscriptionPlan.PREMIUM_MONTH:
       return AppColors.blue;
     case SubscriptionPlan.PREMIUM_YEAR: 
-      return AppColors.gray;
+      return AppColors.purple;
+    default : 
+      return AppColors.yellow;
   }
 }
 const SubscriptionPlanView = ({plan} : SubscriptionPlanViewProp) => {
   
   const backgroundColor = handleBackgroundColor(plan);
-
-  function onReviewPlanPress() {
-    const current = useUserStorage();
-    if (plan === current.plan) {
-      return;
-    }
+  async function onReviewPlanPress() {
   }
 
   return (

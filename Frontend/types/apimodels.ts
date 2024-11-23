@@ -1,17 +1,11 @@
-import { LessonStatus, QuestionType, SubscriptionPlan, UserLevel, WordType } from "./enum";
+import { LessonStatus, LessonType, QuestionType, SubscriptionPlan, UserLevel, WordType } from "./enum";
 
-export interface ApiErrorResponse {
-  errorCode: number;
-  messages: string[];
+export interface ApiResponse {
+  code: number;
+  data: Object;
 }
 
-export function isApiErrorResponse(obj: any): obj is ApiErrorResponse {
-  return (
-    obj && typeof obj.errorCode === "number" && Array.isArray(obj.messages)
-  );
-}
-
-export type Word = {
+export interface Word {
   id: number;
   value: string;
   mean: string;
@@ -23,16 +17,25 @@ export type Word = {
   examples?: WordExample[];
 };
 
-export type Lesson = {
+export interface PageResponse<T> {
+  totalPage: number;
+  items: T[];
+}
+
+export function isError(data: any): data is string[] {
+  return Array.isArray(data) && data.every((item) => typeof item === "string");
+}
+
+
+export interface Lesson {
   id: number;
   name: string;
   cover: string;
-  lastLearnQuestion: number;
-  totalQuestion: number;
+  type: LessonType;
   status: LessonStatus;
 };
 
-export type LessonDetail = {
+export interface LessonDetail {
   id: number;
   name: string;
   questions: Question[];
@@ -40,60 +43,49 @@ export type LessonDetail = {
   diamonds: number;
 };
 
-export type Question = {
-  type: QuestionType;
-  
-  incorrectOptions?: QuestionOption[];
 
-  mainSentense?: string[];
-  mainSentenseAudio?: any;
+export interface Question {
+  type: keyof typeof QuestionType;
+
+  option?: AnswerOption;
+  unrelatedOptions?: AnswerOption[];
+
+  sentenseMeaning?: string;
+  sentenseAudio?: string;
+  sentenseWords?: string[];
   unrelatedWords?: string[];
-
-  matching?: Map<string, string>;
 };
 
-export type Ranking = {
+export interface Ranking {
   users: RankingUser[],
-  fetchedOn: Date
+  fetchedOn: string
 }
 
-export type RankingUser = {
-  rank: number;
+export interface RankingUser {
+  elo: number;
+  userRank: number;
   username: string;
   avatar: string;
-  experience: number;
 };
 
-export type QuestionOption = {
+export interface AnswerOption {
   text: string;
   image: string;
+  audio: string;
 }
 
-export type Task = {
-  id: number;
-  name: string;
-  total: number;
-  current: number;
-  award: TaskAward
-}
-
-export type TaskAward = {
-  diamonds?: number;
-  experiences?: number;
-}
-
-export type WordExample = {
+export interface WordExample {
   sentense: string;
   mean: string;
 };
 
-export type User = {
+export interface User {
   id: string;
   username: string;
   avatar: string;
 };
 
-export type UserInfo = {
+export interface UserInfo {
   id: string;
   username: string;
   avatar: string;
@@ -102,15 +94,10 @@ export type UserInfo = {
   diamond: number;
   experiences: number;
   level: UserLevel;
+  plan: SubscriptionPlan;
 };
 
-export type Auth = {
+export interface Auth {
   refreshToken: string;
   accessToken: string;
 };
-
-export function isAuth(obj: any): obj is Auth {
-  return (
-    obj && typeof obj.refreshToken === "string" && obj.accessToken === "string"
-  );
-}

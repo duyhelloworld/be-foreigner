@@ -1,46 +1,39 @@
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { playWordAudio } from "../../../utils/AudioUtil";
-import { Ionicons } from "@expo/vector-icons";
 import { AppColors } from "../../../types/colors";
 import { LearnScreenContext } from "../LearnScreenHooks";
 
-interface GiveWordsRearrangeMeansViewProp {
-  mainSentense: string[];
-  unrelatedWords: string[];
-  mainSentenseAudio: string;
+interface GiveSentenseRearrangWordsViewProp {
+  sentenseWords: string[];
+  sentenseMeaning: string;
+  unrelatedWords?: string[];
 }
 
-const GiveWordsRearrangeMeansView = ({
-  mainSentense,
+const GiveSentenseRearrangWordsView = ({
+  sentenseMeaning,
+  sentenseWords,
   unrelatedWords,
-  mainSentenseAudio,
-}: GiveWordsRearrangeMeansViewProp) => {
+}: GiveSentenseRearrangWordsViewProp) => {
   const resultRef = useContext(LearnScreenContext);
-
   const [selectedAnswers, setSelectedAnswers] = useState<string[]>([]);
   const [unselectedAnswers, setUnselectedAnswers] = useState<string[]>([]);
-
+  
   useEffect(() => {
-    const shuffedAnswers = [...mainSentense, ...unrelatedWords].sort(
-      () => 0.5 - Math.random()
-    );
+    const shuffedAnswers = (
+      unrelatedWords ? [...sentenseWords, ...unrelatedWords] : [...sentenseWords]
+    ).sort(() => 0.5 - Math.random());
+    setSelectedAnswers([]);
     setUnselectedAnswers(shuffedAnswers);
-  }, []);
+  }, [sentenseWords]);
 
   useEffect(() => {
     resultRef.current = {
       enabled: true,
       message: "",
       isCorrect:
-        JSON.stringify(selectedAnswers) === JSON.stringify(mainSentense),
+        JSON.stringify(selectedAnswers).trim() === JSON.stringify(sentenseWords).trim(),
     };
-  }, [selectedAnswers, mainSentense]);
+  }, [selectedAnswers, sentenseWords]);
 
   function handleOnUnselectedPress(answer: string) {
     setUnselectedAnswers(unselectedAnswers.filter((ans) => ans !== answer));
@@ -55,13 +48,7 @@ const GiveWordsRearrangeMeansView = ({
   return (
     <View style={styles.container}>
       <View style={styles.correctAnswerContainer}>
-        <Ionicons
-          style={styles.correctAnswerAudioIcon}
-          name="volume-high"
-          size={25}
-          onPress={() => playWordAudio(mainSentenseAudio)}
-        />
-        <Text style={styles.correctAnswerText}>{mainSentense.join(" ")}</Text>
+        <Text style={styles.correctAnswerText}>{sentenseMeaning}</Text>
       </View>
 
       <View style={styles.selectedAnswerContainer}>
@@ -91,7 +78,7 @@ const GiveWordsRearrangeMeansView = ({
   );
 };
 
-export default GiveWordsRearrangeMeansView;
+export default GiveSentenseRearrangWordsView;
 
 const styles = StyleSheet.create({
   container: {
@@ -106,13 +93,6 @@ const styles = StyleSheet.create({
   },
   correctAnswerText: {
     fontSize: 20,
-  },
-  correctAnswerAudioIcon: {
-    color: AppColors.white,
-    backgroundColor: AppColors.green,
-    borderRadius: 5,
-    padding: 2,
-    marginRight: 5,
   },
   answer: {
     padding: 10,
@@ -131,7 +111,7 @@ const styles = StyleSheet.create({
     height: "50%",
     flexWrap: "wrap",
     flexDirection: "row",
-    backgroundColor: AppColors.light
+    backgroundColor: AppColors.light,
   },
   selectedAnswer: {
     borderColor: AppColors.green,

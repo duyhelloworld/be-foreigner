@@ -1,22 +1,26 @@
-import { StyleSheet, Text, TextInput, View, Pressable } from "react-native";
+import { StyleSheet, Text, TextInput, View, Pressable, TextInputProps } from "react-native";
 import React, { useState } from "react";
 import { AppColors } from "../../types/colors";
 import { Ionicons } from "@expo/vector-icons";
 
 interface InputTextViewProp {
-  text: string;
-  value: string;
-  setValue: (v: string) => void;
+  placeholder?: string;
+  enable? :boolean;
+  value?: string;
+  setValue?: (v: string) => void;
   error?: string;
   secure?: boolean;
+  inputType?: TextInputProps["keyboardType"]
 }
 
 const InputTextView = ({
-  text,
+  placeholder,
   value,
   setValue,
   error,
+  enable = true,
   secure = false,
+  inputType = "default"
 }: InputTextViewProp) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -24,10 +28,13 @@ const InputTextView = ({
     <View style={styles.inputContainer}>
       <View style={styles.inputWrapper}>
         <TextInput
-          placeholder={text}
+          placeholder={placeholder}
           placeholderTextColor={AppColors.gray}
           style={[styles.input, error ? styles.inputError : null]}
           value={value}
+          editable={enable}
+          selectTextOnFocus={enable}
+          keyboardType={inputType}
           onChangeText={setValue}
           secureTextEntry={secure && !showPassword}
         />
@@ -36,7 +43,11 @@ const InputTextView = ({
             onPress={() => setShowPassword(!showPassword)}
             style={styles.showButton}
           >
-            <Ionicons name={showPassword ? "eye-off-outline" : "eye-outline"} size={24} color={AppColors.grayDark} />
+            <Ionicons
+              name={showPassword ? "eye-off-outline" : "eye-outline"}
+              size={24}
+              color={AppColors.grayDark}
+            />
           </Pressable>
         )}
       </View>

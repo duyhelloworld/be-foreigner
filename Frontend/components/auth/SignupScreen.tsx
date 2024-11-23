@@ -2,14 +2,12 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  TextInput,
   Pressable,
   StyleSheet,
   Image,
   KeyboardAvoidingView,
   ScrollView,
 } from "react-native";
-import appIcon from "../../assets/icon-transparent.png";
 import googleIcon from "../../assets/google-icon.png";
 import facebookIcon from "../../assets/facebook-icon.png";
 import appleIcon from "../../assets/apple-icon.png";
@@ -18,21 +16,32 @@ import { useAppNavigation } from "../../navigation/AppNavigationHooks";
 import AppIconView from "./AppIconView";
 import SubmitButtonView from "./SubmitButtonView";
 import InputTextView from "./InputTextView";
-import useAuthService from "../../services/AuthService";
+import ImagePickerView from "../common/ImagePickerView";
+import {
+  ImagePickerAsset,
+  MediaTypeOptions,
+  launchImageLibraryAsync,
+  requestMediaLibraryPermissionsAsync,
+} from "expo-image-picker";
+import { ApiResponse, Auth } from "../../types/apimodels";
+import apiClient from "../../config/AxiosConfig";
+import { ApiResponseCode, ContentType } from "../../types/enum";
+import useAuthStorage from "../../storage/AuthStorageHooks";
 
 const SignupScreen = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [fullname, setFullname] = useState("");
+  const [avatar, setAvatar] = useState<ImagePickerAsset>();
 
   const [usernameError, setUsernameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
   const navigator = useAppNavigation();
-  const authService = useAuthService();
-  
+  const authStorage = useAuthStorage();
+
   const validateForm = () => {
     let isValid = true;
     if (!username) {
@@ -61,12 +70,55 @@ const SignupScreen = () => {
 
   async function handleSignup() {
     if (validateForm()) {
-      await authService.signUp(username, password, email, fullname);
+      const formData = new FormData();
+      formData.append("username", username);
+      formData.append("password", password);
+      formData.append("email", email);
+      formData.append("fullname", fullname);
+
+      if (avatar) {
+        let avatarForm : FormDataValue = {
+          uri: avatar.uri,
+          name: avatar.fileName ?? avatar.uri.split(".")[1],
+          type: "image/*"
+        }
+        formData.append("avatar", avatarForm);
+      }
+
+      const response = await apiClient.postForm<ApiResponse>(
+        "auth/sign-up",
+        formData,
+        {
+          headers: {
+            "Content-Type": ContentType.FORM_DATA,
+          },
+        }
+      );
+      if (response.data.code === ApiResponseCode.OK) {
+        await authStorage.saveTokens(response.data.data as Auth);
+        navigator.navigate("AuthNavigator", { screen: "SetupScreen" });
+      } else {
+        console.log("Signup error", response.data);
+      }
     }
   }
 
   function handleLogin() {
     navigator.navigate("AuthNavigator", { screen: "LoginScreen" });
+  }
+
+  async function handleSelectAvatar() {
+    const hasLibraryPermission = await requestMediaLibraryPermissionsAsync();
+    if (hasLibraryPermission) {
+      let result = await launchImageLibraryAsync({
+        allowsEditing: true,
+        quality: 1,
+        mediaTypes: MediaTypeOptions.Images,
+      });
+      if (!result.canceled) {
+        setAvatar(result.assets[0]);
+      }
+    }
   }
 
   return (
@@ -76,34 +128,44 @@ const SignupScreen = () => {
         keyboardShouldPersistTaps="handled"
       >
         <AppIconView />
-
         <View style={styles.signupForm}>
           <InputTextView
-            text="Tài khoản"
+            placeholder="Tài khoản (*)"
             value={username}
             setValue={setUsername}
             error={usernameError}
           />
           <InputTextView
-            text="Email"
+            placeholder="Email (*)"
             value={email}
             setValue={setEmail}
             error={emailError}
           />
           <InputTextView
-            text="Họ và tên"
+            placeholder="Họ và tên"
             value={fullname}
             setValue={setFullname}
           />
-
           <InputTextView
-            text="Mật khẩu"
+            placeholder="Mật khẩu (*)"
             value={password}
             secure
             setValue={setPassword}
             error={passwordError}
           />
-
+          <View style={styles.avatarContainer}>
+            <ImagePickerView
+              label="Chọn ảnh đại diện"
+              onPress={handleSelectAvatar}
+              icon="images"
+            />
+            {avatar && (
+              <Image
+                source={{ uri: avatar.uri }}
+                style={styles.avatarPreview}
+              />
+            )}
+          </View>
           <SubmitButtonView title="Đăng kí" onPress={handleSignup} />
         </View>
 
@@ -150,25 +212,20 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: AppColors.white,
   },
-  logoContainer: {
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  imageBackground: {
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: "5%",
-  },
-  title: {
-    fontSize: 30,
-    color: AppColors.green,
-    fontWeight: "bold",
-    textShadowColor: AppColors.grayDark,
-    textShadowOffset: { width: -1, height: 1 },
-    textShadowRadius: 5,
-  },
   signupForm: {
     marginVertical: 20,
+  },
+  avatarContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 10,
+    justifyContent: "center",
+  },
+  avatarPreview: {
+    width: 70,
+    height: 70,
+    borderRadius: 30,
+    marginLeft: 10,
   },
   oauthContainer: {
     alignItems: "center",

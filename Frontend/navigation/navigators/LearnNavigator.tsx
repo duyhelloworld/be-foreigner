@@ -1,19 +1,19 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import SplashLearnScreen from "../../components/learn/splash/SplashLearnScreen";
 import LearnScreen from "../../components/learn/LearnScreen";
 import CompletedLessonScreen from "../../components/learn/completed/CompletedLessonScreen";
 import StraightScreen from "../../components/learn/completed/StraightScreen";
-import { Task } from "../../types/apimodels";
+import { LessonDetail } from "../../types/apimodels";
+import SplashLearnScreen from "../../components/learn/SplashLearnScreen";
 
 export type LearnNavigatorParams = {
   SplashLearnScreen: { lessonId: number };
-  LearnScreen: undefined;
+  LearnScreen: {jsonLesson: string };
   CompletedLessonScreen: {
+    lessonId: number;
     diamonds: number;
     experiences: number;
     accuracy: number;
-    tasks: Task[]
   };
   StraightScreen: undefined;
 };

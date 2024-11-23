@@ -13,6 +13,7 @@ interface ProfileScreenButtonProp {
   icon?: keyof typeof MaterialCommunityIcons.glyphMap;
   iconColor?: string;
   hightlightText?: boolean;
+  showBadge?: boolean;
 }
 
 const ProfileScreenButton = ({
@@ -22,7 +23,8 @@ const ProfileScreenButton = ({
   textColor = AppColors.black,
   icon,
   iconColor,
-  hightlightText = false
+  hightlightText = false,
+  showBadge = false,
 }: ProfileScreenButtonProp) => {
   const navigator = useNavigation<NavigationProp<RootNavigatorParams>>();
   return (
@@ -32,15 +34,24 @@ const ProfileScreenButton = ({
         navigator.navigate("ProfileNavigator", { screen: targetScreen })
       }
     >
-      <Text style={[styles.buttonText, { color: textColor, fontWeight: hightlightText ? "500" : "300" }]}>{label}</Text>
-      <View style={styles.badgeContainer}>
-        <MaterialCommunityIcons
-          name={icon}
-          size={25}
-          color={iconColor}
-          style={styles.badge}
-        />
-      </View>
+      <Text
+        style={[
+          styles.buttonText,
+          { color: textColor, fontWeight: hightlightText ? "500" : "300" },
+        ]}
+      >
+        {label}
+      </Text>
+      {showBadge ? (
+        <View style={styles.badgeContainer}>
+          <MaterialCommunityIcons
+            name={icon}
+            size={25}
+            color={iconColor}
+            style={styles.badge}
+          />
+        </View>
+      ) : null}
     </Pressable>
   );
 };
@@ -51,24 +62,29 @@ const styles = StyleSheet.create({
   button: {
     flexDirection: "row",
     alignItems: "center",
-    width: "90%",
-    padding: 20,
-    borderWidth: 1,
+    width: "100%",
+    padding: 15,
     borderRadius: 10,
-    borderColor: AppColors.green,
-    marginVertical: 5,
-    elevation: 4
+    marginVertical: 8,
+    elevation: 2,
+    shadowColor: AppColors.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
   buttonText: {
-    fontSize: 20,
+    fontSize: 16,
+    flex: 1,
   },
   badgeContainer: {
     position: "absolute",
-    top: -15,
-    right: -15,
+    top: -10,
+    right: -5,
+    backgroundColor: AppColors.white,
+    borderRadius: 15,
+    padding: 2,
   },
   badge: {
-    padding: 5,
-
-  }
+    padding: 2,
+  },
 });

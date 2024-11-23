@@ -1,40 +1,41 @@
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
-import React, { useContext, useState } from "react";
-import { QuestionOption } from "../../../types/apimodels";
+import React, { useContext, useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { AppColors } from "../../../types/colors";
-import { playWordAudio } from "../../../utils/AudioUtil";
 import { LearnScreenContext } from "../LearnScreenHooks";
+import { Sound } from "expo-av/build/Audio";
+import { AnswerOption } from "../../../types/apimodels";
 
 interface GiveAudioChooseWordViewProp {
-  correctOption: QuestionOption;
-  incorrectOptions: QuestionOption[];
+  option: AnswerOption;
+  unrelatedOptions: AnswerOption[];
 }
 
 const GiveAudioChooseWordView = ({
-  correctOption,
-  incorrectOptions,
+  option,
+  unrelatedOptions,
 }: GiveAudioChooseWordViewProp) => {
-  
-  const answers = [correctOption, ...incorrectOptions];
+  const answers = [option, ...unrelatedOptions].sort();
   const [pressedIndex, setPressedIndex] = useState<number>();
   const resultRef = useContext(LearnScreenContext);
-  
-  const onOptionPress = (currentIndex: number) => {
-    
-    playWordAudio(answers[currentIndex].audio);
 
+  async function play() {
+    let { sound } = await Sound.createAsync({ uri: option.audio });
+    await sound.playAsync();
+  }
+
+  const onOptionPress = (currentIndex: number) => {
     if (pressedIndex === currentIndex) {
       setPressedIndex(undefined);
     } else {
       setPressedIndex(currentIndex);
     }
 
-    let isCorrect = answers[currentIndex] === correctOption;
+    let isCorrect = answers[currentIndex] === option;
     resultRef.current = {
       enabled: true,
       isCorrect: isCorrect,
-      message: isCorrect ? `${correctOption.text}` : "",
+      message: isCorrect ? `${option.text}` : "",
     };
   };
 
@@ -45,7 +46,7 @@ const GiveAudioChooseWordView = ({
           size={100}
           name="volume-high"
           style={styles.audioIcon}
-          onPress={() => playWordAudio(correctOption.audio)}
+          onPress={play}
         />
         <Text style={styles.audioDescription}>Chạm để nghe</Text>
       </View>

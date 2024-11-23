@@ -1,11 +1,9 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { QuestionType } from "../../types/enum";
 import GiveMeanChooseWordView from "./questions/GiveMeanChooseWordView";
-import GiveWordsRearrangeMeansView from "./questions/GiveWordsRearrangeMeansView";
-import MatchWordsToMeansView from "./questions/MatchWordsToMeansView";
-import { sampleLessonDetail } from "../../utils/InitData";
-import { Question } from "../../types/apimodels";
+import GiveWordsRearrangeMeansView from "./questions/GiveSentenseRearrangWordsView";
+import { LessonDetail, Question } from "../../types/apimodels";
 import GiveAudioChooseWordView from "./questions/GiveAudioChooseWordView";
 import CheckButton from "./CheckButton";
 import CorrectBottomSheet from "./bottomsheet/CorrectBottomSheet";
@@ -13,64 +11,60 @@ import IncorrectBottomSheet from "./bottomsheet/IncorrectBottomSheet";
 import ProgressBar from "../common/ProgressBar";
 import { Ionicons } from "@expo/vector-icons";
 import { AppColors } from "../../types/colors";
-import { useAppNavigation } from "../../navigation/AppNavigationHooks";
 import {
-  QuestionResult,
-  LearnScreenContext,
-} from "./LearnScreenHooks";
+  useAppNavigation,
+  useAppParams,
+} from "../../navigation/AppNavigationHooks";
+import { QuestionResult, LearnScreenContext } from "./LearnScreenHooks";
+import GiveAudioRearrangeWords from "./questions/GiveAudioRearrangeWords";
 
 const renderQuestionView = (question: Question) => {
   switch (question.type) {
-    case QuestionType.GIVE_AUDIO_CHOOSE_WORD:
-      if (!question.correctOption || !question.incorrectOptions) {
-        return null;
-      }
+    case "GIVE_AUDIO_CHOOSE_WORD":
       return (
         <GiveAudioChooseWordView
-          correctOption={question.correctOption}
-          incorrectOptions={question.incorrectOptions}
+          option={question.option!}
+          unrelatedOptions={question.unrelatedOptions!}
         />
       );
-    case QuestionType.GIVE_MEAN_CHOOSE_WORD:
-      if (!question.correctOption || !question.incorrectOptions) {
-        return null;
-      }
+    case "GIVE_MEAN_CHOOSE_WORD":
       return (
         <GiveMeanChooseWordView
-          correctOption={question.correctOption}
-          incorrectOptions={question.incorrectOptions}
+          option={question.option!}
+          unrelatedOptions={question.unrelatedOptions!}
         />
       );
-    case QuestionType.GIVE_WORDS_REARRANGE_MEANS:
-      if (
-        !question.mainSentense ||
-        !question.unrelatedWords ||
-        !question.mainSentenseAudio
-      ) {
-        return null;
-      }
+    case "GIVE_SENTENSE_REARRANGE_WORDS":
       return (
         <GiveWordsRearrangeMeansView
-          mainSentense={question.mainSentense}
-          mainSentenseAudio={question.mainSentenseAudio}
+          sentenseMeaning={question.sentenseMeaning!}
+          sentenseWords={question.sentenseWords!}
           unrelatedWords={question.unrelatedWords}
         />
       );
-    case QuestionType.MATCH_WORDS_TO_MEANS:
-      return <MatchWordsToMeansView />;
+    case "GIVE_AUDIO_REARRANGE_WORDS":
+      return (
+        <GiveAudioRearrangeWords
+          sentenseAudio={question.sentenseAudio!}
+          sentenseWords={question.sentenseWords!}
+        />
+      );
+    default: 
+        return <Text>Lỗi hiển thị câu hỏi</Text>
   }
 };
 
 const LearnScreen = () => {
-  const lesson = sampleLessonDetail();
-  const questions = lesson.questions;
-
-  const navigator = useAppNavigation();
+  const { jsonLesson } = useAppParams("LearnNavigator", "LearnScreen");
+  const lesson : LessonDetail = JSON.parse(jsonLesson);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [dialogState, setDialogState] = useState<boolean>();
+  const [isCorrect, setIsCorrect] = useState<boolean>();
+  // const [accuracy, setAccuracy] = useState(100);
+  const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
 
+  const navigator = useAppNavigation();
   const resultRef = useRef<QuestionResult>({} as QuestionResult);
 
   useEffect(() => {
@@ -79,8 +73,8 @@ const LearnScreen = () => {
       isCorrect: false,
       message: "",
     };
-    setDialogState(undefined);
-    setProgress((currentIndex + 1) / questions.length);
+    setIsCorrect(undefined);
+    setProgress((currentIndex + 1) / lesson.questions.length);
   }, [currentIndex]);
 
   function onCheckPress() {
@@ -88,18 +82,28 @@ const LearnScreen = () => {
     if (!ref.enabled) {
       return;
     }
-    setDialogState(ref.isCorrect);
+    setIsCorrect(ref.isCorrect);
+    setBottomSheetVisible(true);
+    // if (!ref.isCorrect) {
+    //   setAccuracy(accuracy - accuracy / lesson.questions.length);
+    // }
   }
 
   function nextQuestion() {
-    if (currentIndex + 1 < questions.length) {
-      setDialogState(false);
+    if (currentIndex + 1 < lesson.questions.length) {
       setCurrentIndex(currentIndex + 1);
+      setBottomSheetVisible(false);
     } else {
       // Nếu index vượt => completed
       navigator.navigate("LearnNavigator", {
         screen: "CompletedLessonScreen",
-        params: { ...lesson },
+        params: {
+          lessonId: lesson.id,
+          diamonds: lesson.diamonds,
+          experiences: lesson.experiences,
+          // accuracy: accuracy,
+          accuracy: 0
+        },
       });
     }
   }
@@ -119,17 +123,25 @@ const LearnScreen = () => {
         />
       </View>
 
-      <Text style={styles.questionTitle}>{questions[currentIndex].type}</Text>
+      <Text style={styles.questionTitle}>
+        {QuestionType[lesson.questions[currentIndex].type]}
+      </Text>
 
       <View style={styles.questionContainer}>
         <LearnScreenContext.Provider value={resultRef}>
-          {renderQuestionView(questions[currentIndex])}
+          {renderQuestionView(lesson.questions[currentIndex])}
         </LearnScreenContext.Provider>
       </View>
 
-      {dialogState === undefined ? (
+      {isBottomSheetVisible && (
+        <View
+          style={styles.overlay}
+        />
+      )}
+
+      {isCorrect === undefined ? (
         <CheckButton onCheckPress={onCheckPress} />
-      ) : dialogState ? (
+      ) : isCorrect ? (
         <CorrectBottomSheet
           message={resultRef.current.message}
           onContinuePress={nextQuestion}
@@ -172,5 +184,15 @@ const styles = StyleSheet.create({
   },
   questionContainer: {
     flex: 1,
+  },
+  overlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    // Đảm bảo nằm trên các thành phần khác
+    zIndex: 1, 
   },
 });

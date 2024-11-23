@@ -49,10 +49,10 @@ const getIcon = (screen: keyof HomeNavigatorParams, isFocused: boolean) => {
           color={isFocused ? ICON_COLOR_FOCUSED : ICON_COLOR}
         />
       );
-    case "TaskScreen":
+    case "GameScreen":
       return (
         <Ionicons
-          name="trophy-outline"
+          name="game-controller"
           size={ICON_SIZE}
           color={isFocused ? ICON_COLOR_FOCUSED : ICON_COLOR}
         />

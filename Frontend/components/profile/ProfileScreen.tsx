@@ -1,136 +1,120 @@
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import ProfileScreenButton from './ProfileScreenButton'
-import { useUserStorage } from '../../storage/UserStorageHooks'
-import { AppColors } from '../../types/colors'
-import { Ionicons } from '@expo/vector-icons'
-import SubscriptionPlanView from '../common/SubscriptionPlanView'
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import ProfileScreenButton from "./ProfileScreenButton";
+import { AppColors } from "../../types/colors";
+import { UserInfo } from "../../types/apimodels";
+import { useUserStorage } from "../../storage/UserStorageHooks";
+import ProfileFooterView from "./ProfileFooterView";
 
 const ProfileScreen = () => {
+  const [user, setUser] = useState<UserInfo>();
+  const userStorage = useUserStorage();
 
-  const user = useUserStorage();
+  useEffect(() => {
+    async function loadUser() {
+      const current = await userStorage.getInfo();
+      setUser(current);
+    }
+    loadUser();
+  }, []);
 
   return (
     <View style={styles.container}>
-      <View style={styles.heading}>
-        <Image src={user.avatar} style={styles.avatar} />
-        <View style={styles.infoContainer}>
-          <Text style={styles.username}>{user.username}</Text>
-          <Text style={styles.key}>
-            Họ tên :<Text style={styles.fullname}>{user.fullname}</Text>
-          </Text>
-          <Text style={styles.key}>
-            Email :<Text style={styles.email}>{user.email}</Text>
-          </Text>
-
-          <SubscriptionPlanView plan={user.plan} />
-
-          <View style={styles.providerContainer}>
-            <Ionicons
-              name="logo-facebook"
-              size={25}
-              style={styles.providerIcon}
-            />
-            <Ionicons
-              name="logo-google"
-              size={25}
-              style={styles.providerIcon}
-            />
-            <Ionicons
-              name="logo-github"
-              size={25}
-              style={styles.providerIcon}
-            />
-            <Ionicons name="logo-apple" size={25} style={styles.providerIcon} />
-          </View>
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.topContainer}>
+          <Image
+            source={
+              { uri: user?.avatar } ??
+              require("../../assets/default-avatar.jpg")
+            }
+            style={styles.avatar}
+          />
+          <Text style={styles.username}>{user?.username}</Text>
         </View>
-      </View>
-
-      <ScrollView contentContainerStyle={styles.buttonContainer}>
-        <ProfileScreenButton
-          label="Nâng cấp tài khoản "
-          targetScreen="UpgradePlanScreen"
-          backgroundColor={AppColors.yellowDark}
-          textColor={AppColors.white}
-          icon='crown'
-          iconColor={AppColors.yellow}
-          hightlightText
-        />
-        <ProfileScreenButton
-          label="Quên mật khẩu"
-          targetScreen="ForgotPasswordScreen"
-        />
-        <ProfileScreenButton
-          label="Cập nhật thông tin"
-          targetScreen="UpdateProfileScreen"
-        />
-        <ProfileScreenButton
-          label="Cài đặt thông báo"
-          targetScreen="NotificationSetttingScreen"
-        />
-        <ProfileScreenButton
-          label="Đăng xuất"
-          targetScreen="LogoutScreen"
-          backgroundColor={AppColors.red}
-          textColor={AppColors.white}
-          hightlightText
+        <View style={styles.bottomContainer}>
+          <ProfileScreenButton
+            label="Nâng cấp tài khoản "
+            targetScreen="UpgradePlanScreen"
+            backgroundColor={AppColors.yellow}
+            textColor={AppColors.black}
+            icon="crown"
+            iconColor={AppColors.yellow}
+            hightlightText
+            showBadge
+          />
+          <ProfileScreenButton
+            label="Lịch sử học bài"
+            targetScreen="ChangePasswordScreen"
+          />
+          <ProfileScreenButton
+            label="Thống kê kết quả học"
+            targetScreen="ChangePasswordScreen"
+          />
+          <ProfileScreenButton
+            label="Cập nhật thông tin"
+            targetScreen="UpdateProfileScreen"
+          />
+          <ProfileScreenButton
+            label="Cài đặt thông báo"
+            targetScreen="NotificationSetttingScreen"
+          />
+          <ProfileScreenButton
+            label="Đăng xuất"
+            targetScreen="LogoutScreen"
+            backgroundColor={AppColors.red}
+            textColor={AppColors.white}
+            hightlightText
+          />
+        </View>
+        <ProfileFooterView
+          companyName="Duy Nến Dev"
+          email="duy0184466@huce.edu.vn"
+          releaseYear={2024}
+          facebookUrl="https://facebook.com/duyhelloworld"
+          githubUrl="https://github.com/duyhelloworld"
         />
       </ScrollView>
     </View>
   );
-}
-
-export default ProfileScreen
+};
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 10,
-    justifyContent: "space-around",
+    flex: 1,
   },
-  heading: {
+  scrollView: {
+    flex: 1,
+  },
+  topContainer: {
+    backgroundColor: AppColors.green,
     flexDirection: "row",
-    marginTop: 20,
+    alignItems: "flex-end",
+    padding: 10,
   },
-  infoContainer: {
+  bottomContainer: {
     flexDirection: "column",
-    justifyContent: "space-between",
-  },
-  avatar: {
-    width: 100,
-    height: 100,
-    borderWidth: 2,
-    borderCurve: "continuous",
-    borderRadius: 200,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    backgroundColor: AppColors.white,
   },
   username: {
-    fontSize: 15,
-    fontFamily: "serif",
-    textAlign: "center",
-    color: AppColors.blue,
-    padding: 10,
-    backgroundColor: AppColors.lightGreen,
-    opacity: 0.9,
+    fontWeight: "700",
+    color: AppColors.white,
+    maxWidth: "40%",
+    fontSize: 23,
   },
-  key: {
-    fontWeight: "500",
-    fontSize: 16,
-    maxWidth: 200,
+  avatar: {
+    width: 200,
+    height: 200,
+    borderRadius: 100,
+    maxWidth: "60%",
   },
-  fullname: {
-    fontWeight: "300",
-  },
-  email: {
-    fontWeight: "300",
-  },
-  providerContainer: {
-    flexDirection: "row",
-  },
-  providerIcon: {
-    padding: 5,
-    margin: 2,
-  },
-  providerCurrent: {},
-  buttonContainer: {
-    alignItems: 'center'
-  }
 });
+
+export default ProfileScreen;

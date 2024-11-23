@@ -1,27 +1,47 @@
 import { FlatList, Image, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
-import { sampleRanking } from "../../utils/InitData";
 import RankingUserView from "./RankingUserView";
 import { Ionicons } from "@expo/vector-icons";
 import { AppColors } from "../../types/colors";
+import { ApiResponse, Ranking, UserInfo } from "../../types/apimodels";
+import { useUserStorage } from "../../storage/UserStorageHooks";
+import apiClient from "../../config/AxiosConfig";
+import { ApiResponseCode } from "../../types/enum";
 
 const RankingScreen = () => {
-  const { users } = sampleRanking();
-  const current = users[2];
+  const [ranking, setRanking] = useState<Ranking>();
+  const [currentUser, setCurrentUser] = useState<string>();
+
+  const userStorage = useUserStorage();
 
   const [showNotification, setShowNotification] = useState(true);
 
   useEffect(() => {
+    async function load() {
+      const current = await userStorage.getInfo();
+      setCurrentUser(current?.username);
+    }
+    load();
     const timer = setTimeout(() => setShowNotification(false), 1500);
     return () => clearTimeout(timer);
-  }, []);
+  }, [userStorage]);
+
+  async function loadData() {
+    const response = await apiClient.get<ApiResponse>("ranking");
+    if (response.data.code === ApiResponseCode.OK) {
+      setRanking(response.data.data as Ranking);
+    }
+  }
+
+  useEffect(() => {
+    loadData();
+  }, [])
 
   return (
     <View style={styles.container}>
       <View style={styles.headingContainer}>
-        <Image source={{ uri: current.avatar }} style={styles.avatar} />
         <Text style={styles.title}>Bảng xếp hạng</Text>
-        <Ionicons name="reload" color={AppColors.blue} size={30} />
+        <Ionicons name="reload" color={AppColors.blue} size={30} onPress={loadData} />
       </View>
       <View style={styles.body}>
         <Image
@@ -30,13 +50,13 @@ const RankingScreen = () => {
         />
         <FlatList
           keyExtractor={(item) => item.username}
-          data={users}
+          data={ranking?.users}
           renderItem={({ item }) => (
             <RankingUserView
               user={item}
-              isMe={item.username === current.username}
+              isMe={item.username === currentUser}
               showNotification={
-                item.username === current.username && showNotification
+                item.username === currentUser && showNotification
               }
             />
           )}
@@ -50,17 +70,12 @@ export default RankingScreen;
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 20,
+    marginHorizontal: 10,
   },
   headingContainer: {
     flexDirection: "row",
     marginTop: 10,
     justifyContent: "space-between",
-  },
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
   },
   title: {
     fontSize: 20,

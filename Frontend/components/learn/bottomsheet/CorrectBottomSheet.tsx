@@ -2,6 +2,7 @@ import React from "react";
 import {  StyleSheet } from "react-native";
 import AbstractBottomSheet from "./AbstractBottomSheet";
 import { AppColors } from "../../../types/colors";
+import correctSoundEffect from "../../../assets/correct-answer-effect.mp3"
 
 interface CorrectBottomSheetProp {
   message: string;
@@ -20,7 +21,7 @@ const CorrectBottomSheet = ({onContinuePress, message} : CorrectBottomSheetProp)
         style: styles.continueButton,
         textStyle: styles.continueButtonText,
         onPress: onContinuePress,
-        pressAudio: require("../../../temp/correct.mp3")
+        buttonAudio: correctSoundEffect
       }}
     />
   );

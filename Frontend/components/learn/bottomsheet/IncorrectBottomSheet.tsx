@@ -2,6 +2,7 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import AbstractBottomSheet from "./AbstractBottomSheet";
 import { AppColors } from "../../../types/colors";
+import incorrectSoundEffect from "../../../assets/incorrect-answer-effect.mp3";
 
 interface IncorrectBottomSheetProp {
   message: string;
@@ -22,7 +23,7 @@ const IncorrectBottomSheet = ({
         style: [styles.button, styles.skipButton],
         textStyle: styles.buttonText,
         onPress: onSkipPress,
-        pressAudio: require("../../../temp/incorrect.mp3")
+        buttonAudio: incorrectSoundEffect
       }}
     />
   );

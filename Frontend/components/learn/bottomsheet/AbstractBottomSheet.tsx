@@ -1,14 +1,20 @@
 import {
   Animated,
+  Dimensions,
+  Platform,
   Pressable,
   TextStyle,
   ViewStyle,
   useAnimatedValue,
 } from "react-native";
-import { SCREEN_HEIGHT } from "../../../config/AppScreenConstant";
 import { StyleSheet, Text, View } from "react-native";
-import React, { useEffect, useRef } from "react";
-import { playAudio } from "../../../utils/AudioUtil";
+import React, { useEffect, useRef, useState } from "react";
+import { Sound } from "expo-av/build/Audio";
+
+const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } =
+  Platform.OS === "android"
+    ? Dimensions.get("screen")
+    : Dimensions.get("window");
 
 const BOTTOM_SHEET_MAX_HEIGHT = SCREEN_HEIGHT * 0.25;
 const BOTTOM_SHEET_MIN_HEIGHT = 0;
@@ -20,7 +26,7 @@ type Button = {
   text: string;
   style: ViewStyle[] | ViewStyle;
   textStyle: TextStyle;
-  pressAudio: any;
+  buttonAudio: any;
   onPress: () => void;
 };
 
@@ -39,6 +45,15 @@ const AbstractBottomSheet = ({
 }: AbstractBottomSheetProp) => {
   const animatedValue = useAnimatedValue(0);
   const lastGestureDy = useRef(0);
+
+  useEffect(() => {
+    const onOpen = async () => {
+      const { sound } = await Sound.createAsync(button.buttonAudio);
+      await sound.playAsync();
+      springAnimation(MAX_UPWARD_TRANSLATE_Y);
+    };
+    onOpen();
+  }, []);
 
   const springAnimation = (toValue: number) => {
     lastGestureDy.current = toValue;
@@ -62,19 +77,12 @@ const AbstractBottomSheet = ({
     };
   };
 
-  const onOpen = () => {
-    springAnimation(MAX_UPWARD_TRANSLATE_Y);
-    playAudio(button.pressAudio)
-  };
+  
 
   const onClose = () => {
     springAnimation(MAX_DOWNWARD_TRANSLATE_Y);
     button.onPress();
   };
-
-  useEffect(() => {
-    onOpen();
-  }, []);
 
   return (
     <Animated.View style={[styles.bottomSheet, animatedStyle()]}>
@@ -103,6 +111,7 @@ const styles = StyleSheet.create({
     bottom: BOTTOM_SHEET_MIN_HEIGHT - BOTTOM_SHEET_MAX_HEIGHT,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
+    zIndex: 2,
   },
   titleContainer: {
     marginTop: 20,

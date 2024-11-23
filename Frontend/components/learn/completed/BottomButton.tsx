@@ -20,7 +20,7 @@ export default BottomButton
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    bottom: 15,
+    bottom: 20,
     backgroundColor: AppColors.darkGreen,
     marginHorizontal: 20,
     width: "90%",

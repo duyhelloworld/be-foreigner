@@ -1,60 +1,64 @@
-import { FlatList, Image, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import { Animated, Image, StyleSheet, Text, View, useAnimatedValue } from "react-native";
+import React, { useEffect } from "react";
 import { AppColors } from "../../../types/colors";
 import {
   useAppNavigation,
   useAppParams,
 } from "../../../navigation/AppNavigationHooks";
 import BottomButton from "./BottomButton";
-import TaskItemView from "../../task/TaskItemView";
+import apiClient from "../../../config/AxiosConfig";
+import { ApiResponse } from "../../../types/apimodels";
+import { ApiResponseCode } from "../../../types/enum";
+import accuracyImage from "../../../assets/accuracy.png";
+import diamondImage from "../../../assets/diamond.png";
+import experienceImage from "../../../assets/experience.png";
+import appImage from "../../../assets/icon.png";
 
 const CompletedLessonScreen = () => {
-  const { diamonds, accuracy, experiences, tasks } = useAppParams(
-    "LearnNav",
+  const { diamonds, accuracy, experiences, lessonId } = useAppParams(
+    "LearnNavigator",
     "CompletedLessonScreen"
   );
   const navigator = useAppNavigation();
 
-  function onContinuePress() {
-    navigator.navigate("LearnNavigator", { screen: "StraightScreen" });
+  useEffect(() => {
+    
+  }, []);
+
+  async function onContinuePress() {
+    const response = await apiClient.put<ApiResponse>("lesson/exam/complete", {
+      lessonId,
+      accuracy,
+    });
+    if (response.data.code === ApiResponseCode.OK) {
+      navigator.navigate("LearnNavigator", { screen: "StraightScreen" });
+    }
   }
 
   return (
     <View style={styles.container}>
       <Text style={styles.completedText}>Hoàn thành bài học</Text>
 
+      <Image source={appImage} style={styles.appImage} />
+
       <View style={styles.statisticContainer}>
         <View style={styles.statisticRow}>
-          <Image
-            source={require("../../../assets/diamond.png")}
-            style={styles.statisticImage}
-          />
-          <Text style={styles.statisticText}>+ {diamonds}</Text>
+          <Image source={diamondImage} style={styles.statisticImage} />
+          <Animated.Text style={styles.statisticText}>
+            +{diamonds}
+          </Animated.Text>
         </View>
 
         <View style={styles.statisticRow}>
-          <Image
-            source={require("../../../assets/experience.png")}
-            style={styles.statisticImage}
-          />
+          <Image source={experienceImage} style={styles.statisticImage} />
           <Text style={styles.statisticText}>+ {experiences}</Text>
         </View>
 
         <View style={styles.statisticRow}>
-          <Image
-            source={require("../../../assets/accuracy.png")}
-            style={styles.statisticImage}
-          />
+          <Image source={accuracyImage} style={styles.statisticImage} />
           <Text style={styles.statisticText}>{accuracy}%</Text>
         </View>
       </View>
-
-      <FlatList
-        data={tasks}
-        keyExtractor={task => task.name}
-        renderItem={({ item }) => <TaskItemView task={item} />}
-        style={styles.taskContainer}
-      />
 
       <BottomButton title="Tiếp tục" onPress={onContinuePress} />
     </View>
@@ -66,16 +70,23 @@ export default CompletedLessonScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: "center",
   },
   completedText: {
     color: AppColors.green,
     fontWeight: "700",
     fontSize: 30,
-    textAlign: "center",
     marginVertical: 30,
+  },
+  appImage: {
+    width: 200,
+    height: 200,
+    marginTop: 20,
+    resizeMode: "contain",
   },
   statisticContainer: {
     flexDirection: "row",
+    marginTop: 50,
     justifyContent: "space-between",
   },
   statisticRow: {
@@ -94,9 +105,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 15,
     fontWeight: "800",
-  },
-  taskContainer: {
-    marginHorizontal: 10,
-    marginVertical: 15,
   },
 });

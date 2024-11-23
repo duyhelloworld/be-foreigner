@@ -25,28 +25,34 @@ export type RootNavigatorParams = {
 };
 
 export type AppParams = {
-  RootNav: RootNavigatorParams;
-  AuthNav: AuthNavigatorParams;
-  LearnNav: LearnNavigatorParams;
-  ProfileNav: ProfileNavigatorParams;
+  AuthNavigator: AuthNavigatorParams;
+  LearnNavigator: LearnNavigatorParams;
+  ProfileNavigator: ProfileNavigatorParams;
 };
 
 export default function AppNavigation() {
   const Stack = createNativeStackNavigator<RootNavigatorParams>();
+  const [isSignedIn, setIsSignedIn] = useState<boolean>();
 
-  const { checkSignedIn } = useAuthStorage();
+  const authStorage = useAuthStorage();
+
+  useEffect(() => {
+    async function checkSignedInAsync() {
+      setIsSignedIn(!await authStorage.getAccessToken());
+    }
+    checkSignedInAsync();
+  }, [isSignedIn]);
+
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {checkSignedIn() ? (
-          <Stack.Screen name="AuthNavigator" component={AuthNavigator} />
-        ) : (
-          <Stack.Group>
-            <Stack.Screen name="HomeNavigator" component={HomeNavigator} />
-            <Stack.Screen name="LearnNavigator" component={LearnNavigator} />
-            <Stack.Screen name="ProfileNavigator" component={ProfileNavigator} />
-          </Stack.Group>
-        )}
+      <Stack.Navigator
+        initialRouteName={isSignedIn ? "HomeNavigator" : "AuthNavigator"}
+        screenOptions={{ headerShown: false }}
+      >
+        <Stack.Screen name="AuthNavigator" component={AuthNavigator} />
+        <Stack.Screen name="HomeNavigator" component={HomeNavigator} />
+        <Stack.Screen name="LearnNavigator" component={LearnNavigator} />
+        <Stack.Screen name="ProfileNavigator" component={ProfileNavigator} />
       </Stack.Navigator>
     </NavigationContainer>
   );

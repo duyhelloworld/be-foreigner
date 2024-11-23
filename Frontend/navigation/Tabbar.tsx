@@ -10,7 +10,7 @@ import {
 import TabbarIcon from "./TabbarIcon";
 import { HomeNavigatorParams } from "./navigators/HomeNavigator";
 import { AppColors } from "../types/colors";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Tabbar({ state, navigation }: BottomTabBarProps) {
   const [dimensions, setDimensions] = useState({ width: 100, height: 20 });

@@ -1,22 +1,20 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import React, { useContext, useState } from "react";
-import { Ionicons } from "@expo/vector-icons";
-import { QuestionOption } from "../../../types/apimodels";
 import { AppColors } from "../../../types/colors";
-import { playAudio } from "../../../utils/AudioUtil";
 import { LearnScreenContext } from "../LearnScreenHooks";
+import { AnswerOption } from "../../../types/apimodels";
 
 interface GiveMeanChooseWordViewProp {
-  incorrectOptions: QuestionOption[];
-  correctOption: QuestionOption;
+  option: AnswerOption;
+  unrelatedOptions: AnswerOption[];
 }
 
 const GiveMeanChooseWordView = ({
-  incorrectOptions,
-  correctOption,
+  option,
+  unrelatedOptions,
 }: GiveMeanChooseWordViewProp) => {
   const resultRef = useContext(LearnScreenContext);
-  const answers = [correctOption, ...incorrectOptions];
+  const answers = [option, ...unrelatedOptions];
   const [selectedIndex, setSelectedIndex] = useState<number>();
 
   const onOptionPress = (currentIndex: number) => {
@@ -26,26 +24,20 @@ const GiveMeanChooseWordView = ({
       setSelectedIndex(currentIndex);
     }
 
-    let isCorrect = answers[currentIndex] === correctOption;
+    let isCorrect = answers[currentIndex] === option;
     resultRef.current = {
       enabled: true,
       isCorrect: isCorrect,
       message: isCorrect
-        ? `${correctOption.text}`
-        : `${correctOption.text} mới là đáp án mà`,
+        ? `${option.text}`
+        : `${option.text} mới là đáp án mà`,
     };
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.correctAnswerContainer}>
-        <Ionicons
-          name="volume-high"
-          size={25}
-          style={styles.correctAnswerAudio}
-          onPress={() => playAudio(correctOption.audio)}
-        />
-        <Text style={styles.correctAnswerText}>{correctOption.text}</Text>
+        <Text style={styles.correctAnswerText}>{option.text}</Text>
       </View>
 
       <View style={styles.answersContainer}>
@@ -83,13 +75,6 @@ const styles = StyleSheet.create({
     marginBottom: "3%",
     color: AppColors.green,
     fontSize: 23,
-  },
-  correctAnswerAudio: {
-    color: AppColors.white,
-    backgroundColor: AppColors.green,
-    borderRadius: 5,
-    padding: 2,
-    marginRight: 5,
   },
   answersContainer: {
     flex: 1,

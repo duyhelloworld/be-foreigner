@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  TextInput,
   Pressable,
   StyleSheet,
   Image,
   KeyboardAvoidingView,
   ScrollView,
+  FlatList,
 } from "react-native";
 import googleIcon from "../../assets/google-icon.png";
 import facebookIcon from "../../assets/facebook-icon.png";
@@ -17,7 +17,9 @@ import { useAppNavigation } from "../../navigation/AppNavigationHooks";
 import AppIconView from "./AppIconView";
 import SubmitButtonView from "./SubmitButtonView";
 import InputTextView from "./InputTextView";
-import useAuthService from "../../services/AuthService";
+import apiClient from "../../config/AxiosConfig";
+import { ApiResponse, Auth } from "../../types/apimodels";
+import { ApiResponseCode } from "../../types/enum";
 import useAuthStorage from "../../storage/AuthStorageHooks";
 
 const LoginScreen = () => {
@@ -25,9 +27,9 @@ const LoginScreen = () => {
   const [password, setPassword] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [apiError, setApiError] = useState<string[]>([]);
 
-  const navigator = useAppNavigation(); 
-  const authService = useAuthService();
+  const navigator = useAppNavigation();
   const authStorage = useAuthStorage();
 
   const validateForm = () => {
@@ -49,8 +51,16 @@ const LoginScreen = () => {
 
   async function handleLogin() {
     if (validateForm()) {
-      await authService.signIn(username, password);
-      navigator.navigate("HomeNavigator", {screen: "HomeScreen"});
+      const response = await apiClient.post<ApiResponse>("auth/sign-in", {
+        username: username.trim(),
+        password: password.trim(),
+      });
+      if (response.data.code === ApiResponseCode.OK) {
+        await authStorage.saveTokens(response.data.data as Auth);
+        navigator.navigate("AuthNavigator", { screen: "SetupScreen" });
+      } else {
+        setApiError(response.data.data as string[]);
+      }
     }
   }
 
@@ -67,18 +77,20 @@ const LoginScreen = () => {
         <AppIconView />
 
         <InputTextView
-          text="Tài khoản"
+          placeholder="Tài khoản"
           value={username}
           setValue={setUsername}
           error={usernameError}
+          inputType="name-phone-pad"
         />
         <InputTextView
-          text="Mật khẩu"
+          placeholder="Mật khẩu"
           value={password}
           setValue={setPassword}
           error={passwordError}
           secure
         />
+        {apiError ? <Text style={styles.errorText}>{apiError.join(" ")}</Text> : null}
         <View style={styles.loginForm}>
           <SubmitButtonView title="Đăng nhập" onPress={handleLogin} />
         </View>

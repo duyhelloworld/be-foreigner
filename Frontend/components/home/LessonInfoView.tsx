@@ -1,15 +1,13 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { Lesson } from "../../types/apimodels";
-import ProgressBar from "../common/ProgressBar";
 import { AppColors } from "../../types/colors";
 import { Ionicons } from "@expo/vector-icons";
 import { LessonStatus } from "../../types/enum";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { RootNavigatorParams } from "../../navigation/AppNavigation";
-import { sampleTasks } from "../../utils/InitData";
 
-interface UserInfoViewProp {
+interface LessonInfoViewProp {
   lesson: Lesson;
 }
 
@@ -18,18 +16,17 @@ interface LessonStatusBadge {
   color: string;
 }
 
-function getBadge(status: LessonStatus): LessonStatusBadge {
-  switch (status) {
-    case LessonStatus.COMPLETED:
-      return { icon: "trophy", color: AppColors.green };
-    case LessonStatus.LOCKED:
-      return { icon: "lock-closed-outline", color: AppColors.grayDark };
-    case LessonStatus.ONGOING:
-      return { icon: "play", color: AppColors.yellow };
+const LessonInfoView = ({ lesson }: LessonInfoViewProp) => {
+  function getBadge(status: LessonStatus): LessonStatusBadge {
+    switch (status) {
+      case LessonStatus.COMPLETED:
+        return { icon: "trophy", color: AppColors.green };
+      case LessonStatus.ONGOING:
+        return { icon: "play", color: AppColors.yellow };
+      default:
+        return { icon: "lock-closed", color: AppColors.black };
+    }
   }
-}
-
-const UserInfoView = ({ lesson }: UserInfoViewProp) => {
   const { color, icon } = getBadge(lesson.status);
 
   const navigator = useNavigation<NavigationProp<RootNavigatorParams>>();
@@ -45,13 +42,6 @@ const UserInfoView = ({ lesson }: UserInfoViewProp) => {
     <Pressable style={styles.container} onPress={onItemPress}>
       <View style={styles.leftContainer}>
         <View style={styles.heading}>
-          <Text style={styles.percent}>
-            {lesson.lastLearnQuestion}/{lesson.totalQuestion}
-          </Text>
-          <ProgressBar
-            progress={lesson.lastLearnQuestion / lesson.totalQuestion}
-            containerStyle={styles.progressbar}
-          />
         </View>
         <Text style={styles.lessonName}>{lesson.name}</Text>
       </View>
@@ -67,7 +57,7 @@ const UserInfoView = ({ lesson }: UserInfoViewProp) => {
   );
 };
 
-export default UserInfoView;
+export default LessonInfoView;
 
 const styles = StyleSheet.create({
   container: {

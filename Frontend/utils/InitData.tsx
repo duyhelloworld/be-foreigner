@@ -1,53 +1,5 @@
-import { Lesson, LessonDetail, Ranking, Topic, Word } from "../types/apimodels";
+import { Lesson, LessonDetail, Ranking, Word } from "../types/apimodels";
 import { LessonStatus, QuestionType, WordType } from "../types/enum";
-
-export function randomTopicId(): number {
-  const Topics = sampleTopics();
-  return Math.floor(Math.random() * Topics.length + 1);
-}
-
-export function sampleTopic(): Topic {
-  return {
-    id: 1,
-    name: "Động vật",
-    learnCount: 0,
-    coverImage:
-      "https://uberhumor.com/wp-content/uploads/2011/03/these_funny_animals_652_640_30.jpg",
-  };
-}
-
-export function sampleTopics(): Topic[] {
-  return [
-    {
-      id: 1,
-      name: "Động vật",
-      learnCount: 0,
-      coverImage:
-        "https://uberhumor.com/wp-content/uploads/2011/03/these_funny_animals_652_640_30.jpg",
-    },
-    {
-      id: 2,
-      name: "Linh trưởng",
-      learnCount: 0,
-      coverImage:
-        "https://cdnphoto.dantri.com.vn/okMdRVrewuFMQmRQrZJ8BYSWVDg=/2024/07/22/z5642619190636c4477f95f3d45e7da4f0f994392f7545-1721664636331.jpg",
-    },
-    {
-      id: 3,
-      name: "Ước mơ",
-      learnCount: 0,
-      coverImage:
-        "https://m.media-amazon.com/images/I/51gLBzPWoLL._AC_SL1354_.jpg",
-    },
-    {
-      id: 4,
-      name: "Phong cảnh",
-      learnCount: 0,
-      coverImage:
-        "https://uberhumor.com/wp-content/uploads/2011/03/these_funny_animals_652_640_30.jpg",
-    },
-  ];
-}
 
 export function sampleWord(): Word {
   return {
@@ -178,34 +130,9 @@ return [
 ];
 }
 
-export function sampleTasks() {
-  return [
-    {
-      id: 1,
-      name: "Học tổng cộng 10 phút",
-      current: 1,
-      total: 5,
-      award: { diamonds: 10 },
-    },
-    {
-      id: 1,
-      name: "Chia sẻ bài học cho bạn bè",
-      current: 1,
-      total: 10,
-      award: { diamonds: 100 },
-    },
-    {
-      id: 1,
-      name: "Hoàn thành 3 bài học Tuyệt đối điện ảnh",
-      current: 10,
-      total: 10,
-      award: { experiences: 100 },
-    },
-  ];
-}
-
 export function sampleRanking() : Ranking {
   return {
+    fetchedOn: Date.now().toLocaleString(),
     users: [
       {
         avatar:
@@ -255,12 +182,12 @@ export function sampleLessonDetail() : LessonDetail {
     questions: [
       {
         type: QuestionType.GIVE_MEAN_CHOOSE_WORD,
-        correctOption: {
+        option: {
           text: "Animal",
           image: "https://i.ytimg.com/vi/m7Yr9iY8gLY/maxresdefault.jpg",
           audio: "https://d1qx7pbj0dvboc.cloudfront.net/animal.mp3",
         },
-        incorrectOptions: [
+        unrelatedOptions: [
           {
             text: "Car",
             image:
@@ -282,19 +209,18 @@ export function sampleLessonDetail() : LessonDetail {
         ],
       },
       {
-        type: QuestionType.GIVE_WORDS_REARRANGE_MEANS,
-        mainSentense: ["Animal", "is", "important"],
-        mainSentenseAudio: require("../temp/animal_is_important.mp3"),
+        type: QuestionType.GIVE_SENTENSE_REARRANGE_WORDS,
+        sentenseWords: ["Animal", "is", "important"],
         unrelatedWords: ["Stupid", "Nam", "and", "Golden"],
       },
       {
         type: QuestionType.GIVE_AUDIO_CHOOSE_WORD,
-        correctOption: {
+        option: {
           text: "Animal",
           image: "https://i.ytimg.com/vi/m7Yr9iY8gLY/maxresdefault.jpg",
           audio: "https://d1qx7pbj0dvboc.cloudfront.net/animal.mp3",
         },
-        incorrectOptions: [
+        unrelatedOptions: [
           {
             text: "Car",
             image:

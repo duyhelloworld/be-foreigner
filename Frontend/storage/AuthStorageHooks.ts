@@ -1,6 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Auth } from "../types/apimodels";
-import { useEffect, useState } from "react";
 
 const ACCESS_TOKEN_KEY = "access-token";
 const REFRESH_TOKEN_KEY = "refresh-token";
@@ -10,21 +9,9 @@ export type AuthStorageType = {
   removeTokens: () => Promise<void>;
   getAccessToken: () => Promise<string | null>;
   getRefreshToken: () => Promise<string | null>;
-  checkSignedIn: () => boolean;
 };
 
 const useAuthStorage = () : AuthStorageType => {
-  const [isSignedIn, setIsSignedIn] = useState(false);
-
-   useEffect(() => {
-     const checkTokens = async () => {
-       const accessToken = await AsyncStorage.getItem(ACCESS_TOKEN_KEY);
-       setIsSignedIn(!!accessToken);
-     };
-     checkTokens();
-   }, []);
-
-   const checkSignedIn = () => isSignedIn;
 
   const saveTokens = async (newTokens: Auth) => {
     await AsyncStorage.setItem(ACCESS_TOKEN_KEY, newTokens.accessToken);
@@ -46,7 +33,7 @@ const useAuthStorage = () : AuthStorageType => {
     return refreshToken;
   }
 
-  return { saveTokens, removeTokens, getAccessToken, getRefreshToken, checkSignedIn };
+  return { saveTokens, removeTokens, getAccessToken, getRefreshToken };
 };
 
 export default useAuthStorage;

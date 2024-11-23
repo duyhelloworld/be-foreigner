@@ -1,5 +1,8 @@
 {
   "expo": {
+    "updates": {
+      "enabled": false
+    },
     "name": "be-foreigner",
     "slug": "be-foreigner",
     "description": "Ứng dụng học tiếng Anh hàng đầu cho người mới bắt đầu",

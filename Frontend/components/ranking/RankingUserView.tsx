@@ -12,13 +12,8 @@ interface RankingUserViewProp {
 }
 
 const RankingUserView = ({ user, isMe, showNotification }: RankingUserViewProp) => {
-  const navigation = useNavigation<NavigationProp<RootNavigatorParams>>();
 
   function onPress() {
-    navigation.navigate("ProfileNavigator", {
-      screen: "UserDetailScreen",
-      params: { username: user.username },
-    });
   }
 
   return (
@@ -31,10 +26,10 @@ const RankingUserView = ({ user, isMe, showNotification }: RankingUserViewProp) 
           <Text style={styles.notificationText}>Bạn ở đây</Text>
         </View>
       )}
-      <Text style={styles.rankIndex}>{user.rank}</Text>
+      <Text style={styles.rankIndex}>{user.userRank}</Text>
       <Image src={user.avatar} style={styles.avatar} />
       <Text style={styles.username}>{user.username}</Text>
-      <Text style={styles.exp}>{user.experience} XP</Text>
+      <Text style={styles.exp}>{user.elo}</Text>
     </Pressable>
   );
 };
