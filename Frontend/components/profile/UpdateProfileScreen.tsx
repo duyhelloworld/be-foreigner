@@ -6,7 +6,6 @@ import {
   Image,
   ScrollView,
   Pressable,
-  FlatList,
   ActivityIndicator,
 } from "react-native";
 import { AppColors } from "../../types/colors";

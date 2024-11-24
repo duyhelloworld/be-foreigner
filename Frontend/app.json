@@ -3,21 +3,24 @@
     "updates": {
       "enabled": false
     },
-    "name": "be-foreigner",
+    "splash": {
+      "backgroundColor": "#FFFFFF",
+      "resizeMode": "contain",
+      "image": "./assets/icon.png"
+    },
+    "owner": "duyhelloworld",
+    "name": "Be Foreigner",
     "slug": "be-foreigner",
     "description": "Ứng dụng học tiếng Anh hàng đầu cho người mới bắt đầu",
     "version": "1.0.0",
     "orientation": "portrait",
-    "backgroundColor": "#FFFFFF",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "automatic",
-    "ios": {
-      "supportsTablet": true
-    },
     "android": {
       "backgroundColor": "#FFFFFF",
-      "package": "com.anonymous.beforeigner"
+      "package": "com.anonymous.beforeigner",
+      "googleServicesFile": "./google-services.json"
     },
+    "plugins": ["@react-native-firebase/app"],
     "web": {
       "favicon": "./assets/icon.png"
     },
@@ -25,7 +28,6 @@
       "eas": {
         "projectId": "3dff5e1d-883f-43fb-96ea-0319e3881f64"
       }
-    },
-    "owner": "duyhelloworld"
+    }
   }
 }
