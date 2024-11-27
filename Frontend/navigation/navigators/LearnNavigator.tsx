@@ -3,7 +3,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LearnScreen from "../../components/learn/LearnScreen";
 import CompletedLessonScreen from "../../components/learn/completed/CompletedLessonScreen";
 import StraightScreen from "../../components/learn/completed/StraightScreen";
-import { LessonDetail } from "../../types/apimodels";
 import SplashLearnScreen from "../../components/learn/SplashLearnScreen";
 
 export type LearnNavigatorParams = {
@@ -11,8 +10,6 @@ export type LearnNavigatorParams = {
   LearnScreen: {jsonLesson: string };
   CompletedLessonScreen: {
     lessonId: number;
-    diamonds: number;
-    experiences: number;
     accuracy: number;
   };
   StraightScreen: undefined;

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -9,25 +9,28 @@ import {
   Easing,
   Dimensions,
 } from "react-native";
-import BottomButton from "./BottomButton";
+import BottomButton from "../../common/BottomButton";
 import { AppColors } from "../../../types/colors";
-import fireImage from "../../../assets/fire.png";
-import { useAppNavigation } from "../../../navigation/AppNavigationHooks";
 import { LinearGradient } from "expo-linear-gradient";
+import { useAppNavigation, useRootParams } from "../../../navigation/AppNavigation";
+import { useUserStorage } from "../../../storage/UserStorageHooks";
 
-interface StreakAnimationProps {
-  streakDays: number;
-}
-
-export default function StreakAnimation({ streakDays }: StreakAnimationProps) {
+export default function StreakAnimation() {
   const streakOpacity = useAnimatedValue(0);
   const streakPosition = useAnimatedValue(0);
   const congratsOpacity = useAnimatedValue(0);
   const navigator = useAppNavigation();
+  const [streak, setStreak] = useState(0);
 
-  streakDays = 10;
+  const { getInfo } = useUserStorage();
 
   useEffect(() => {
+    async function loadStreak() {
+      const info = await getInfo();
+      setStreak(info?.streakDays ?? 0);
+    }
+    loadStreak();
+
     Animated.sequence([
       Animated.timing(streakOpacity, {
         toValue: 1,
@@ -72,7 +75,7 @@ export default function StreakAnimation({ streakDays }: StreakAnimationProps) {
           colors={[AppColors.yellow, AppColors.blue]}
           style={styles.aura}
         />
-        <Text style={styles.streakNumber}>{streakDays}</Text>
+        <Text style={styles.streakNumber}>{streak}</Text>
       </Animated.View>
       <Animated.Text
         style={[styles.congratsHightlightText, { opacity: congratsOpacity }]}

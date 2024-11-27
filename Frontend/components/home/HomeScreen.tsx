@@ -7,18 +7,13 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import TodayWordView from "./TodayWordView";
-import {
-  ApiResponse,
-  Lesson,
-  PageResponse,
-  Word,
-} from "../../types/apimodels";
+import { ApiResponse, Lesson, PageResponse, Word } from "../../types/apimodels";
 import { AppColors } from "../../types/colors";
 import { ApiResponseCode } from "../../types/enum";
 import LessonInfoView from "./LessonInfoView";
 import apiClient from "../../config/AxiosConfig";
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 6;
 
 const HomeScreen = () => {
   const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -28,9 +23,18 @@ const HomeScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string[]>();
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [refreshScrollCount, setRefreshScrollCount] = useState(0);
 
-  // Gọi API để lấy dữ liệu
-  const loadData = async (pageNumber: number, append = false) => {
+  async function loadWord() {
+    const wordResponse = await apiClient.get<ApiResponse>("word/today");
+    if (wordResponse.data.code === ApiResponseCode.OK) {
+      setTodayWord(wordResponse.data.data as Word);
+    } else {
+      setErrorMessage(wordResponse.data.data as string[]);
+    }
+  }
+
+  async function loadLesson(pageNumber: number, append = false) {
     if (isLoading) return;
     setIsLoading(true);
 
@@ -39,7 +43,6 @@ const HomeScreen = () => {
     );
     if (lessonResponse.data.code === ApiResponseCode.OK) {
       const pageLesson = lessonResponse.data.data as PageResponse<Lesson>;
-      // thêm mới lesson
       setLessons((prev) =>
         append ? [...prev, ...pageLesson.items] : pageLesson.items
       );
@@ -47,34 +50,38 @@ const HomeScreen = () => {
     } else {
       setErrorMessage(lessonResponse.data.data as string[]);
     }
-
-    const wordResponse = await apiClient.get<ApiResponse>("word/today");
-    if (wordResponse.data.code === ApiResponseCode.OK) {
-      setTodayWord(wordResponse.data.data as Word);
-    } else {
-      setErrorMessage(wordResponse.data.data as string[]);
-    }
     setIsLoading(false);
-  };
+  }
 
   useEffect(() => {
-    loadData(currentPage); // Gọi API khi trang thay đổi
+    loadLesson(currentPage);
   }, [currentPage]);
 
-  const handleLoadMore = () => {
+  useEffect(() => {
+    loadWord();
+  }, []);
+
+  async function handleLoadMore() {
     if (currentPage < totalPage && !isLoading) {
       const nextPage = currentPage + 1;
       setCurrentPage(nextPage);
-      loadData(nextPage, true);
+      await loadLesson(nextPage, true);
+      setIsLoading(false);
+    } else {
+      setRefreshScrollCount(refreshScrollCount + 1);
+      if (refreshScrollCount > 2) {
+        alert("Bạn đã cuộn hết danh sách rồi!");
+        setRefreshScrollCount(0);
+      } 
     }
-  };
+  }
 
-  const handleRefresh = async () => {
+  async function handleRefresh() {
     setIsRefreshing(true);
-    await loadData(1); // Tải lại từ trang 1
-    setCurrentPage(1);
+    await loadLesson(0);
+    setCurrentPage(0);
     setIsRefreshing(false);
-  };
+  }
 
   return (
     <View style={styles.container}>
@@ -91,11 +98,11 @@ const HomeScreen = () => {
             renderItem={({ item }) => <LessonInfoView lesson={item} />}
             keyExtractor={(_, index) => index.toString()}
             onEndReached={handleLoadMore} // Gọi khi cuộn tới đáy
-            onEndReachedThreshold={0.5} // Gọi khi còn 50% danh sách chưa cuộn
+            onEndReachedThreshold={0.3} // Gọi khi còn 50% danh sách chưa cuộn
             refreshing={isRefreshing} // Trạng thái tải lại
             onRefresh={handleRefresh} // Tải lại khi kéo xuống
             ListFooterComponent={
-              isLoading && currentPage > 1 ? (
+              isLoading && currentPage > 0 ? (
                 <ActivityIndicator size="large" color={AppColors.blue} />
               ) : null
             }

@@ -38,9 +38,8 @@ export interface Lesson {
 export interface LessonDetail {
   id: number;
   name: string;
+  elo: number;
   questions: Question[];
-  experiences: number;
-  diamonds: number;
 };
 
 
@@ -92,9 +91,11 @@ export interface UserInfo {
   fullname: string;
   email: string;
   diamond: number;
-  experiences: number;
   level: UserLevel;
   plan: SubscriptionPlan;
+  streakDays: number;
+  isAllowEmail: boolean;
+  isAllowNotification: boolean;
 };
 
 export interface Auth {

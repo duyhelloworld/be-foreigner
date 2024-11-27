@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import RankingUserView from "./RankingUserView";
 import { Ionicons } from "@expo/vector-icons";
 import { AppColors } from "../../types/colors";
-import { ApiResponse, Ranking, UserInfo } from "../../types/apimodels";
+import { ApiResponse, Ranking } from "../../types/apimodels";
 import { useUserStorage } from "../../storage/UserStorageHooks";
 import apiClient from "../../config/AxiosConfig";
 import { ApiResponseCode } from "../../types/enum";

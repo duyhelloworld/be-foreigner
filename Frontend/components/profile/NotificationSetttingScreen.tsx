@@ -4,23 +4,18 @@ import {
   Text,
   StyleSheet,
   Switch,
-  TextInput,
-  TouchableOpacity,
+  Pressable,
   ScrollView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { AppColors } from "../../types/colors";
 
 const NotificationSettingScreen: React.FC = () => {
-  const [emailNotifications, setEmailNotifications] = useState(false);
-  const [pushNotifications, setPushNotifications] = useState(false);
-  const [releaseNotifications, setReleaseNotifications] = useState(false);
-  const [emailTime, setEmailTime] = useState("09:00");
-  const [pushTime, setPushTime] = useState("12:00");
+  const [emailNotifications, setEmailNotifications] = useState(true);
+  const [pushNotifications, setPushNotifications] = useState(true);
 
   const saveSettings = () => {
     console.log("Lưu cài đặt");
-    // Thêm logic lưu cài đặt ở đây
   };
 
   return (
@@ -38,20 +33,6 @@ const NotificationSettingScreen: React.FC = () => {
             thumbColor={emailNotifications ? "#fff" : "#f4f3f4"}
           />
         </View>
-        {emailNotifications && (
-          <View style={styles.timePickerContainer}>
-            <Text style={styles.timePickerLabel}>
-              Thời Gian Thông Báo Hàng Ngày
-            </Text>
-            <TextInput
-              style={styles.timePicker}
-              value={emailTime}
-              onChangeText={setEmailTime}
-              placeholder="HH:MM"
-              keyboardType="numbers-and-punctuation"
-            />
-          </View>
-        )}
       </View>
 
       <View style={styles.settingContainer}>
@@ -67,42 +48,11 @@ const NotificationSettingScreen: React.FC = () => {
             thumbColor={pushNotifications ? "#fff" : "#f4f3f4"}
           />
         </View>
-        {pushNotifications && (
-          <View style={styles.timePickerContainer}>
-            <Text style={styles.timePickerLabel}>
-              Thời Gian Thông Báo Hàng Ngày
-            </Text>
-            <TextInput
-              style={styles.timePicker}
-              value={pushTime}
-              onChangeText={setPushTime}
-              placeholder="HH:MM"
-              keyboardType="numbers-and-punctuation"
-            />
-          </View>
-        )}
       </View>
 
-      <View style={styles.settingContainer}>
-        <View style={styles.settingHeader}>
-          <View style={styles.settingLabel}>
-            <Ionicons name="megaphone" size={24} color="#3b82f6" />
-            <Text style={styles.settingText}>
-              Thông Báo Về Các Bản Phát Hành
-            </Text>
-          </View>
-          <Switch
-            value={releaseNotifications}
-            onValueChange={setReleaseNotifications}
-            trackColor={{ false: "#767577", true: "#3b82f6" }}
-            thumbColor={releaseNotifications ? "#fff" : "#f4f3f4"}
-          />
-        </View>
-      </View>
-
-      <TouchableOpacity style={styles.saveButton} onPress={saveSettings}>
+      <Pressable style={styles.saveButton} onPress={saveSettings}>
         <Text style={styles.saveButtonText}>Lưu Cài Đặt</Text>
-      </TouchableOpacity>
+      </Pressable>
     </ScrollView>
   );
 };

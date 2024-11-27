@@ -1,8 +1,6 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { RankingUser } from "../../types/apimodels";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { RootNavigatorParams } from "../../navigation/AppNavigation";
 import { AppColors } from "../../types/colors";
 
 interface RankingUserViewProp {
@@ -14,6 +12,7 @@ interface RankingUserViewProp {
 const RankingUserView = ({ user, isMe, showNotification }: RankingUserViewProp) => {
 
   function onPress() {
+    alert(`${user.username} - Hạng ${user.elo}`);
   }
 
   return (

@@ -12,9 +12,9 @@ import googleIcon from "../../assets/google-icon.png";
 import facebookIcon from "../../assets/facebook-icon.png";
 import appleIcon from "../../assets/apple-icon.png";
 import { AppColors } from "../../types/colors";
-import { useAppNavigation } from "../../navigation/AppNavigationHooks";
+import { useAppNavigation } from "../../navigation/AppNavigation";
 import AppIconView from "./AppIconView";
-import SubmitButtonView from "./SubmitButtonView";
+import SubmitButtonView from "./BottomButton";
 import InputTextView from "./InputTextView";
 import ImagePickerView from "../common/ImagePickerView";
 import {

@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import { AppColors } from '../../../types/colors';
+import { AppColors } from '../../types/colors';
 
 interface BottomButtonProp {
   onPress: () => void;

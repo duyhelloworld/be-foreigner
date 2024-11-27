@@ -1,11 +1,7 @@
 import { Animated, Image, StyleSheet, Text, View, useAnimatedValue } from "react-native";
 import React, { useEffect } from "react";
 import { AppColors } from "../../../types/colors";
-import {
-  useAppNavigation,
-  useAppParams,
-} from "../../../navigation/AppNavigationHooks";
-import BottomButton from "./BottomButton";
+import BottomButton from "../../common/BottomButton";
 import apiClient from "../../../config/AxiosConfig";
 import { ApiResponse } from "../../../types/apimodels";
 import { ApiResponseCode } from "../../../types/enum";
@@ -13,23 +9,21 @@ import accuracyImage from "../../../assets/accuracy.png";
 import diamondImage from "../../../assets/diamond.png";
 import experienceImage from "../../../assets/experience.png";
 import appImage from "../../../assets/icon.png";
+import { useAppNavigation, useRootParams } from "../../../navigation/AppNavigation";
 
 const CompletedLessonScreen = () => {
-  const { diamonds, accuracy, experiences, lessonId } = useAppParams(
+  const { diamonds, accuracy, experiences, lessonId } = useRootParams(
     "LearnNavigator",
     "CompletedLessonScreen"
   );
   const navigator = useAppNavigation();
-
-  useEffect(() => {
-    
-  }, []);
 
   async function onContinuePress() {
     const response = await apiClient.put<ApiResponse>("lesson/exam/complete", {
       lessonId,
       accuracy,
     });
+    console.log("Complete", accuracy);
     if (response.data.code === ApiResponseCode.OK) {
       navigator.navigate("LearnNavigator", { screen: "StraightScreen" });
     }

@@ -12,7 +12,7 @@ import { Word } from "../../types/apimodels";
 import { Sound } from "expo-av/build/Audio";
 
 interface TodayWordViewProps {
-  word: Word;
+  word?: Word;
 }
 
 const TodayWordView = ({ word }: TodayWordViewProps) => {
@@ -22,7 +22,7 @@ const TodayWordView = ({ word }: TodayWordViewProps) => {
 
   useEffect(() => {
     async function loadSound() {
-      if (word.audio) {
+      if (word && word.audio) {
         const { sound } = await Sound.createAsync({ uri: word.audio });
         setSound(sound);
       }
@@ -75,8 +75,8 @@ const TodayWordView = ({ word }: TodayWordViewProps) => {
         <Animated.View style={[styles.card, frontAnimatedStyle]}>
           <View style={styles.cardContent}>
             <Text style={styles.title}>Từ vựng hôm nay là :</Text>
-            <Text style={styles.wordValue}>{word.value}</Text>
-            <Text style={styles.wordPhonetic}>/{word.phonetic}/</Text>
+            <Text style={styles.wordValue}>{word?.value}</Text>
+            <Text style={styles.wordPhonetic}>/{word?.phonetic}/</Text>
           </View>
         </Animated.View>
         <Animated.View
@@ -84,8 +84,8 @@ const TodayWordView = ({ word }: TodayWordViewProps) => {
         >
           <View style={styles.cardContent}>
             <Text style={styles.meaningTitle}>Nghĩa:</Text>
-            <Text style={styles.meaningText}>{word.mean}</Text>
-            {word.examples && word.examples.length > 0 && (
+            <Text style={styles.meaningText}>{word?.mean}</Text>
+            {word?.examples && word.examples.length > 0 && (
               <View style={styles.exampleContainer}>
                 <Text style={styles.exampleTitle}>Ví dụ:</Text>
                 <Text style={styles.exampleText}>

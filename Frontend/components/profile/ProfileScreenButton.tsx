@@ -6,7 +6,7 @@ import { AppColors } from "../../types/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 interface ProfileScreenButtonProp {
-  targetScreen: keyof ProfileNavigatorParams;
+  targetScreen?: keyof ProfileNavigatorParams;
   label: string;
   backgroundColor?: string;
   textColor?: string;
@@ -30,8 +30,13 @@ const ProfileScreenButton = ({
   return (
     <Pressable
       style={[styles.button, { backgroundColor }]}
-      onPress={() =>
-        navigator.navigate("ProfileNavigator", { screen: targetScreen })
+      onPress={() =>{ 
+        if (targetScreen) {
+          navigator.navigate("ProfileNavigator", { screen: targetScreen })
+        } else {
+          alert("Chức năng này chưa được triển khai");
+        }
+      }
       }
     >
       <Text

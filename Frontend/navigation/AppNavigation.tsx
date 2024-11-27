@@ -13,42 +13,87 @@ import ProfileNavigator, {
   ProfileNavigatorParams,
 } from "./navigators/ProfileNavigator";
 import useAuthStorage from "../storage/AuthStorageHooks";
+import useFirstTry from "../storage/FirstTryHooks";
+import {
+  NavigationProp,
+  RouteProp,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
+import FirstTryNavigator, {
+  FirstTryNavigatorParams,
+} from "./navigators/FirstTryNavigator";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import SplashScreen from "../components/common/SplashScreen";
 
 export type RootNavigatorParams = {
   HomeNavigator: NavigatorScreenParams<HomeNavigatorParams>;
-
+  FirstTryNavigator: NavigatorScreenParams<FirstTryNavigatorParams>;
   AuthNavigator: NavigatorScreenParams<AuthNavigatorParams>;
-
   LearnNavigator: NavigatorScreenParams<LearnNavigatorParams>;
-
   ProfileNavigator: NavigatorScreenParams<ProfileNavigatorParams>;
 };
 
-export type AppParams = {
+export const useAppNavigation = () => {
+  const navigation = useNavigation<NavigationProp<RootNavigatorParams>>();
+  return navigation;
+};
+
+export function useRootParams<
+  N extends keyof RootParams,
+  S extends keyof RootParams[N]
+>(navigator: N, screen: S) {
+  const route = useRoute<RouteProp<RootParams[N], S>>();
+  if (!route.params) {
+    throw new Error("Unable access undefined params!");
+  }
+  return route.params!;
+}
+
+export type RootParams = {
   AuthNavigator: AuthNavigatorParams;
+  FirstTryNavigator: FirstTryNavigatorParams;
   LearnNavigator: LearnNavigatorParams;
   ProfileNavigator: ProfileNavigatorParams;
 };
 
 export default function AppNavigation() {
-  const Stack = createNativeStackNavigator<RootNavigatorParams>();
-  const [isSignedIn, setIsSignedIn] = useState<boolean>();
-
   const authStorage = useAuthStorage();
+  const firstTry = useFirstTry();
+  const Stack = createNativeStackNavigator<RootNavigatorParams>();
 
-  useEffect(() => {
-    async function checkSignedInAsync() {
-      setIsSignedIn(!await authStorage.getAccessToken());
-    }
-    checkSignedInAsync();
-  }, [isSignedIn]);
+  const [isSignedIn, setIsSignedIn] = useState(false);
+  const [isFirstTry, setIsFristTry] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  async function load() {
+    setIsFristTry(await firstTry.isFirstTry());
+    setIsSignedIn((await authStorage.getAccessToken()) !== undefined);
+  }
+
+  if (isLoading) {
+    return (
+      <SplashScreen
+        onTask={load}
+        onFinish={() => setIsLoading(false)}
+        totalTime={1000}
+      />
+    );
+  }
 
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName={isSignedIn ? "HomeNavigator" : "AuthNavigator"}
+        initialRouteName={
+          isFirstTry
+            ? "FirstTryNavigator"
+            : isSignedIn
+            ? "HomeNavigator"
+            : "AuthNavigator"
+        }
         screenOptions={{ headerShown: false }}
       >
+        <Stack.Screen name="FirstTryNavigator" component={FirstTryNavigator} />
         <Stack.Screen name="AuthNavigator" component={AuthNavigator} />
         <Stack.Screen name="HomeNavigator" component={HomeNavigator} />
         <Stack.Screen name="LearnNavigator" component={LearnNavigator} />

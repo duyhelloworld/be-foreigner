@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "../../components/home/HomeScreen";
 import ProfileScreen from "../../components/profile/ProfileScreen";
 import RankingScreen from "../../components/ranking/RankingScreen";
-import Tabbar from "../Tabbar";
 import GameScreen from "../../components/game/GameScreen";
+import Tabbar from "../Tabbar";
 
 export type HomeNavigatorParams = {
   HomeScreen: undefined;
@@ -26,7 +26,11 @@ const HomeNavigator = () => {
       <Tab.Screen name="HomeScreen" component={HomeScreen} />
       <Tab.Screen name="GameScreen" component={GameScreen} />
       <Tab.Screen name="RankingScreen" component={RankingScreen} />
-      <Tab.Screen name="ProfileScreen" component={ProfileScreen} />
+      <Tab.Screen
+        name="ProfileScreen"
+        component={ProfileScreen}
+        options={{ tabBarStyle: { display: "none" } }}
+      />
     </Tab.Navigator>
   );
 };

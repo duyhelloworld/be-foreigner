@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
-import { useAppNavigation } from "../../navigation/AppNavigationHooks";
+import { useAppNavigation } from "../../navigation/AppNavigation";
 import useAuthStorage from "../../storage/AuthStorageHooks";
 import apiClient from "../../config/AxiosConfig";
 import { ApiResponse } from "../../types/apimodels";

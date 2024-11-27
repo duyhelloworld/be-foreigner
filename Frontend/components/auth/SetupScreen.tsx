@@ -1,11 +1,10 @@
-import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import SplashScreen from '../common/SplashScreen';
-import { useAppNavigation } from '../../navigation/AppNavigationHooks';
 import { useUserStorage } from '../../storage/UserStorageHooks';
 import { ApiResponse, UserInfo } from '../../types/apimodels';
 import apiClient from '../../config/AxiosConfig';
 import { ApiResponseCode } from '../../types/enum';
+import { useAppNavigation } from '../../navigation/AppNavigation';
 
 const SetupScreen = () => {
 

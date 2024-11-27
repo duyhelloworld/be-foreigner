@@ -39,7 +39,7 @@ const ProfileScreen = () => {
         </View>
         <View style={styles.bottomContainer}>
           <ProfileScreenButton
-            label="Nâng cấp tài khoản "
+            label="Nâng cấp tài khoản"
             targetScreen="UpgradePlanScreen"
             backgroundColor={AppColors.yellow}
             textColor={AppColors.black}
@@ -50,11 +50,9 @@ const ProfileScreen = () => {
           />
           <ProfileScreenButton
             label="Lịch sử học bài"
-            targetScreen="ChangePasswordScreen"
           />
           <ProfileScreenButton
             label="Thống kê kết quả học"
-            targetScreen="ChangePasswordScreen"
           />
           <ProfileScreenButton
             label="Cập nhật thông tin"

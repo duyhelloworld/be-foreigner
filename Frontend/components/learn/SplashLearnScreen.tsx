@@ -1,23 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import { ApiResponse, LessonDetail } from "../../types/apimodels";
-import {
-  useAppNavigation,
-  useAppParams,
-} from "../../navigation/AppNavigationHooks";
 import apiClient from "../../config/AxiosConfig";
 import { ApiResponseCode } from "../../types/enum";
 import SplashScreen from "../common/SplashScreen";
+import {
+  useAppNavigation,
+  useRootParams,
+} from "../../navigation/AppNavigation";
 
 const SplashLearnScreen = () => {
-  const { lessonId } = useAppParams("LearnNavigator", "SplashLearnScreen");
+  const { lessonId } = useRootParams("LearnNavigator", "SplashLearnScreen");
   const navigator = useAppNavigation();
-  let lesson: LessonDetail | null = null; 
+  const [lesson, setLesson] = useState<LessonDetail | null>();
+  const [error, setError] = useState<string>();
 
   const handleTask = async () => {
-    const response = await apiClient.get<ApiResponse>(`lesson/exam/${lessonId}`);
+    const response = await apiClient.get<ApiResponse>(
+      `lesson/exam/${lessonId}`
+    );
     if (response.data.code === ApiResponseCode.OK) {
-      lesson = response.data.data as LessonDetail;
-    } 
+      console.log(response.data.data);
+      setLesson(response.data.data as LessonDetail);
+    } else {
+      setError((response.data.data as string[]).join(" "));
+    }
   };
 
   const handleFinish = () => {
@@ -26,10 +32,20 @@ const SplashLearnScreen = () => {
         screen: "LearnScreen",
         params: { jsonLesson: JSON.stringify(lesson) },
       });
-    } 
+    }
+    if (error) {
+      alert(error);
+      navigator.goBack();
+    }
   };
 
-  return <SplashScreen onTask={handleTask} onFinish={handleFinish} totalTime={3000} />;
+  return (
+    <SplashScreen
+      onTask={handleTask}
+      onFinish={handleFinish}
+      totalTime={2000}
+    />
+  );
 };
 
 export default SplashLearnScreen;

@@ -11,12 +11,9 @@ import IncorrectBottomSheet from "./bottomsheet/IncorrectBottomSheet";
 import ProgressBar from "../common/ProgressBar";
 import { Ionicons } from "@expo/vector-icons";
 import { AppColors } from "../../types/colors";
-import {
-  useAppNavigation,
-  useAppParams,
-} from "../../navigation/AppNavigationHooks";
 import { QuestionResult, LearnScreenContext } from "./LearnScreenHooks";
 import GiveAudioRearrangeWords from "./questions/GiveAudioRearrangeWords";
+import { useAppNavigation, useRootParams } from "../../navigation/AppNavigation";
 
 const renderQuestionView = (question: Question) => {
   switch (question.type) {
@@ -49,19 +46,17 @@ const renderQuestionView = (question: Question) => {
           sentenseWords={question.sentenseWords!}
         />
       );
-    default: 
-        return <Text>Lỗi hiển thị câu hỏi</Text>
   }
 };
 
 const LearnScreen = () => {
-  const { jsonLesson } = useAppParams("LearnNavigator", "LearnScreen");
+  const { jsonLesson } = useRootParams("LearnNavigator", "LearnScreen");
   const lesson : LessonDetail = JSON.parse(jsonLesson);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isCorrect, setIsCorrect] = useState<boolean>();
-  // const [accuracy, setAccuracy] = useState(100);
+  const [accuracy, setAccuracy] = useState(100);
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
 
   const navigator = useAppNavigation();
@@ -84,9 +79,9 @@ const LearnScreen = () => {
     }
     setIsCorrect(ref.isCorrect);
     setBottomSheetVisible(true);
-    // if (!ref.isCorrect) {
-    //   setAccuracy(accuracy - accuracy / lesson.questions.length);
-    // }
+    if (!ref.isCorrect) {
+      setAccuracy(accuracy - accuracy / lesson.questions.length);
+    }
   }
 
   function nextQuestion() {
@@ -99,10 +94,7 @@ const LearnScreen = () => {
         screen: "CompletedLessonScreen",
         params: {
           lessonId: lesson.id,
-          diamonds: lesson.diamonds,
-          experiences: lesson.experiences,
-          // accuracy: accuracy,
-          accuracy: 0
+          accuracy: Number(accuracy.toFixed(2)),
         },
       });
     }

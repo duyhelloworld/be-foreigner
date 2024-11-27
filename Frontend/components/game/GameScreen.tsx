@@ -3,15 +3,14 @@ import React, { useState } from 'react'
 import { AppColors } from '../../types/colors';
 
 const GameScreen = () => {
-
   return (
-    <View >
+    <View>
       <Text>Game</Text>
     </View>
   );
-}
+};
 
-export default GameScreen
+export default GameScreen;
 
 const styles = StyleSheet.create({
   

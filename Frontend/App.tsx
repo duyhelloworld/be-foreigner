@@ -8,7 +8,7 @@ import messaging, {
 } from "@react-native-firebase/messaging";
 
 export default function App() {
-  LogBox.ignoreLogs(["Require cycle:"]);
+  LogBox.ignoreAllLogs();
 
   const authStorage = useAuthStorage();
   setupAxiosClient(authStorage);
@@ -18,22 +18,14 @@ export default function App() {
     const enabled =
       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
     if (enabled) {
-      console.log("Authorization status:", authStatus);
+      await messaging().registerDeviceForRemoteMessages();
+      const token = await messaging().getToken();
     }
-  }
-
-  async function getAndSaveToken() {
-    await messaging().registerDeviceForRemoteMessages();
-    const token = await messaging().getToken();
-    console.log("Token: ", token);
-    return token;
   }
 
   useEffect(() => {
     requestUserPermission();
-    getAndSaveToken();
 
     const unsubscribe = messaging().onMessage(
       async (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
@@ -46,7 +38,7 @@ export default function App() {
 
     messaging().setBackgroundMessageHandler(
       async (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
-        console.log("Background message", remoteMessage);
+        Alert.alert("Background message", JSON.stringify(remoteMessage));
       }
     );
 
