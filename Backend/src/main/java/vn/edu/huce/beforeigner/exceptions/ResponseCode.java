@@ -24,13 +24,21 @@ public enum ResponseCode {
     REFRESH_TOKEN_EXPIRED(1012, "Phiên đăng nhập hết hạn"),
     REFRESH_TOKEN_MISSING(1013, "Mã làm mới bị thiếu"),
     REFRESH_TOKEN_NOT_FOUND(1014, "Không tìm thấy mã làm mới"),
-    
+
     // NOTIFICATION
     NOTIFICATION_TOKEN_NOT_FOUND(1015, "Không tìm thấy mã thông báo"),
     NOTIFICATION_TOKEN_MISSING(1016, "Mã thông báo bị thiếu"),
+    NOTIFICATION_TOKEN_INVALID(1017, "Mã thông báo lỗi"),
+
+    // MAIL
+    NEW_PASS_IS_SAME_WITH_OLD(1018, "Mật khẩu mới không đựợc trùng với mật khẩu cũ"),
+    WRONG_RESET_PASSWORD_CODE(1019, "Mã cập nhật mật khẩu không hợp lệ"), 
+
+    TOKEN_EXISTED(1020, "Mã đã tồn tại trong hệ thống"),
 
     // STORAGE
     FILE_UPLOAD_ERROR(2001, "Xảy ra lỗi khi tải lên file"),
+    DEFAULT_FILE_NOT_FOUND(2002, "Ảnh đại diện mặc định không có trên hệ thống"),
 
     // VOCAB
     WORD_NOT_FOUND(4001, "Không tìm thấy từ này"),
@@ -63,7 +71,7 @@ public enum ResponseCode {
 
     // HISTORY
     LESSON_HISTORY_NOT_FOUND(6000, "Không tìm thấy lịch sử học với bài học này"),
-    NOT_ENOUGH_DIAMOND(3001, "Bạn không đủ kim cương cho thao tác này");
+    RETRY_COUNT_UNAVAILABLE(3001, "Hết lượt dùng miễn phí" );
 
     private int code;
 

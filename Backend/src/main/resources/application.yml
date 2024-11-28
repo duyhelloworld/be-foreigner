@@ -11,7 +11,8 @@ spring:
     show-sql: false
     hibernate:
       ddl-auto: update
-        
+    defer-datasource-initialization: true
+
   servlet:
     multipart:
       max-file-size: 10MB
@@ -19,7 +20,6 @@ spring:
   output:
     ansi:
       enabled: always
-
   sql:
     init:
       mode:  always
@@ -28,7 +28,8 @@ spring:
 application:
   notification:
     app-icon: https://res.cloudinary.com/dqzwh7zvo/image/upload/v1726656428/be-foreigner-icon.png
-
+  mail:
+    admin-mail: codedaovoiduy@gmail.com
   auth:
     jwt:
       issuer: "beforeigner.huce.edu.vn"

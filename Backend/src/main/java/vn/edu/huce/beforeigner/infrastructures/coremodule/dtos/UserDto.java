@@ -7,7 +7,7 @@ import lombok.Data;
 @Builder
 public class UserDto {
 
-    private String id;
+    private Integer id;
     
     private String username;
 

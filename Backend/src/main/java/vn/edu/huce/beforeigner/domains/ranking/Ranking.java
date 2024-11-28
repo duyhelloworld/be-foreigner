@@ -35,5 +35,4 @@ public class Ranking extends FullAuditedEntity {
 
     @OneToMany(mappedBy = "ranking")
     private Set<RankedUser> rankedUsers = new HashSet<>();
-
 }

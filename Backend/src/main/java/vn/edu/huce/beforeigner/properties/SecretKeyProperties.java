@@ -16,4 +16,11 @@ public class SecretKeyProperties {
 
     @Value("${cloudinary.url}")
     private String cloudinaryUrl;
+
+    @Value("${mail.username}")
+    private String mailUsername;
+
+    @Value("${mail.password}")
+    private String mailPassword;
+
 }

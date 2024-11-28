@@ -38,13 +38,6 @@ public class Answer extends FullAuditedEntity {
      */
     private Boolean isTrue;
 
-    public Answer(String txt, String audio, String image, Boolean isTrue) {
-        this.txt = txt;
-        this.audio = audio;
-        this.image = image;
-        this.isTrue = isTrue;
-    }
-
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Question question;
 }

@@ -13,9 +13,7 @@ public class LessonDetailDto {
     
     public String name;
 
-    public Integer diamonds;
-
-    public Integer experiences;
+    public Integer elo;
 
     @Builder.Default
     public Set<QuestionDto> questions = new HashSet<>();

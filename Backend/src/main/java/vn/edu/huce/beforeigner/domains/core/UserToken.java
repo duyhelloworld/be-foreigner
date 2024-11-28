@@ -20,12 +20,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import lombok.Setter;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 @Setter
 @Entity
-@NoArgsConstructor
+@SoftDelete(columnName = "is_disabled")
 @EntityListeners(AuditingEntityListener.class)
 public class UserToken {
     
@@ -34,6 +33,7 @@ public class UserToken {
     private Integer id;
 
     @Lob
+    @Column(nullable = false)
     private String token;
 
     @Column(nullable = false)
@@ -48,13 +48,6 @@ public class UserToken {
     @LastModifiedBy
     private String lastModifiedBy;
 
-    @SoftDelete(columnName = "is_disabled")
-    @Column(nullable = false)
+    @Column(nullable = false, insertable=false, updatable=false)
     private boolean isDisabled = false;
-    
-    public UserToken(String token, TokenType type) {
-        this.token = token;
-        this.type = type;
-    }
-    
 }

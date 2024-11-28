@@ -8,9 +8,13 @@ import vn.edu.huce.beforeigner.domains.history.LessonHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
+import java.util.List;
 
 @Repository
 public interface LessonHistoryRepository extends JpaRepository<LessonHistory, Integer> {
     
     Optional<LessonHistory> findByLessonAndOwner(Lesson lesson, String owner);
+
+    List<LessonHistory> findByOwner(String owner);
+
 }

@@ -14,10 +14,6 @@ public enum QuestionType {
      */
     GIVE_MEAN_CHOOSE_WORD,
     /**
-     * Nối từ 
-     */
-    MATCHING,
-    /**
      * Cho audio TA, chọn từ được phát âm
      */
     GIVE_AUDIO_CHOOSE_WORD

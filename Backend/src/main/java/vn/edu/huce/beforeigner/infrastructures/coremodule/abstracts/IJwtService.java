@@ -12,4 +12,6 @@ public interface IJwtService {
     boolean isValidToken(String token);
 
     String extractUsername(String token);
+
+    String extractUserId(String token);
 }

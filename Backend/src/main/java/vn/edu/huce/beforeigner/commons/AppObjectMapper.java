@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -21,6 +22,8 @@ public class AppObjectMapper extends ObjectMapper {
         configure(DeserializationFeature.USE_LONG_FOR_INTS, true); 
         configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         configure(SerializationFeature.INDENT_OUTPUT, true);
+        
+        setPropertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE);
     }
     
     public String toJson(Object object) {

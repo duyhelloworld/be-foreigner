@@ -17,10 +17,10 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class SecurityConfig {
 
-    private SecurityFilter securityFilter;
+    private final SecurityFilter securityFilter;
 
-    private SecurityExceptionHandler securityExceptionHandler; 
-
+    private final SecurityExceptionHandler securityExceptionHandler; 
+    
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http

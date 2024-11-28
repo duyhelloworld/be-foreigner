@@ -1,6 +1,7 @@
 package vn.edu.huce.beforeigner.controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import lombok.RequiredArgsConstructor;
@@ -10,10 +11,13 @@ import vn.edu.huce.beforeigner.exceptions.ApiResponse;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IAuthService;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IUserTokenService;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.AuthDto;
+import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.ForgotPasswordDto;
+import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.ChangePasswordDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.RenewTokenDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.SignInDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.SignUpDto;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -22,7 +26,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RestController
 @RequestMapping("api/auth")
 public class AuthController {
-    
+
     private final IAuthService authService;
 
     private final IUserTokenService userTokenService;
@@ -39,8 +43,8 @@ public class AuthController {
 
     @IsAuthenticated
     @PutMapping("sign-out")
-    public ApiResponse<Void> signOut(@AuthenticationPrincipal User user) {
-        authService.signOut(user);
+    public ApiResponse<Void> signOut(@AuthenticationPrincipal User user, @RequestParam String token) {
+        authService.signOut(user, token);
         return ApiResponse.ok();
     }
 
@@ -49,5 +53,26 @@ public class AuthController {
     public ApiResponse<AuthDto> renew(@AuthenticationPrincipal User user, @RequestBody RenewTokenDto renewTokenDto) {
         return ApiResponse.ok(userTokenService.renewAccess(user, renewTokenDto.getRefreshToken()));
     }
-    
+
+    @GetMapping("forgot")
+    public ApiResponse<String> forgot(
+            @RequestParam String username) {
+        return ApiResponse.ok(authService.forgotPasswordRequest(username));
+    }
+
+    @PostMapping("forgot/confirm")
+    public ApiResponse<Void> updatePassword(
+            @RequestBody ForgotPasswordDto forgotPasswordDto) {
+        authService.forgotPassword(forgotPasswordDto);
+        return ApiResponse.ok();
+    }
+
+    @PostMapping("change-pass")
+    public ApiResponse<Void> changePassword(
+            @AuthenticationPrincipal User user,
+            @RequestBody ChangePasswordDto changePasswordDto) {
+        authService.changePassword(user, changePasswordDto);
+        return ApiResponse.ok();
+    }
+
 }

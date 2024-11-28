@@ -11,7 +11,7 @@ public interface IUserTokenService {
      * @param token
      * @return
      */
-    boolean isValidRefreshToken(String token);
+    boolean isValid(TokenType type, String token);
 
     /**
      * Thêm mới 1 token
@@ -25,7 +25,7 @@ public interface IUserTokenService {
      * Xóa token hiện tại
      * @param user
      */
-    void delete(User user);
+    void disable(User user, String token, TokenType type);
 
     /**
      * Làm mới mã làm mới

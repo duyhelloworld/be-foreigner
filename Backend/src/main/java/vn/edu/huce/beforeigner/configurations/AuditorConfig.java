@@ -23,7 +23,7 @@ public class AuditorConfig implements AuditorAware<String> {
         return new AuditorConfig();
     }
 
-    private String getAuditor(User user) {
+    public static String getAuditor(User user) {
         return user.getUsername();
     }
 

@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 
 @Getter
@@ -51,27 +51,19 @@ public class Question extends FullAuditedEntity {
      */
     private String sentenseMeaning;
 
-
     /**
      * Các từ không liên quan
      * @see QuestionType#GIVE_SENTENSE_REARRANGE_WORDS
      */
     private String unrelatedWords;
 
-    /**
-     * Câu từ nối với nghĩa
-     * @see QuestionType#MATCHING
-     * "I:tôi;You:bạn;"
-     */
-    private String matching;
+    @Enumerated(EnumType.STRING)
+    private QuestionLevel level;
 
-    public Question(QuestionType type) {
-        this.type = type;
-    }
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Lesson lesson;
 
-    @ManyToMany(mappedBy = "questions", fetch = FetchType.EAGER)
-    private Set<Lesson> lessons = new HashSet<>();
-
-    @OneToMany(mappedBy = "question", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "question", fetch = FetchType.EAGER, 
+        cascade = CascadeType.ALL)
     private Set<Answer> answers = new HashSet<>();
 }

@@ -1,6 +1,7 @@
 package vn.edu.huce.beforeigner.utils.paging;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.function.Function;
 
 import org.springframework.data.domain.Page;
@@ -23,6 +24,6 @@ public class PagingResult<T> {
 
     public static <T> PagingResult<T> of(Page<T> page) {
         return new PagingResult<>(page.getTotalPages(),
-                page.getContent());
+                page.hasContent() ? page.getContent() : Collections.emptyList());
     }
 }

@@ -4,13 +4,13 @@ public class RankedUserDto {
 
     public Integer userRank;
 
-    public Long elo;
+    public Integer elo;
 
     public String username;
     
     public String avatar;
 
-    public RankedUserDto(Integer userRank, Long elo, String username, String avatar) {
+    public RankedUserDto(Integer userRank, Integer elo, String username, String avatar) {
         this.userRank = userRank;
         this.elo = elo;
         this.username = username;

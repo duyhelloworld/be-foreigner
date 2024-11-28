@@ -81,6 +81,12 @@ public class JwtService implements IJwtService {
                 .getPayload().get(ClaimTypes.USERNAME.name(), String.class);
     }
 
+    @Override
+    public String extractUserId(String token) {
+        return getParser().parseSignedClaims(token)
+                .getPayload().get(ClaimTypes.USERID.name(), String.class);
+    }
+
     private SecretKey getKey() {
         return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
@@ -92,4 +98,6 @@ public class JwtService implements IJwtService {
                 .requireIssuer(issuer)
                 .build();
     }
+
+    
 }

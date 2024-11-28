@@ -31,13 +31,8 @@ public class RankedUser extends OwnerAuditedEntity {
     /**
      * Điểm để xếp hạng
      */
-    private Long elo;
+    private Integer elo;
 
     @ManyToOne
     private Ranking ranking;
-
-    public RankedUser(Integer userRank, Long elo) {
-        this.userRank = userRank;
-        this.elo = elo;
-    }
 }

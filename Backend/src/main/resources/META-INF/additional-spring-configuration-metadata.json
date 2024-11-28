@@ -28,5 +28,20 @@
     "name": "cloudinary.url",
     "type": "java.lang.String",
     "description": "API URL của cloudinary"
+  },
+  {
+    "name": "mail.username",
+    "type": "java.lang.String",
+    "description": "Username gửi mail"
+  },
+  {
+    "name": "mail.password",
+    "type": "java.lang.String",
+    "description": "Password gửi mail"
+  },
+  {
+    "name": "application.mail.admin-mail",
+    "type": "java.lang.String",
+    "description": "Mail khi gửi email cho người dùng"
   }
 ]}

@@ -4,9 +4,11 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import lombok.RequiredArgsConstructor;
 import vn.edu.huce.beforeigner.domains.core.UserToken;
+import vn.edu.huce.beforeigner.configurations.AuditorConfig;
 import vn.edu.huce.beforeigner.domains.core.TokenType;
 import vn.edu.huce.beforeigner.domains.core.User;
 import vn.edu.huce.beforeigner.domains.core.repo.UserTokenRepository;
@@ -25,14 +27,24 @@ public class UserTokenService implements IUserTokenService {
     private final IJwtService tokenService;
 
     @Override
-    public boolean isValidRefreshToken(String token) {
-        UserToken userToken = userTokenRepo.findByToken(token)
-                .orElse(null);
-        return userToken != null;
+    public boolean isValid(TokenType type, String token) {
+        if (StringUtils.hasText(token)) {
+            switch (type) {
+                case REFRESH:
+                    return token.length() == 36;
+                case NOTIFICATION:
+                    return token.length() > 40;
+            }
+        }
+        return false;
     }
 
     @Override
     public String addNew(TokenType type, String token) {
+        var optUsertoken = userTokenRepo.findByTypeAndTokenAndIsDisabledFalse(type, token);
+        if (optUsertoken.isPresent()) {
+            return optUsertoken.get().getToken();
+        }
         UserToken userToken = new UserToken();
         userToken.setToken(token);
         userToken.setLastModifiedAt(LocalDateTime.now());
@@ -42,15 +54,13 @@ public class UserTokenService implements IUserTokenService {
     }
 
     @Override
-    public void delete(User user) {
-        UserToken userToken = userTokenRepo.findByLastModifiedByAndType(user.getUsername(), TokenType.REFRESH)
-                .orElseThrow(() -> new AppException(ResponseCode.UNAUTHORIZED));
-        userTokenRepo.delete(userToken);
+    public void disable(User user, String token, TokenType type) {
+        userTokenRepo.disable(AuditorConfig.getAuditor(user), type, token);
     }
 
     @Override
     public AuthDto renewAccess(User user, String refreshToken) {
-        UserToken userToken = userTokenRepo.findByLastModifiedByAndType(user.getUsername(), TokenType.REFRESH)
+        UserToken userToken = userTokenRepo.findByLastModifiedByAndType(AuditorConfig.getAuditor(user), TokenType.REFRESH)
                 .orElseThrow(() -> new AppException(ResponseCode.UNAUTHORIZED));
 
         if (userToken.isDisabled()) {

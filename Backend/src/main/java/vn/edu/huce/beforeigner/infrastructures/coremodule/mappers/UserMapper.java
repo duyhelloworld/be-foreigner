@@ -11,18 +11,26 @@ public class UserMapper {
     
     public UserDto toDto(User user) {
         return UserDto.builder()
+            .id(user.getId())
             .username(user.getUsername())
             .fullname(user.getFullname())
-            .avatar(user.getAvatar().getUrl())
+            .avatar(user.getAvatarUrl())
             .build();
     }
 
     public UserInfoDto toInfoDto(User user) {
         return UserInfoDto.builder()
+            .id(user.getId())
             .username(user.getUsername())
             .fullname(user.getFullname())
-            .avatar(user.getAvatar().getUrl())
+            .avatar(user.getAvatarUrl())
             .email(user.getEmail())
+            .streakDays(user.getStreakDays())
+            .isAllowMail(user.isAllowMail())
+            .isAllowNotification(user.isAllowNotification())
+            .level(user.getLevel())
+            .provider(user.getProvider())
+            .plan(user.getPlan())
             .build();
     }
 }

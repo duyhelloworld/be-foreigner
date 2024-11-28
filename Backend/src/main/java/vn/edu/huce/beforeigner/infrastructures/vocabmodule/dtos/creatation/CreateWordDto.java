@@ -6,7 +6,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.Valid;
 import lombok.Data;
-import vn.edu.huce.beforeigner.domains.vocab.WordType;
 
 @Data
 @Valid
@@ -20,7 +19,5 @@ public class CreateWordDto {
 
     private MultipartFile audio;
     
-    private WordType wordType;
-
     private List<CreateExampleDto> examples;
 }

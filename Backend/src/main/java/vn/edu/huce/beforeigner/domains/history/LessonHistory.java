@@ -1,7 +1,5 @@
 package vn.edu.huce.beforeigner.domains.history;
 
-import java.time.Duration;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,8 +13,6 @@ import vn.edu.huce.beforeigner.domains.base.OwnerAuditedEntity;
 import vn.edu.huce.beforeigner.domains.exam.Lesson;
 import lombok.Getter;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 
 @Getter
 @Setter
@@ -34,13 +30,12 @@ public class LessonHistory extends OwnerAuditedEntity {
      * Trạng thái bài học
      */
     @Enumerated(EnumType.STRING)
-    private LessonStatus status = LessonStatus.ONGOING;
+    private LessonStatus status;
 
     /**
      * Tổng thời gian làm, null nếu chưa xong
      */
-    @Temporal(TemporalType.TIMESTAMP)
-    private Duration totalTime;
+    private Long totalTime;
 
     @Column(scale = 2)
     private Float accuracy;

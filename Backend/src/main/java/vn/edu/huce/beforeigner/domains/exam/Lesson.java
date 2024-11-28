@@ -3,6 +3,7 @@ package vn.edu.huce.beforeigner.domains.exam;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -11,13 +12,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Setter;
 import vn.edu.huce.beforeigner.domains.base.FullAuditedEntity;
 import vn.edu.huce.beforeigner.domains.common.UserLevel;
 import vn.edu.huce.beforeigner.domains.history.LessonHistory;
-import vn.edu.huce.beforeigner.domains.storage.CloudFile;
+
+import vn.edu.huce.beforeigner.domains.vocab.Word;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -37,6 +38,7 @@ public class Lesson extends FullAuditedEntity {
     /**
      * Tên bài
      */
+    @Column(nullable = false)
     private String name;
 
     /**
@@ -45,14 +47,10 @@ public class Lesson extends FullAuditedEntity {
     private String description;
 
     /**
-     * Số kim cương khi hoàn thành
+     * Điểm xếp hạng
      */
-    private Integer diamonds;
-
-    /**
-     * Điểm kinh nghiệm
-     */
-    private Integer experiences;
+    @Column(nullable = false)
+    private Integer elo;
 
     /**
      * Độ khó
@@ -64,24 +62,23 @@ public class Lesson extends FullAuditedEntity {
     /**
      * Loại bài học
      */
+    @Enumerated(EnumType.STRING)
     private LessonType type;
 
     /**
      * Ảnh bìa
      */
-    @ManyToOne
-    private CloudFile coverImage;
+    @Column(nullable = false)
+    private String coverImageUrl;
+
+    private String publicId;
 
     @OneToMany(mappedBy = "lesson", fetch = FetchType.EAGER)
     private Set<LessonHistory> lessonHistories = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "lesson")
     private Set<Question> questions = new HashSet<>();
 
-    public Lesson(String name, Integer diamonds, Integer experiences, UserLevel level) {
-        this.name = name;
-        this.diamonds = diamonds;
-        this.experiences = experiences;
-        this.level = level;
-    }
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Word> words = new HashSet<>();
 }

@@ -15,4 +15,7 @@ public class SignInDto {
     @ToString.Exclude
     @NotBlank(message = "PASSWORD_MISSING")
     private String password;
+
+    // @NotNull(message = "NOTIFICATION_TOKEN_MISSING")
+    // private String notificationToken;
 }

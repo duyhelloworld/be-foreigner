@@ -35,9 +35,4 @@ public class Example extends FullAuditedEntity {
 
     @ManyToOne
     private Word word;
-
-    public Example(String sentense, String mean) {
-        this.sentense = sentense;
-        this.mean = mean;
-    }
 }

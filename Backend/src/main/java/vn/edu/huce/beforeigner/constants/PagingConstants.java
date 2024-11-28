@@ -12,8 +12,8 @@ public class PagingConstants {
     public static final Integer MAX_PAGE_SIZE = 20;
 
     /**
-     * Số trang mặc định = 1
+     * Số trang mặc định = 0
      */
-    public static final Integer DEFAULT_PAGE_NUMBER = 1;
+    public static final Integer DEFAULT_PAGE_NUMBER = 0;
 
 }

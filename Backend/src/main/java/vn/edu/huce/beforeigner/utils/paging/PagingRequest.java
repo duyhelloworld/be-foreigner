@@ -17,6 +17,9 @@ public class PagingRequest {
     private Integer pageNumber = PagingConstants.DEFAULT_PAGE_NUMBER;
 
     public Integer getPageSize() {
+        if (pageSize == null) {
+            pageSize = PagingConstants.DEFAULT_PAGE_SIZE;
+        }
         if (pageSize > PagingConstants.MAX_PAGE_SIZE) {
             pageSize = PagingConstants.MAX_PAGE_SIZE;
         } else if (pageSize < PagingConstants.DEFAULT_PAGE_SIZE) {
@@ -26,13 +29,13 @@ public class PagingRequest {
     }
 
     public Integer getPageNumber() {
-        return pageNumber < PagingConstants.DEFAULT_PAGE_NUMBER
-            ? PagingConstants.DEFAULT_PAGE_NUMBER 
-            : pageNumber;
+        if (pageNumber == null || pageNumber < PagingConstants.DEFAULT_PAGE_NUMBER) {
+            return PagingConstants.DEFAULT_PAGE_NUMBER;
+        }
+        return pageNumber;
     }
 
     public PageRequest pageable() {
-        return PageRequest.ofSize(getPageSize())
-            .withPage(getPageNumber());
+        return PageRequest.of(getPageNumber(), getPageSize());
     }
 }

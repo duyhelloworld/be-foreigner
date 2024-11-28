@@ -24,30 +24,29 @@ import vn.edu.huce.beforeigner.utils.paging.PagingResult;
 @RestController
 @RequestMapping("api/lesson")
 public class LessonController {
-    
+
     private final ILessonService lessonService;
 
     @IsUser
     @GetMapping("exam/{id}")
     public ApiResponse<LessonDetailDto> examine(
-        @AuthenticationPrincipal User user,
-        @PathVariable Integer id) {
-            return ApiResponse.ok(lessonService.examine(id, user));
+            @AuthenticationPrincipal User user,
+            @PathVariable Integer id) {
+        return ApiResponse.ok(lessonService.examine(id, user));
     }
 
     @IsUser
     @GetMapping("suggest")
     public ApiResponse<PagingResult<LessonDto>> getSuggestedLessons(
-        @AuthenticationPrincipal User user,
-        PagingRequest pagingRequest
-    ) {
+            @AuthenticationPrincipal User user,
+            PagingRequest pagingRequest) {
         return ApiResponse.ok(lessonService.getSuggestedLessons(pagingRequest, user));
     }
 
     @PutMapping("exam/complete")
     public ApiResponse<Void> completed(
-        @AuthenticationPrincipal User user,
-        @RequestBody CompletedLessonDto completedLessonDto) {
+            @AuthenticationPrincipal User user,
+            @RequestBody CompletedLessonDto completedLessonDto) {
         lessonService.completed(completedLessonDto, user);
         return ApiResponse.ok();
     }

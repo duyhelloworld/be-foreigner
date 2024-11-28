@@ -4,7 +4,6 @@ import java.util.Set;
 
 import lombok.Builder;
 import lombok.Data;
-import vn.edu.huce.beforeigner.domains.vocab.WordType;
 
 @Data
 @Builder
@@ -22,7 +21,5 @@ public class WordDetailDto {
 
     private String image;
 
-    private WordType wordType;
-    
     private Set<ExampleDto> examples;
 }

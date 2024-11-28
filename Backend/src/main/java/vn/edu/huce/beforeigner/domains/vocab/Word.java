@@ -5,21 +5,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import vn.edu.huce.beforeigner.domains.base.FullAuditedEntity;
-import vn.edu.huce.beforeigner.domains.storage.CloudFile;
+import vn.edu.huce.beforeigner.domains.exam.Lesson;
+
 
 import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.ManyToMany;
 
 @Getter
 @Setter
@@ -54,30 +52,26 @@ public class Word extends FullAuditedEntity {
     /**
      * File âm thanh
      */
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private CloudFile audio;
+    @Column(nullable = false)
+    private String audioUrl;
+
+    private String audioPublicId;
+
+    private String audioFilename;
 
     /**
      * File ảnh 
      */
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private CloudFile image;
+    @Column(nullable = false)
+    private String imageUrl;
 
-    /**
-     * Loại từ 
-     */
-    @Enumerated(EnumType.STRING)
-    private WordType wordType;
+    private String imagePublicId;
+
+    private String imageFilename;
 
     @OneToMany(mappedBy = "word", fetch = FetchType.LAZY)
     private Set<Example> examples = new HashSet<>();
 
-    public Word(String value, String mean, String phonetic, WordType wordType) {
-        this.value = value;
-        this.mean = mean;
-        this.phonetic = phonetic;
-        this.wordType = wordType;
-    }
+    @ManyToMany(mappedBy = "words", fetch = FetchType.LAZY)
+    private Set<Lesson> lessons = new HashSet<>();
 }

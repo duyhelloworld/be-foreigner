@@ -1,11 +1,11 @@
 package vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.questions;
 
 import java.util.List;
-import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Builder;
+import vn.edu.huce.beforeigner.domains.exam.QuestionLevel;
 import vn.edu.huce.beforeigner.domains.exam.QuestionType;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.answers.AnswerOptionDto;
 
@@ -14,6 +14,8 @@ import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.answers.AnswerOpt
 public class QuestionDto {
     
     public QuestionType type;
+
+    public QuestionLevel level;
 
     public AnswerOptionDto option;
 
@@ -26,6 +28,4 @@ public class QuestionDto {
     public String[] sentenseWords;
 
     public String[] unrelatedWords;
-
-    public Map<String, String> matchingAnswers;
 }

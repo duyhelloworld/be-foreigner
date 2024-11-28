@@ -2,7 +2,6 @@ package vn.edu.huce.beforeigner.domains.core;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.UUID;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,13 +11,12 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
 import lombok.Setter;
+import vn.edu.huce.beforeigner.constants.UserConstants;
 import vn.edu.huce.beforeigner.domains.common.UserLevel;
-import vn.edu.huce.beforeigner.domains.storage.CloudFile;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,11 +24,11 @@ import lombok.NoArgsConstructor;
 @Setter
 @Entity
 @NoArgsConstructor
-@Table(indexes = @Index(columnList = "id, username, email", unique = true))
 public class User implements UserDetails {
 
     @Id
-    private String id = UUID.randomUUID().toString();
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
     
     @Column(length = 100, nullable = false, unique = true)
     private String username;
@@ -44,8 +42,21 @@ public class User implements UserDetails {
     @Column(length = 100)
     private String password;
 
-    @ManyToOne
-    private CloudFile avatar;
+    private String tempCode;
+
+    @Column(nullable = false)
+    private Integer streakDays = 0;
+
+    private Boolean isFirstTry = true;
+
+    private Boolean isVerified = false;
+
+    @Column(nullable = false)
+    private String avatarUrl;
+
+    private String avatarPublicId;
+
+    private String avatarFilename;
 
     @Enumerated(EnumType.STRING)
     private TokenProvider provider = TokenProvider.LOCAL;
@@ -59,23 +70,17 @@ public class User implements UserDetails {
     private UserLevel level = UserLevel.BEGINNER;
 
     @Column(nullable = false)
-    private Integer experiences = 0;
+    private Integer learnCountAvailaible = UserConstants.LEARN_COUNT_AVAILABLE;
 
     @Enumerated(EnumType.STRING)
     private SubscriptionPlan plan = SubscriptionPlan.FREE;
     
-    @Column(nullable = false)
-    private Integer diamonds = 0;
+    private boolean isAllowMail = true;
 
+    private boolean isAllowNotification = true;
+    
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(role.name()));
-    }
-
-    public User(String username, String fullname, String email, String password) {
-        this.username = username;
-        this.fullname = fullname;
-        this.email = email;
-        this.password = password;
     }
 }
