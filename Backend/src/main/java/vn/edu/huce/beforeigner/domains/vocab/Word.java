@@ -5,8 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import vn.edu.huce.beforeigner.domains.base.FullAuditedEntity;
-import vn.edu.huce.beforeigner.domains.exam.Lesson;
-
+import vn.edu.huce.beforeigner.domains.exam.Answer;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,7 +16,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 
 @Getter
 @Setter
@@ -52,7 +50,7 @@ public class Word extends FullAuditedEntity {
     /**
      * File âm thanh
      */
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String audioUrl;
 
     private String audioPublicId;
@@ -62,7 +60,7 @@ public class Word extends FullAuditedEntity {
     /**
      * File ảnh 
      */
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String imageUrl;
 
     private String imagePublicId;
@@ -72,6 +70,6 @@ public class Word extends FullAuditedEntity {
     @OneToMany(mappedBy = "word", fetch = FetchType.LAZY)
     private Set<Example> examples = new HashSet<>();
 
-    @ManyToMany(mappedBy = "words", fetch = FetchType.LAZY)
-    private Set<Lesson> lessons = new HashSet<>();
+    @OneToMany(mappedBy = "word", fetch = FetchType.LAZY)
+    private Set<Answer> answers = new HashSet<>();
 }

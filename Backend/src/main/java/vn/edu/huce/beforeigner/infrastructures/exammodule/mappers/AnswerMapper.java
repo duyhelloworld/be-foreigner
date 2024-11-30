@@ -7,12 +7,13 @@ import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.answers.AnswerOpt
 
 @Component
 public class AnswerMapper {
-    
+
     public AnswerOptionDto toOptionDto(Answer answer) {
         return AnswerOptionDto.builder()
-            .audio(answer.getAudio())
-            .image(answer.getImage())
-            .text(answer.getTxt())
-            .build();
+                .audio(answer.getWord().getAudioUrl())
+                .image(answer.getWord().getImageUrl())
+                .value(answer.getWord().getValue())
+                .isTrue(answer.isTrue())
+                .build();
     }
 }

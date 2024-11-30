@@ -5,6 +5,7 @@ import java.util.Set;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -12,7 +13,6 @@ import jakarta.persistence.FetchType;
 import lombok.Setter;
 import vn.edu.huce.beforeigner.domains.base.FullAuditedEntity;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,7 +22,6 @@ import jakarta.persistence.OneToMany;
 @Getter
 @Setter
 @Entity
-@NoArgsConstructor
 public class Question extends FullAuditedEntity {
 
     @Id
@@ -61,6 +60,7 @@ public class Question extends FullAuditedEntity {
     private QuestionLevel level;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false)
     private Lesson lesson;
 
     @OneToMany(mappedBy = "question", fetch = FetchType.EAGER, 

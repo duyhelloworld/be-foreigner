@@ -22,7 +22,7 @@ spring:
       enabled: always
   sql:
     init:
-      mode:  always
+      mode:  never
       encoding: UTF-8
       
 application:

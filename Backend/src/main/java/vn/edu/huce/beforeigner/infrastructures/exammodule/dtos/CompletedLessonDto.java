@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class CompletedLessonDto {
 
-    private Integer lessonId;
+    private Integer lessonHistoryId;
 
     private Float accuracy;
 

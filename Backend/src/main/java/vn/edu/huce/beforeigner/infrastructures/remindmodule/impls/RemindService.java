@@ -2,6 +2,7 @@ package vn.edu.huce.beforeigner.infrastructures.remindmodule.impls;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.time.LocalTime;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -65,8 +66,8 @@ public class RemindService implements IRemindService {
         }     
         Remind remind = new Remind();
         remind.setType(RemindType.NOTIFICATION);
-        remind.setBody(NotificationUtil.getRemindBody());
         remind.setTitle(NotificationUtil.getRemindTitle(targetUser.getFullname()));
+        remind.setBody(NotificationUtil.getRemindBody(targetUser.getFullname()));
         Map<String, String> data = new HashMap<>();
         data.put("lessonId", learnReminderDto.getLessonId().toString());
         try {
@@ -88,7 +89,7 @@ public class RemindService implements IRemindService {
         Remind remind = new Remind();
         remind.setType(RemindType.EMAIL);
         remind.setTitle(NotificationUtil.getRemindTitle(targetUser.getFullname()));
-        remind.setBody(NotificationUtil.getRemindBody());
+        remind.setBody(NotificationUtil.getRemindBody(targetUser.getFullname()));
         Map<String, String> data = new HashMap<>();
         data.put("lessonId", learnReminderDto.getLessonId().toString());
         try {
@@ -108,15 +109,22 @@ public class RemindService implements IRemindService {
     public void testCronJob() {
         userRepo.findUsersWantBeNotify()
                 .stream().forEach(u -> {
+                    log.info("Start cronjob : {}", LocalTime.now());
+                    int total = 0;
                     LearnRemindDto learnRemindDto = new LearnRemindDto();
                     if (u.isAllowMail()) {
+                        log.info("Sending mail to {}", u.getUsername());
                         learnRemindDto.setLessonId(lessonRepo.findRandomLessonByUserLevel(u.getLevel()).map(l -> l.getId()).orElse(1));
                         remindByEmail(learnRemindDto, u);
+                        total++;
                     }
                     if (u.isAllowNotification()) {
+                        log.info("Sending notification to {} : {}", u.getUsername(), u.getEmail());
                         learnRemindDto.setLessonId(lessonRepo.findRandomLessonByUserLevel(u.getLevel()).map(l -> l.getId()).orElse(1));
                         remindByNotification(learnRemindDto, u);
+                        total++;
                     }
+                    log.info("OK! Remind {} users!", total);
                 });
     }
     

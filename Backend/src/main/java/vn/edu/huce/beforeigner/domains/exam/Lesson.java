@@ -7,25 +7,20 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import lombok.Setter;
 import vn.edu.huce.beforeigner.domains.base.FullAuditedEntity;
 import vn.edu.huce.beforeigner.domains.common.UserLevel;
 import vn.edu.huce.beforeigner.domains.history.LessonHistory;
 
-import vn.edu.huce.beforeigner.domains.vocab.Word;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 @Setter
 @Entity
-@NoArgsConstructor
 /**
  * Bài học
  */
@@ -41,16 +36,8 @@ public class Lesson extends FullAuditedEntity {
     @Column(nullable = false)
     private String name;
 
-    /**
-     * Mô tả
-     */
-    private String description;
-
-    /**
-     * Điểm xếp hạng
-     */
-    @Column(nullable = false)
-    private Integer elo;
+    @Enumerated(EnumType.STRING)
+    private LessonTarget target = LessonTarget.LEARN_NEW;
 
     /**
      * Độ khó
@@ -68,17 +55,15 @@ public class Lesson extends FullAuditedEntity {
     /**
      * Ảnh bìa
      */
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String coverImageUrl;
 
     private String publicId;
 
-    @OneToMany(mappedBy = "lesson", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "lesson")
     private Set<LessonHistory> lessonHistories = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "lesson")
+    @OneToMany(mappedBy = "lesson")
     private Set<Question> questions = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Word> words = new HashSet<>();
 }

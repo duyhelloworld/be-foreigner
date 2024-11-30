@@ -17,9 +17,11 @@ public class QuestionDto {
 
     public QuestionLevel level;
 
-    public AnswerOptionDto option;
+    public String correctOptionMean;
 
-    public List<AnswerOptionDto> unrelatedOptions;
+    public String correctOptionAudio;
+
+    public List<AnswerOptionDto> answerOptions;
 
     public String sentenseAudio;
 

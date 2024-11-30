@@ -51,7 +51,7 @@ public class User implements UserDetails {
 
     private Boolean isVerified = false;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String avatarUrl;
 
     private String avatarPublicId;

@@ -14,11 +14,12 @@ import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.questions.Questio
 @AllArgsConstructor
 public class LessonMapper {
 
-    public LessonDetailDto toDetailDto(Lesson lesson, Set<QuestionDto> questionDtos) {
+    public LessonDetailDto toDetailDto(Lesson lesson, Set<QuestionDto> questionDtos, int historyId) {
         return LessonDetailDto.builder()
                 .id(lesson.getId())
                 .name(lesson.getName())
-                .elo(lesson.getElo())
+                .historyId(historyId)
+                .elo(lesson.getTarget().getElo())
                 .questions(questionDtos)
                 .build();
     }

@@ -5,9 +5,12 @@ import lombok.Builder;
 @Builder
 public class AnswerOptionDto {
     
-    public String text;
+    public String value;
 
     public String image;
 
     public String audio;
+
+    public Boolean isTrue;
+    
 }

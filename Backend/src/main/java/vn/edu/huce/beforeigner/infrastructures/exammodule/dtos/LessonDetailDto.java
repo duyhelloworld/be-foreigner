@@ -11,6 +11,8 @@ public class LessonDetailDto {
     
     public Integer id;
     
+    public Integer historyId;
+    
     public String name;
 
     public Integer elo;
