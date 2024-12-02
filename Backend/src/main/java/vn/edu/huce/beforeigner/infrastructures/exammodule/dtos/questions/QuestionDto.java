@@ -21,6 +21,8 @@ public class QuestionDto {
 
     public String correctOptionAudio;
 
+    public String correctOptionValue;
+
     public List<AnswerOptionDto> answerOptions;
 
     public String sentenseAudio;

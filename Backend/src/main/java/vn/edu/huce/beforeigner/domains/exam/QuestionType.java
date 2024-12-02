@@ -2,6 +2,14 @@ package vn.edu.huce.beforeigner.domains.exam;
 
 public enum QuestionType {
     /**
+     * Học từ tiếng anh
+     */
+    LEARN_BY_WORD,
+    /**
+     * Học phát âm từ tiếng anh 
+     */
+    LEARN_BY_AUDIO,
+    /**
      * Cho file nghe TA, sắp xếp từ TA
      */
     GIVE_AUDIO_REARRANGE_WORDS,

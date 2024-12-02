@@ -53,28 +53,28 @@ public class LessonService implements ILessonService {
 	@Override
 	@Transactional
 	public LessonDetailDto examine(Integer lessonId, User user) {
-		if (user.getLearnCountAvailaible() < 1) {
-			throw new AppException(ResponseCode.RETRY_COUNT_UNAVAILABLE);
-		}
+		// if (user.getLearnCountAvailaible() < 1) {
+		// 	throw new AppException(ResponseCode.RETRY_COUNT_UNAVAILABLE);
+		// }
 
-		int lessonHistoryId = 0;
 		Lesson lesson = lessonRepo.findById(lessonId)
 				.orElseThrow(() -> new AppException(ResponseCode.LESSON_NOT_FOUND));
 
-		switch (user.getPlan()) {
-			case FREE:
-				if (lesson.getType() == LessonType.PLUS_ONLY) {
-					throw new AppException(ResponseCode.LESSON_IS_PLUS_ONLY);
-				}
-			case PREMIUM_MONTH:
-			case PREMIUM_YEAR:
-				user.setLearnCountAvailaible(user.getLearnCountAvailaible() - 1);
-				userRepo.save(user);
-				break;
-			default:
-				break;
-		}
+		// switch (user.getPlan()) {
+		// 	case FREE:
+		// 		if (lesson.getType() == LessonType.PLUS_ONLY) {
+		// 			throw new AppException(ResponseCode.LESSON_IS_PLUS_ONLY);
+		// 		}
+		// 	case PREMIUM_MONTH:
+		// 	case PREMIUM_YEAR:
+		// 		user.setLearnCountAvailaible(user.getLearnCountAvailaible() - 1);
+		// 		userRepo.save(user);
+		// 		break;
+		// 	default:
+		// 		break;
+		// }
 
+		int historyId = 0;
 		var learntHistory = lesson.getLessonHistories().stream()
 				.filter(lh -> AuditorConfig.getAuditor(user).equals(lh.getOwner())
 						&& lh.getStatus() != LessonStatus.COMPLETED)
@@ -86,9 +86,9 @@ public class LessonService implements ILessonService {
 			newHistory.setLesson(lesson);
 			newHistory.setStatus(LessonStatus.ONGOING);
 			lessonHistoryRepo.save(newHistory);
-			lessonHistoryId = newHistory.getId();
+			historyId = newHistory.getId();
 		} else {
-			lessonHistoryId = learntHistory.get().getId();
+			historyId = learntHistory.get().getId();
 		}
 
 		Set<QuestionDto> questionDtos = lesson.getQuestions().stream()
@@ -102,6 +102,7 @@ public class LessonService implements ILessonService {
 							.map(a -> a.getWord())
 							.orElseThrow(() -> new AppException(ResponseCode.UNEXPECTED_ERROR));
 						questionDto.correctOptionMean = correct.getMean();
+						questionDto.correctOptionValue = correct.getValue();
 						questionDto.correctOptionAudio = correct.getAudioUrl();
 						questionDto.answerOptions = question.getAnswers()
 								.stream().map(a -> answerMapper.toOptionDto(a))
@@ -109,23 +110,23 @@ public class LessonService implements ILessonService {
 					}
 					return questionDto;
 				}).collect(Collectors.toSet());
-		return lessonMapper.toDetailDto(lesson, questionDtos, lessonHistoryId);
+		return lessonMapper.toDetailDto(lesson, questionDtos, historyId);
 	}
 
 	@Override
 	@Transactional
 	public void completed(CompletedLessonDto completedLessonDto, User user) {
-		LessonHistory lessonHistory = lessonHistoryRepo.findById(completedLessonDto.getLessonHistoryId())
+		LessonHistory lessonHistory = lessonHistoryRepo.findById(completedLessonDto.getHistoryId())
 				.orElseThrow(() -> new AppException(ResponseCode.LESSON_NOT_FOUND));
 		if (user.getIsFirstTry()) {
 			user.setIsFirstTry(false);
 			user.setStreakDays(user.getStreakDays() + 1);
+			userRepo.save(user);
 		}
-		userRepo.save(user);
 		if (lessonHistory.getStatus() == LessonStatus.ONGOING) {
 			lessonHistory.setAccuracy(completedLessonDto.getAccuracy());
 			lessonHistory
-					.setTotalTime(Duration.between(LocalDateTime.now(), lessonHistory.getCreatedAt()).getSeconds());
+				.setTotalTime(Duration.between(LocalDateTime.now(), lessonHistory.getCreatedAt()).getSeconds());
 			lessonHistory.setStatus(LessonStatus.COMPLETED);
 			lessonHistoryRepo.save(lessonHistory);
 		}
