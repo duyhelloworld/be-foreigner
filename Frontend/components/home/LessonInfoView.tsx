@@ -1,35 +1,32 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { Lesson } from "../../types/apimodels";
-import { AppColors } from "../../types/colors";
+import { BadgeColors } from "../../types/colors";
 import { Ionicons } from "@expo/vector-icons";
 import { LessonStatus } from "../../types/enum";
-import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { RootNavigatorParams } from "../../navigation/AppNavigation";
+import { useAppNavigation } from "../../navigation/AppNavigation";
 
 interface LessonInfoViewProp {
   lesson: Lesson;
+  backgroundColor?: string;
 }
 
-interface LessonStatusBadge {
-  icon: keyof typeof Ionicons.glyphMap;
-  color: string;
+function getBadgeIcon(status: LessonStatus): keyof typeof Ionicons.glyphMap {
+  switch (status) {
+    case LessonStatus.COMPLETED:
+      return "trophy";
+    case LessonStatus.ONGOING:
+      return "play";
+    default:
+      return "lock-closed";
+  }
 }
 
 const LessonInfoView = ({ lesson }: LessonInfoViewProp) => {
-  function getBadge(status: LessonStatus): LessonStatusBadge {
-    switch (status) {
-      case LessonStatus.COMPLETED:
-        return { icon: "trophy", color: AppColors.green };
-      case LessonStatus.ONGOING:
-        return { icon: "play", color: AppColors.yellow };
-      default:
-        return { icon: "lock-closed", color: AppColors.black };
-    }
-  }
-  const { color, icon } = getBadge(lesson.status);
-
-  const navigator = useNavigation<NavigationProp<RootNavigatorParams>>();
+  const navigator = useAppNavigation();
+  const badgeIcon = getBadgeIcon(lesson.status);
+  const randomIndex = Math.floor(Math.random() * BadgeColors.length);
+  const badge = BadgeColors[randomIndex];
 
   function onItemPress() {
     navigator.navigate("LearnNavigator", {
@@ -39,10 +36,9 @@ const LessonInfoView = ({ lesson }: LessonInfoViewProp) => {
   }
 
   return (
-    <Pressable style={styles.container} onPress={onItemPress}>
+    <Pressable style={[styles.container, { backgroundColor: badge.background }]} onPress={onItemPress}>
+
       <View style={styles.leftContainer}>
-        <View style={styles.heading}>
-        </View>
         <Text style={styles.lessonName}>{lesson.name}</Text>
       </View>
 
@@ -51,7 +47,7 @@ const LessonInfoView = ({ lesson }: LessonInfoViewProp) => {
       </View>
 
       <View style={styles.badgeContainer}>
-        <Ionicons size={25} name={icon} color={color} style={styles.badge} />
+        <Ionicons size={25} name={badgeIcon} color={badge.badge} style={styles.badge} />
       </View>
     </Pressable>
   );
@@ -63,11 +59,10 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
     margin: 10,
-    backgroundColor: AppColors.lightGreen,
     borderRadius: 20,
     flexDirection: "row",
     alignItems: "center",
-    elevation: 4,
+    elevation: 1,
   },
   leftContainer: {
     flex: 4,
@@ -75,40 +70,23 @@ const styles = StyleSheet.create({
   rightContainer: {
     flex: 2,
   },
-  heading: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 10,
-    justifyContent: "center",
-  },
-  percent: {
-    color: AppColors.black,
-    marginRight: 10,
-  },
   badgeContainer: {
     position: "absolute",
     right: 0,
     top: "-10%",
     borderWidth: 2,
-    backgroundColor: AppColors.light,
     borderRadius: 30,
   },
   badge: {
     padding: 2,
     textAlign: "center",
   },
-  progressbar: {
-    width: "50%",
-    height: "50%",
-    backgroundColor: AppColors.white,
-    borderRadius: 10,
-  },
   lessonName: {
     fontSize: 20,
     textAlign: "center",
   },
   cover: {
-    borderRadius: 40,
+    borderRadius: 20,
     width: 70,
     height: 70,
   },

@@ -67,7 +67,7 @@ const GiveSentenseRearrangWordsView = ({
         {unselectedAnswers.map((item, index) => (
           <Pressable
             key={index}
-            style={[styles.answer, styles.unselectedAnswer]}
+            style={styles.answer}
             onPress={() => handleOnUnselectedPress(item)}
           >
             <Text style={styles.answerText}>{item}</Text>
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
     width: "100%",
-    height: "50%",
+    height: "30%",
     flexWrap: "wrap",
     flexDirection: "row",
     backgroundColor: AppColors.light,
@@ -120,5 +120,4 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     flexDirection: "row",
   },
-  unselectedAnswer: {},
 });

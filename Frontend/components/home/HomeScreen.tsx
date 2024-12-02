@@ -21,7 +21,6 @@ const HomeScreen = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPage, setTotalPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string[]>();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [refreshScrollCount, setRefreshScrollCount] = useState(0);
 
@@ -30,7 +29,7 @@ const HomeScreen = () => {
     if (wordResponse.data.code === ApiResponseCode.OK) {
       setTodayWord(wordResponse.data.data as Word);
     } else {
-      setErrorMessage(wordResponse.data.data as string[]);
+      alert(wordResponse.data.data as string[]);
     }
   }
 
@@ -48,7 +47,7 @@ const HomeScreen = () => {
       );
       setTotalPage(pageLesson.totalPage);
     } else {
-      setErrorMessage(lessonResponse.data.data as string[]);
+      alert(lessonResponse.data.data as string[]);
     }
     setIsLoading(false);
   }
@@ -72,7 +71,7 @@ const HomeScreen = () => {
       if (refreshScrollCount > 2) {
         alert("Bạn đã cuộn hết danh sách rồi!");
         setRefreshScrollCount(0);
-      } 
+      }
     }
   }
 
@@ -85,30 +84,23 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      {errorMessage ? (
-        <FlatList
-          data={errorMessage}
-          renderItem={({ item }) => <Text>{item}</Text>}
-        />
-      ) : (
-        <>
-          <TodayWordView word={todayWord} />
-          <FlatList
-            data={lessons}
-            renderItem={({ item }) => <LessonInfoView lesson={item} />}
-            keyExtractor={(_, index) => index.toString()}
-            onEndReached={handleLoadMore} // Gọi khi cuộn tới đáy
-            onEndReachedThreshold={0.3} // Gọi khi còn 50% danh sách chưa cuộn
-            refreshing={isRefreshing} // Trạng thái tải lại
-            onRefresh={handleRefresh} // Tải lại khi kéo xuống
-            ListFooterComponent={
-              isLoading && currentPage > 0 ? (
-                <ActivityIndicator size="large" color={AppColors.blue} />
-              ) : null
-            }
-          />
-        </>
-      )}
+      
+      <TodayWordView word={todayWord} />
+
+      <FlatList
+        data={lessons}
+        renderItem={({ item }) => <LessonInfoView lesson={item} />}
+        keyExtractor={(_, index) => index.toString()}
+        onEndReached={handleLoadMore} 
+        onEndReachedThreshold={0.5} 
+        refreshing={isRefreshing} 
+        onRefresh={handleRefresh} 
+        ListFooterComponent={
+          isLoading && currentPage > 0 ? (
+            <ActivityIndicator size="large" color={AppColors.blue} />
+          ) : null
+        }
+      />
     </View>
   );
 };

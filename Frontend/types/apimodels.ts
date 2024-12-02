@@ -1,8 +1,16 @@
-import { LessonStatus, LessonType, QuestionType, SubscriptionPlan, UserLevel, WordType } from "./enum";
+import { LessonStatus, LessonType, QuestionLevel, QuestionType, SubscriptionPlan, UserLevel } from "./enum";
 
 export interface ApiResponse {
   code: number;
   data: Object;
+}
+
+export interface Notification {
+  id: string;
+  title: string;
+  content: string;
+  sendAt: number;
+  isRead: boolean;
 }
 
 export interface Word {
@@ -11,9 +19,7 @@ export interface Word {
   mean: string;
   image: string;
   audio: string;
-  hint?: string;
   phonetic?: string;
-  type?: WordType;
   examples?: WordExample[];
 };
 
@@ -21,11 +27,6 @@ export interface PageResponse<T> {
   totalPage: number;
   items: T[];
 }
-
-export function isError(data: any): data is string[] {
-  return Array.isArray(data) && data.every((item) => typeof item === "string");
-}
-
 
 export interface Lesson {
   id: number;
@@ -40,14 +41,27 @@ export interface LessonDetail {
   name: string;
   elo: number;
   questions: Question[];
+  historyId: number;
 };
 
+export interface LessonHistory {
+  lessonId: number;
+  lessonName: string;
+  lessonImage: string;
+  startAt: string;
+  totalTime: string;
+  status: LessonStatus;
+  accuracy: number;
+}
 
 export interface Question {
   type: keyof typeof QuestionType;
+  level: QuestionLevel;
 
-  option?: AnswerOption;
-  unrelatedOptions?: AnswerOption[];
+  correctOptionMean?: string;
+  correctOptionValue?: string;
+  correctOptionAudio?: string;
+  answerOptions?: AnswerOption[];
 
   sentenseMeaning?: string;
   sentenseAudio?: string;
@@ -68,9 +82,10 @@ export interface RankingUser {
 };
 
 export interface AnswerOption {
-  text: string;
+  value: string;
   image: string;
   audio: string;
+  isTrue: boolean;
 }
 
 export interface WordExample {
@@ -90,7 +105,6 @@ export interface UserInfo {
   avatar: string;
   fullname: string;
   email: string;
-  diamond: number;
   level: UserLevel;
   plan: SubscriptionPlan;
   streakDays: number;

@@ -14,7 +14,6 @@ import appleIcon from "../../assets/apple-icon.png";
 import { AppColors } from "../../types/colors";
 import { useAppNavigation } from "../../navigation/AppNavigation";
 import AppIconView from "./AppIconView";
-import SubmitButtonView from "./BottomButton";
 import InputTextView from "./InputTextView";
 import ImagePickerView from "../common/ImagePickerView";
 import {
@@ -26,7 +25,8 @@ import {
 import { ApiResponse, Auth } from "../../types/apimodels";
 import apiClient from "../../config/AxiosConfig";
 import { ApiResponseCode, ContentType } from "../../types/enum";
-import useAuthStorage from "../../storage/AuthStorageHooks";
+import useAuthStorage from "../../hook/AuthStorageHooks";
+import SubmitButton from "../common/SubmitButton";
 
 const SignupScreen = () => {
   const [username, setUsername] = useState("");
@@ -98,7 +98,7 @@ const SignupScreen = () => {
         await authStorage.saveTokens(response.data.data as Auth);
         navigator.navigate("AuthNavigator", { screen: "SetupScreen" });
       } else {
-        console.log("Signup error", response.data);
+        alert(response.data.data as string[])
       }
     }
   }
@@ -166,7 +166,7 @@ const SignupScreen = () => {
               />
             )}
           </View>
-          <SubmitButtonView title="Đăng kí" onPress={handleSignup} />
+          <SubmitButton title="Đăng kí" onPress={handleSignup} />
         </View>
 
         <View style={styles.oauthContainer}>
@@ -189,9 +189,9 @@ const SignupScreen = () => {
 
         <View style={styles.loginContainer}>
           <Text style={styles.loginText}>
-            Chưa có tài khoản?{" "}
+            Đã có tài khoản?{" "}
             <Text style={styles.loginLink} onPress={handleLogin}>
-              Đăng ký ngay
+              Đăng nhập ngay
             </Text>
           </Text>
         </View>

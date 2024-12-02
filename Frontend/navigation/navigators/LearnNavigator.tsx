@@ -9,7 +9,7 @@ export type LearnNavigatorParams = {
   SplashLearnScreen: { lessonId: number };
   LearnScreen: {jsonLesson: string };
   CompletedLessonScreen: {
-    lessonId: number;
+    historyId: number;
     accuracy: number;
   };
   StraightScreen: undefined;

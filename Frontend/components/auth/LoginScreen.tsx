@@ -15,12 +15,12 @@ import appleIcon from "../../assets/apple-icon.png";
 import { AppColors } from "../../types/colors";
 import { useAppNavigation } from "../../navigation/AppNavigation";
 import AppIconView from "./AppIconView";
-import SubmitButtonView from "./BottomButton";
 import InputTextView from "./InputTextView";
 import apiClient from "../../config/AxiosConfig";
 import { ApiResponse, Auth } from "../../types/apimodels";
 import { ApiResponseCode } from "../../types/enum";
-import useAuthStorage from "../../storage/AuthStorageHooks";
+import useAuthStorage from "../../hook/AuthStorageHooks";
+import SubmitButton from "../common/SubmitButton";
 
 const LoginScreen = () => {
   const [username, setUsername] = useState("");
@@ -75,7 +75,6 @@ const LoginScreen = () => {
         keyboardShouldPersistTaps="handled"
       >
         <AppIconView />
-
         <InputTextView
           placeholder="Tài khoản"
           value={username}
@@ -90,15 +89,15 @@ const LoginScreen = () => {
           error={passwordError}
           secure
         />
+
         {apiError ? <Text style={styles.errorText}>{apiError.join(" ")}</Text> : null}
-        <View style={styles.loginForm}>
-          <SubmitButtonView title="Đăng nhập" onPress={handleLogin} />
-        </View>
+        
+        <SubmitButton title="Đăng nhập" onPress={handleLogin} />
 
         <View style={styles.oauthContainer}>
           <Text style={styles.oauthText}>Hoặc đăng nhập với:</Text>
           <View style={styles.oauthButtons}>
-            <Pressable style={styles.oauthButton}>
+            <Pressable style={styles.oauthButton} >
               <Image source={googleIcon} style={styles.oauthIcon} />
               <Text style={styles.oauthButtonText}>Google</Text>
             </Pressable>
@@ -137,9 +136,6 @@ const styles = StyleSheet.create({
     padding: 20,
     justifyContent: "center",
     backgroundColor: AppColors.white,
-  },
-  loginForm: {
-    marginVertical: 20,
   },
   errorText: {
     color: AppColors.red,

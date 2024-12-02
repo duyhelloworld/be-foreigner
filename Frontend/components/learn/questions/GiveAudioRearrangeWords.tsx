@@ -117,10 +117,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   selectedAnswerContainer: {
-    marginTop: 20,
-    marginBottom: 20,
+    marginVertical: 20,
     width: "100%",
-    height: "50%",
+    height: "30%",
     flexWrap: "wrap",
     flexDirection: "row",
     backgroundColor: AppColors.light,

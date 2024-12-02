@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useAppNavigation } from "../../navigation/AppNavigation";
-import useAuthStorage from "../../storage/AuthStorageHooks";
+import useAuthStorage from "../../hook/AuthStorageHooks";
 import apiClient from "../../config/AxiosConfig";
 import { ApiResponse } from "../../types/apimodels";
 import { ApiResponseCode } from "../../types/enum";
@@ -27,8 +27,8 @@ const LogoutScreen = () => {
   }, []);
 
   return (
-    <View>
-      <Text>Đang đăng xuất...</Text>
+    <View style={styles.container}>
+      <Text style={styles.message}>Đang đăng xuất...</Text>
       {error ? <Text style={styles.error}>{error}</Text> : null}
     </View>
   );
@@ -37,7 +37,16 @@ const LogoutScreen = () => {
 export default LogoutScreen;
 
 const styles = StyleSheet.create({
+  container: {
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
+  },
   error: {
     color: AppColors.red,
-  }
+  },
+  message: {
+    fontWeight: "heavy",
+    color: AppColors.white
+  },
 });

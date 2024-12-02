@@ -101,6 +101,7 @@ const WelcomeScreen = () => {
       </Animated.View>
       <BottomButton
         title="OK"
+        style={styles.bottomButton}
         onPress={() =>
           navigator.navigate("FirstTryNavigator", { screen: "IntroduceScreen" })
         }
@@ -139,4 +140,7 @@ const styles = StyleSheet.create({
     color: AppColors.white,
     textAlign: "center",
   },
+  bottomButton: {
+    backgroundColor: AppColors.darkGreen,
+  }
 });

@@ -7,20 +7,19 @@ import { Sound } from "expo-av/build/Audio";
 import { AnswerOption } from "../../../types/apimodels";
 
 interface GiveAudioChooseWordViewProp {
-  option: AnswerOption;
-  unrelatedOptions: AnswerOption[];
+  correctOptionMean: string;
+  correctOptionAudio: string;
+  answerOptions: AnswerOption[];
 }
 
 const GiveAudioChooseWordView = ({
-  option,
-  unrelatedOptions,
+  answerOptions, correctOptionMean, correctOptionAudio
 }: GiveAudioChooseWordViewProp) => {
-  const answers = [option, ...unrelatedOptions].sort();
   const [pressedIndex, setPressedIndex] = useState<number>();
   const resultRef = useContext(LearnScreenContext);
 
   async function play() {
-    let { sound } = await Sound.createAsync({ uri: option.audio });
+    let { sound } = await Sound.createAsync({ uri: correctOptionAudio });
     await sound.playAsync();
   }
 
@@ -30,12 +29,12 @@ const GiveAudioChooseWordView = ({
     } else {
       setPressedIndex(currentIndex);
     }
-
-    let isCorrect = answers[currentIndex] === option;
     resultRef.current = {
       enabled: true,
-      isCorrect: isCorrect,
-      message: isCorrect ? `${option.text}` : "",
+      isCorrect: answerOptions[currentIndex].isTrue,
+      message: answerOptions[currentIndex].isTrue 
+        ? correctOptionMean 
+        : `${answerOptions.filter(a => a.isTrue)[0].value} mới là đáp án đúng`,
     };
   };
 
@@ -53,7 +52,7 @@ const GiveAudioChooseWordView = ({
 
       <FlatList
         contentContainerStyle={styles.answerContainer}
-        data={answers}
+        data={answerOptions}
         renderItem={({ item, index }) => (
           <Pressable
             style={[
@@ -62,7 +61,7 @@ const GiveAudioChooseWordView = ({
             ]}
             onPress={() => onOptionPress(index)}
           >
-            <Text style={styles.answerValue}>{item.text}</Text>
+            <Text style={styles.answerValue}>{item.value}</Text>
           </Pressable>
         )}
       />

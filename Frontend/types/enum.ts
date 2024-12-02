@@ -79,6 +79,11 @@ export enum SubscriptionPlan {
   LIFETIME = "Gói trọn đời",
 }
 
+export enum QuestionLevel {
+  EASY,
+  HARD
+}
+
 export enum ClaimTypes {
   USERNAME,
   USERID,
@@ -87,26 +92,13 @@ export enum ClaimTypes {
   USERTYPE,
 }
 
-export enum WordType {
-  DEFINITE_ARTICLE = "Mạo từ xác định",
-  INDEFINITE_ARTICLE = "Mạo từ không xác định",
-  NOUN = "danh từ",
-  VERB = "động từ",
-  ADJECTIVE = "tính từ",
-  ADVERB = "trạng từ",
-  PRONOUN = "đại từ",
-  PREPOSITION = "giới từ",
-  INTERJECTION = "thán từ",
-  DETERMINER = "từ hạn định",
-  CONJUNCTION = "liên từ",
-}
-
 export enum QuestionType {
+  LEARN_BY_WORD = "",
+  LEARN_BY_AUDIO = "",
   GIVE_AUDIO_REARRANGE_WORDS = "Sắp xếp lại các từ mà bạn nghe được",
   GIVE_SENTENSE_REARRANGE_WORDS = "Sắp xếp lại các từ để được câu bên dưới",
   GIVE_MEAN_CHOOSE_WORD = "Chọn đáp án đúng",
-  MATCHING = "Nối các từ với nghĩa của chúng",
-  GIVE_AUDIO_CHOOSE_WORD = "Cho file âm thanh, chọn từ chính xác",
+  GIVE_AUDIO_CHOOSE_WORD = "Chọn từ mà bạn nghe được",
 }
 
 export enum LessonStatus {

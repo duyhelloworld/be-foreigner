@@ -1,11 +1,10 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { QuestionType } from "../../types/enum";
 import GiveMeanChooseWordView from "./questions/GiveMeanChooseWordView";
 import GiveWordsRearrangeMeansView from "./questions/GiveSentenseRearrangWordsView";
 import { LessonDetail, Question } from "../../types/apimodels";
 import GiveAudioChooseWordView from "./questions/GiveAudioChooseWordView";
-import CheckButton from "./CheckButton";
 import CorrectBottomSheet from "./bottomsheet/CorrectBottomSheet";
 import IncorrectBottomSheet from "./bottomsheet/IncorrectBottomSheet";
 import ProgressBar from "../common/ProgressBar";
@@ -13,22 +12,42 @@ import { Ionicons } from "@expo/vector-icons";
 import { AppColors } from "../../types/colors";
 import { QuestionResult, LearnScreenContext } from "./LearnScreenHooks";
 import GiveAudioRearrangeWords from "./questions/GiveAudioRearrangeWords";
-import { useAppNavigation, useRootParams } from "../../navigation/AppNavigation";
+import {
+  useAppNavigation,
+  useRootParams,
+} from "../../navigation/AppNavigation";
+import BottomButton from "../common/BottomButton";
+import LearnWordByValue from "./questions/LearnWordByValue";
+import LearnWordByAudio from "./questions/LearnWordByAudio";
 
 const renderQuestionView = (question: Question) => {
   switch (question.type) {
+    case "LEARN_BY_AUDIO":
+      return <LearnWordByAudio
+        audio={question.correctOptionAudio!}
+        mean={question.correctOptionMean!}
+        value={question.correctOptionValue!}
+      />
+    case "LEARN_BY_WORD":
+      return <LearnWordByValue
+        mean={question.correctOptionMean!}
+        value={question.correctOptionValue!}
+      />
     case "GIVE_AUDIO_CHOOSE_WORD":
       return (
         <GiveAudioChooseWordView
-          option={question.option!}
-          unrelatedOptions={question.unrelatedOptions!}
+          answerOptions={question.answerOptions!}
+          correctOptionMean={question.correctOptionMean!}
+          correctOptionAudio={question.correctOptionAudio!}
         />
       );
     case "GIVE_MEAN_CHOOSE_WORD":
       return (
         <GiveMeanChooseWordView
-          option={question.option!}
-          unrelatedOptions={question.unrelatedOptions!}
+          answerOptions={question.answerOptions!}
+          correctOptionMean={question.correctOptionMean!}
+          correctOptionAudio={question.correctOptionAudio!}
+          level={question.level}
         />
       );
     case "GIVE_SENTENSE_REARRANGE_WORDS":
@@ -51,8 +70,7 @@ const renderQuestionView = (question: Question) => {
 
 const LearnScreen = () => {
   const { jsonLesson } = useRootParams("LearnNavigator", "LearnScreen");
-  const lesson : LessonDetail = JSON.parse(jsonLesson);
-
+  const lesson: LessonDetail = JSON.parse(jsonLesson);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isCorrect, setIsCorrect] = useState<boolean>();
@@ -93,11 +111,19 @@ const LearnScreen = () => {
       navigator.navigate("LearnNavigator", {
         screen: "CompletedLessonScreen",
         params: {
-          lessonId: lesson.id,
-          accuracy: Number(accuracy.toFixed(2)),
+          historyId: lesson.historyId,
+          accuracy: Number(accuracy.toFixed(0)),
         },
       });
     }
+  }
+
+  function onExit() {
+    Alert.prompt("Bạn có muốn thoát không?", "", [
+      { text: "OK", onPress: () => 
+        navigator.navigate("HomeNavigator", { screen: "HomeScreen" }) },
+      { text: "Hủy" },
+    ])
   }
 
   return (
@@ -107,7 +133,8 @@ const LearnScreen = () => {
           name="close-outline"
           size={35}
           style={styles.closeButton}
-          color={AppColors.blue}
+          color={AppColors.grayDark}
+          onPress={onExit}
         />
         <ProgressBar
           progress={progress}
@@ -125,14 +152,10 @@ const LearnScreen = () => {
         </LearnScreenContext.Provider>
       </View>
 
-      {isBottomSheetVisible && (
-        <View
-          style={styles.overlay}
-        />
-      )}
+      {isBottomSheetVisible && <View style={styles.overlay} />}
 
       {isCorrect === undefined ? (
-        <CheckButton onCheckPress={onCheckPress} />
+        <BottomButton title="Kiểm tra" onPress={onCheckPress} style={styles.bottomButton} />
       ) : isCorrect ? (
         <CorrectBottomSheet
           message={resultRef.current.message}
@@ -163,15 +186,14 @@ const styles = StyleSheet.create({
   },
   progressBarContainer: {
     width: "90%",
-    paddingHorizontal: 10,
+    marginHorizontal: 10,
     height: 20,
-    padding: 3,
     justifyContent: "flex-end",
   },
   questionTitle: {
     fontSize: 20,
     padding: 20,
-    fontWeight: "bold",
+    fontWeight: "700",
     textAlign: "center",
   },
   questionContainer: {
@@ -183,8 +205,11 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    // Đảm bảo nằm trên các thành phần khác
-    zIndex: 1, 
+    backgroundColor: AppColors.gray,
+    opacity: 0.6,
+    zIndex: 1,
   },
+  bottomButton: {
+    marginHorizontal: "10%"
+  }
 });

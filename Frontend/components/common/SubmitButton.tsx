@@ -1,38 +1,43 @@
-import { Pressable, StyleSheet, Text, TextStyle, View, ViewStyle } from 'react-native'
-import React from 'react'
-import { AppColors } from '../../types/colors';
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  TextStyle,
+  View,
+  ViewStyle,
+} from "react-native";
+import React from "react";
+import { AppColors } from "../../types/colors";
 
-interface BottomButtonProp {
+interface SubmitButtonProp {
   title: string;
   onPress: () => void;
-  style?: ViewStyle;
-  titleStyle?: TextStyle;
 }
 
-const BottomButton = ({title, onPress, style, titleStyle}: BottomButtonProp) => {
+const SubmitButton = ({
+  title,
+  onPress,
+}: SubmitButtonProp) => {
   return (
     <Pressable
       style={({ pressed }) => [
-        style, styles.button,
+        styles.button,
         pressed && styles.buttonPressed,
       ]}
       onPress={onPress}
     >
-      <Text style={[titleStyle, styles.buttonText]}>{title}</Text>
+      <Text style={styles.buttonText}>{title}</Text>
     </Pressable>
   );
-}
+};
 
-export default BottomButton
+export default SubmitButton;
 
 const styles = StyleSheet.create({
   button: {
-    position: "absolute",
-    bottom: 20,
-    width: "80%",
     backgroundColor: AppColors.darkGreen,
     borderRadius: 8,
-    paddingVertical: 14,
+    paddingVertical: 16,
     marginVertical: 5,
     alignItems: "center",
   },

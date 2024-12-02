@@ -6,16 +6,30 @@ import {
   Switch,
   Pressable,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { AppColors } from "../../types/colors";
+import apiClient from "../../config/AxiosConfig";
+import { ApiResponse } from "../../types/apimodels";
+import { ApiResponseCode } from "../../types/enum";
+import BottomButton from "../common/BottomButton";
 
 const NotificationSettingScreen: React.FC = () => {
   const [emailNotifications, setEmailNotifications] = useState(true);
   const [pushNotifications, setPushNotifications] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
-  const saveSettings = () => {
-    console.log("Lưu cài đặt");
+  async function saveSettings() {
+    setIsLoading(true);
+    const response = await apiClient.put<ApiResponse>("user/notification/setting");
+    if (response.data.code === ApiResponseCode.OK) {
+      setMessage("Lưu cài đặt thành công");
+      setIsLoading(false);
+    } else {
+      setMessage(response.data.data as string[][0])
+    }
   };
 
   return (
@@ -24,7 +38,7 @@ const NotificationSettingScreen: React.FC = () => {
         <View style={styles.settingHeader}>
           <View style={styles.settingLabel}>
             <Ionicons name="mail" size={24} color="#3b82f6" />
-            <Text style={styles.settingText}>Thông Báo Qua Email</Text>
+            <Text style={styles.settingText}>Thông báo qua Email</Text>
           </View>
           <Switch
             value={emailNotifications}
@@ -39,7 +53,7 @@ const NotificationSettingScreen: React.FC = () => {
         <View style={styles.settingHeader}>
           <View style={styles.settingLabel}>
             <Ionicons name="notifications" size={24} color="#3b82f6" />
-            <Text style={styles.settingText}>Thông Báo Đẩy</Text>
+            <Text style={styles.settingText}>Thông báo đẩy</Text>
           </View>
           <Switch
             value={pushNotifications}
@@ -50,9 +64,9 @@ const NotificationSettingScreen: React.FC = () => {
         </View>
       </View>
 
-      <Pressable style={styles.saveButton} onPress={saveSettings}>
+      {isLoading ? <ActivityIndicator size={"large"} color={AppColors.green} /> : <Pressable style={styles.saveButton} onPress={saveSettings}>
         <Text style={styles.saveButtonText}>Lưu Cài Đặt</Text>
-      </Pressable>
+      </Pressable>}
     </ScrollView>
   );
 };

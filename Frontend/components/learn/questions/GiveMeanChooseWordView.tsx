@@ -3,45 +3,51 @@ import React, { useContext, useState } from "react";
 import { AppColors } from "../../../types/colors";
 import { LearnScreenContext } from "../LearnScreenHooks";
 import { AnswerOption } from "../../../types/apimodels";
+import { QuestionLevel } from "../../../types/enum";
+import { Sound } from "expo-av/build/Audio";
 
 interface GiveMeanChooseWordViewProp {
-  option: AnswerOption;
-  unrelatedOptions: AnswerOption[];
+  correctOptionMean: string;
+  correctOptionAudio: string;
+  answerOptions: AnswerOption[];
+  level: QuestionLevel;
 }
 
 const GiveMeanChooseWordView = ({
-  option,
-  unrelatedOptions,
+  answerOptions, correctOptionAudio, correctOptionMean,
+  level,
 }: GiveMeanChooseWordViewProp) => {
   const resultRef = useContext(LearnScreenContext);
-  const answers = [option, ...unrelatedOptions];
   const [selectedIndex, setSelectedIndex] = useState<number>();
 
-  const onOptionPress = (currentIndex: number) => {
+  async function onOptionPress(currentIndex: number) {
     if (selectedIndex === currentIndex) {
       setSelectedIndex(undefined);
     } else {
       setSelectedIndex(currentIndex);
     }
+    if (level === QuestionLevel.EASY) {
+      const { sound } = await Sound.createAsync({ uri: correctOptionAudio });
+      await sound.playAsync();
+    }
 
-    let isCorrect = answers[currentIndex] === option;
     resultRef.current = {
       enabled: true,
-      isCorrect: isCorrect,
-      message: isCorrect
-        ? `${option.text}`
-        : `${option.text} mới là đáp án mà`,
+      isCorrect: answerOptions[currentIndex].isTrue,
+      message: answerOptions[currentIndex].isTrue
+        ? ""
+        : `${answerOptions.filter(a => a.isTrue)[0].value} mới là đáp án mà`,
     };
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.correctAnswerContainer}>
-        <Text style={styles.correctAnswerText}>{option.text}</Text>
+        <Text style={styles.correctAnswerText}>{correctOptionMean}</Text>
       </View>
 
       <View style={styles.answersContainer}>
-        {answers.map((answer, index) => (
+        {answerOptions.map((answer, index) => (
           <Pressable
             key={index}
             style={[
@@ -51,7 +57,7 @@ const GiveMeanChooseWordView = ({
             onPress={() => onOptionPress(index)}
           >
             <Image style={styles.answerImage} source={{ uri: answer.image }} />
-            <Text style={styles.answerValue}>{answer.text}</Text>
+            <Text style={styles.answerValue}>{answer.value}</Text>
           </Pressable>
         ))}
       </View>

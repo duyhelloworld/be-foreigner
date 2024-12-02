@@ -12,7 +12,7 @@ import {
 import BottomButton from "../common/BottomButton";
 import { AppColors } from "../../types/colors";
 import { useAppNavigation } from "../../navigation/AppNavigation";
-import useFirstTry from "../../storage/FirstTryHooks";
+import useFirstTry from "../../hook/FirstTryHooks";
 
 const screens = [
   {
@@ -90,10 +90,9 @@ const IntroduceScreen = () => {
       {curIndex === screens.length - 1 ? (
         <BottomButton
           onPress={async () => {
-            navigator.navigate("AuthNavigator", { screen: "LoginScreen" });
             await firstTry.setTried();
-          }
-          }
+            navigator.navigate("AuthNavigator", { screen: "LoginScreen" });
+          }}
           title="Bắt đầu ngay"
         />
       ) : (

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AuthNavigator, { AuthNavigatorParams } from "./navigators/AuthNavigator";
 import HomeNavigator, { HomeNavigatorParams } from "./navigators/HomeNavigator";
@@ -12,8 +12,8 @@ import LearnNavigator, {
 import ProfileNavigator, {
   ProfileNavigatorParams,
 } from "./navigators/ProfileNavigator";
-import useAuthStorage from "../storage/AuthStorageHooks";
-import useFirstTry from "../storage/FirstTryHooks";
+import useAuthStorage from "../hook/AuthStorageHooks";
+import useFirstTry from "../hook/FirstTryHooks";
 import {
   NavigationProp,
   RouteProp,
@@ -23,7 +23,6 @@ import {
 import FirstTryNavigator, {
   FirstTryNavigatorParams,
 } from "./navigators/FirstTryNavigator";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import SplashScreen from "../components/common/SplashScreen";
 
 export type RootNavigatorParams = {
@@ -76,7 +75,7 @@ export default function AppNavigation() {
       <SplashScreen
         onTask={load}
         onFinish={() => setIsLoading(false)}
-        totalTime={1000}
+        totalTime={500}
       />
     );
   }

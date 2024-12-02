@@ -1,46 +1,87 @@
+import React, { useEffect } from "react";
 import {
   Animated,
   Easing,
   Image,
   StyleSheet,
   View,
+  Dimensions,
   useAnimatedValue,
 } from "react-native";
-import React, { useEffect } from "react";
 import { AppColors } from "../../types/colors";
+import appIcon from "../../assets/icon-transparent.png";
+
+const { width } = Dimensions.get("window");
 
 interface SplashScreenProps {
-  onTask: () => Promise<void>; 
-  onFinish: () => void; 
+  onTask: () => Promise<void>;
+  onFinish: () => void;
   totalTime: number;
+  label?: string;
+  sublabel?: string;
 }
 
-const SplashScreen = ({onTask, onFinish, totalTime } : SplashScreenProps) => {
+const SplashScreen = ({
+  onTask,
+  onFinish,
+  totalTime,
+  label = "Đang tải...",
+  sublabel = "Chúng tôi luôn cố gắng làm những gì tốt nhất",
+}: SplashScreenProps) => {
   const fadeAnim = useAnimatedValue(0);
-  const scaleAnim = useAnimatedValue(0);
+  const scaleAnim = useAnimatedValue(0.5);
   const rotateAnim = useAnimatedValue(0);
+  const titleAnim = useAnimatedValue(-20);
+  const subtitleAnim = useAnimatedValue(0);
 
   useEffect(() => {
     Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 1000,
+        duration: 500,
         useNativeDriver: true,
       }),
       Animated.timing(scaleAnim, {
         toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+      Animated.timing(titleAnim, {
+        toValue: 0,
+        delay: 500,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.timing(subtitleAnim, {
+        toValue: 1,
+        delay: 1000,
         duration: 1000,
         useNativeDriver: true,
       }),
-      Animated.loop(
+    ]).start();
+
+    Animated.loop(
+      Animated.sequence([
         Animated.timing(rotateAnim, {
           toValue: 1,
-          duration: 2000,
+          duration: 1000,
           easing: Easing.linear,
           useNativeDriver: true,
-        })
-      ),
-    ]).start();
+        }),
+        Animated.timing(rotateAnim, {
+          toValue: -1,
+          duration: 1000,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+        Animated.timing(rotateAnim, {
+          toValue: 0,
+          duration: 1000,
+          easing: Easing.linear,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
 
     const timer = setTimeout(async () => {
       await onTask();
@@ -51,8 +92,8 @@ const SplashScreen = ({onTask, onFinish, totalTime } : SplashScreenProps) => {
   }, []);
 
   const spin = rotateAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["0deg", "360deg"],
+    inputRange: [-1, 0, 1],
+    outputRange: ["-10deg", "0deg", "10deg"],
   });
 
   return (
@@ -62,17 +103,28 @@ const SplashScreen = ({onTask, onFinish, totalTime } : SplashScreenProps) => {
           styles.content,
           {
             opacity: fadeAnim,
-            transform: [{ scale: scaleAnim }, { rotate: spin }],
+            transform: [{ scale: scaleAnim }],
           },
         ]}
       >
-        <Image source={require("../../assets/icon.png")} style={styles.image} />
+        <Animated.View style={{ transform: [{ rotate: spin }] }}>
+          <Image source={appIcon} style={styles.image} />
+        </Animated.View>
+        <Animated.Text
+          style={[styles.title, { transform: [{ translateY: titleAnim }] }]}
+        >
+          {label}
+        </Animated.Text>
+        <Animated.Text
+          style={[styles.subtitle, { opacity: subtitleAnim }]}
+          numberOfLines={0}
+        >
+          {sublabel}
+        </Animated.Text>
       </Animated.View>
     </View>
   );
 };
-
-export default SplashScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -86,22 +138,24 @@ const styles = StyleSheet.create({
     backgroundColor: AppColors.green,
   },
   content: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    overflow: "hidden",
-    backgroundColor: AppColors.darkGreen,
-    justifyContent: "center",
     alignItems: "center",
   },
   image: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "cover",
+    width: width * 0.5,
+    height: width * 0.5,
+    resizeMode: "contain",
   },
-  placeholderText: {
+  title: {
     fontSize: 32,
     fontWeight: "bold",
     color: AppColors.white,
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 18,
+    color: AppColors.white,
   },
 });
+
+export default SplashScreen;

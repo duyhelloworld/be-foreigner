@@ -9,7 +9,7 @@ import {
 import ProfileScreenButton from "./ProfileScreenButton";
 import { AppColors } from "../../types/colors";
 import { UserInfo } from "../../types/apimodels";
-import { useUserStorage } from "../../storage/UserStorageHooks";
+import { useUserStorage } from "../../hook/UserStorageHooks";
 import ProfileFooterView from "./ProfileFooterView";
 
 const ProfileScreen = () => {
@@ -30,8 +30,7 @@ const ProfileScreen = () => {
         <View style={styles.topContainer}>
           <Image
             source={
-              { uri: user?.avatar } ??
-              require("../../assets/default-avatar.jpg")
+              { uri: user?.avatar }
             }
             style={styles.avatar}
           />

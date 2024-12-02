@@ -5,13 +5,16 @@ import LogoutScreen from "../../components/profile/LogoutScreen";
 import UpgradePlanScreen from "../../components/profile/UpgradePlanScreen";
 import ChangePasswordScreen from "../../components/profile/ChangePasswordScreen";
 import UpdateProfileScreen from "../../components/profile/UpdateProfileScreen";
+import LessonHistoryScreen from "../../components/profile/LessonHistoryScreen";
 
 export type ProfileNavigatorParams = {
   UpdateProfileScreen: undefined;
   ChangePasswordScreen: undefined;
   NotificationSetttingScreen: undefined;
-  LogoutScreen: undefined;
+  LessonHistoryScreen: undefined;
+  StatisticScreen: undefined;
   UpgradePlanScreen: undefined;
+  LogoutScreen: undefined;
 };
 
 const ProfileNavigator = () => {
@@ -39,7 +42,21 @@ const ProfileNavigator = () => {
         component={UpgradePlanScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="LogoutScreen" component={LogoutScreen} />
+      <Stack.Screen
+        name="LogoutScreen"
+        component={LogoutScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="LessonHistoryScreen"
+        component={LessonHistoryScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="LogoutScreen"
+        component={LogoutScreen}
+        options={{ headerShown: false }}
+      />
     </Stack.Navigator>
   );
 };

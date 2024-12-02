@@ -13,7 +13,7 @@ import BottomButton from "../../common/BottomButton";
 import { AppColors } from "../../../types/colors";
 import { LinearGradient } from "expo-linear-gradient";
 import { useAppNavigation, useRootParams } from "../../../navigation/AppNavigation";
-import { useUserStorage } from "../../../storage/UserStorageHooks";
+import { useUserStorage } from "../../../hook/UserStorageHooks";
 
 export default function StreakAnimation() {
   const streakOpacity = useAnimatedValue(0);

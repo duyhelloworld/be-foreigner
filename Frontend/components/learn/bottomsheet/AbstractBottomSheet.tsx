@@ -24,7 +24,7 @@ const MAX_DOWNWARD_TRANSLATE_Y = 0;
 
 type Button = {
   text: string;
-  style: ViewStyle[] | ViewStyle;
+  style: ViewStyle;
   textStyle: TextStyle;
   buttonAudio: any;
   onPress: () => void;
@@ -46,13 +46,22 @@ const AbstractBottomSheet = ({
   const animatedValue = useAnimatedValue(0);
   const lastGestureDy = useRef(0);
 
+  const [audio, setAudio] = useState<Sound>();
+
   useEffect(() => {
-    const onOpen = async () => {
+    const load = async () => {
       const { sound } = await Sound.createAsync(button.buttonAudio);
-      await sound.playAsync();
-      springAnimation(MAX_UPWARD_TRANSLATE_Y);
+      setAudio(sound);
     };
-    onOpen();
+    load();
+  }, [button.buttonAudio]);
+
+  useEffect(() => {
+    async function play() {
+      await audio?.playAsync();
+    }
+    play();
+    springAnimation(MAX_UPWARD_TRANSLATE_Y);
   }, []);
 
   const springAnimation = (toValue: number) => {
