@@ -1,21 +1,19 @@
 package vn.edu.huce.beforeigner.infrastructures.coremodule.dtos;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.ToString;
+import vn.edu.huce.beforeigner.annotations.ValidPass;
+import vn.edu.huce.beforeigner.annotations.ValidUsername;
 
 @Data
 @Valid
 public class SignInDto {
     
-    @NotBlank(message = "USERNAME_MISSING")
+    @ValidUsername
     private String username;
 
     @ToString.Exclude
-    @NotBlank(message = "PASSWORD_MISSING")
+    @ValidPass
     private String password;
-
-    // @NotNull(message = "NOTIFICATION_TOKEN_MISSING")
-    // private String notificationToken;
 }

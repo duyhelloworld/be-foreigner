@@ -17,7 +17,6 @@ import vn.edu.huce.beforeigner.commons.AppObjectMapper;
 import vn.edu.huce.beforeigner.configurations.AuditorConfig;
 import vn.edu.huce.beforeigner.domains.core.TokenType;
 import vn.edu.huce.beforeigner.domains.core.User;
-import vn.edu.huce.beforeigner.domains.core.UserToken;
 import vn.edu.huce.beforeigner.domains.core.repo.UserRepository;
 import vn.edu.huce.beforeigner.domains.core.repo.UserTokenRepository;
 import vn.edu.huce.beforeigner.domains.exam.repo.LessonRepository;
@@ -57,11 +56,9 @@ public class RemindService implements IRemindService {
 
     @Override
     public void remindByNotification(LearnRemindDto learnReminderDto, User targetUser) {
-
-        UserToken userToken = userTokenRepo
-                .findByLastModifiedByAndType(AuditorConfig.getAuditor(targetUser), TokenType.NOTIFICATION)
-                .orElse(null);
-        if (userToken == null) {
+        var userToken = userTokenRepo
+                .findByLastModifiedByAndType(AuditorConfig.getAuditor(targetUser), TokenType.NOTIFICATION);
+        if (userToken.isEmpty()) {
             return;
         }     
         Remind remind = new Remind();
@@ -71,7 +68,7 @@ public class RemindService implements IRemindService {
         Map<String, String> data = new HashMap<>();
         data.put("lessonId", learnReminderDto.getLessonId().toString());
         try {
-            pushNotificationService.send(userToken.getToken(), remind.getTitle(), remind.getBody(),
+            pushNotificationService.send(userToken.get().getToken(), remind.getTitle(), remind.getBody(),
             data);
             remind.setData(objectMapper.writeValueAsString(data));
             remindRepo.save(remind);
@@ -126,6 +123,12 @@ public class RemindService implements IRemindService {
                     }
                     log.info("OK! Remind {} users!", total);
                 });
+    }
+
+    @Override
+    public void remindWordByPushNotification() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'remindWordByPushNotification'");
     }
     
 }

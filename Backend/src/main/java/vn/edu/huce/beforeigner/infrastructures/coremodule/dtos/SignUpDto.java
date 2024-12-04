@@ -3,9 +3,13 @@ package vn.edu.huce.beforeigner.infrastructures.coremodule.dtos;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import lombok.ToString;
+import vn.edu.huce.beforeigner.annotations.ValidCode;
+import vn.edu.huce.beforeigner.annotations.ValidEmail;
+import vn.edu.huce.beforeigner.annotations.ValidPass;
+import vn.edu.huce.beforeigner.annotations.ValidUsername;
+import vn.edu.huce.beforeigner.domains.common.UserLevel;
 
 @Data
 @Valid
@@ -13,18 +17,20 @@ public class SignUpDto {
 
     private String fullname;
 
-    @NotBlank(message = "USERNAME_MISSING")
+    @ValidCode
+    private String code;
+
+    @ValidUsername
     private String username;
 
-    @NotBlank(message = "EMAIL_MISSING")
+    @ValidEmail
     private String email;
 
-    @NotBlank(message = "PASSWORD_MISSING")
+    @ValidPass
+    @ToString.Exclude
     private String password;
 
-    @NotNull(message = "AVATAR_MISSING")
+    private UserLevel level;
+    
     private MultipartFile avatar;
-
-    // @NotNull(message = "NOTIFICATION_TOKEN_MISSING")
-    // private String notificationToken;
 }

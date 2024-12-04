@@ -4,8 +4,11 @@ import vn.edu.huce.beforeigner.domains.core.User;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.AuthDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.ChangePasswordDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.ForgotPasswordDto;
+import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.RequestForgotPasswordDto;
+import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.RequestVerifyEmailDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.SignInDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.SignUpDto;
+import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.VerifyEmailDto;
 
 public interface IAuthService {
     
@@ -17,7 +20,11 @@ public interface IAuthService {
 
     void changePassword(User current, ChangePasswordDto changePasswordDto);
 
-    String forgotPasswordRequest(String username);
+    void requestVerifyEmail(User user, RequestVerifyEmailDto requestSignupDto);
+
+    void verifyEmail(User user, VerifyEmailDto verifyEmailDto);
+
+    void requestForgotPassword(RequestForgotPasswordDto requestForgotPasswordDto);
 
     void forgotPassword(ForgotPasswordDto forgotPasswordDto);
 }

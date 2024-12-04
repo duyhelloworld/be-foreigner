@@ -1,6 +1,7 @@
 package vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts;
 
 import vn.edu.huce.beforeigner.domains.core.User;
+import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.SetupDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.UpdateProfileDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.UserDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.UserInfoDto;
@@ -14,9 +15,11 @@ public interface IUserService {
 
     UserInfoDto getInfo(User user);
 
-    void saveNotificationToken(User user, String token);
+    void setup(User user, SetupDto setupDto);
 
     void saveSetting(User user, UserRemindSettingDto settingDto);
 
     UserInfoDto updateProfile(User user, UpdateProfileDto updateProfileDto);
+
+    Integer streak(User user);
 }

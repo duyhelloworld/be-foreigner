@@ -1,5 +1,6 @@
 package vn.edu.huce.beforeigner.infrastructures.coremodule.impls;
 
+import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -7,14 +8,15 @@ import jakarta.mail.MessagingException;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import vn.edu.huce.beforeigner.constants.UserConstants;
+import vn.edu.huce.beforeigner.domains.core.CodeTarget;
+import vn.edu.huce.beforeigner.domains.core.Role;
+import vn.edu.huce.beforeigner.domains.core.SubscriptionPlan;
 import vn.edu.huce.beforeigner.domains.core.TokenType;
 import vn.edu.huce.beforeigner.domains.core.User;
 import vn.edu.huce.beforeigner.domains.core.repo.UserRepository;
@@ -31,12 +33,15 @@ import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IUserTokenSe
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.AuthDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.ChangePasswordDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.ForgotPasswordDto;
+import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.RequestForgotPasswordDto;
+import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.RequestVerifyEmailDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.SignInDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.SignUpDto;
+import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.VerifyEmailDto;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService implements IAuthService, UserDetailsService {
+public class AuthService implements IAuthService {
 
     private final UserRepository userRepo;
 
@@ -56,8 +61,51 @@ public class AuthService implements IAuthService, UserDetailsService {
     private String adminMail;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepo.findByUsername(username).orElse(null);
+    public void requestForgotPassword(RequestForgotPasswordDto requestForgotPasswordDto) {
+        User user = userRepo
+                .findByUsernameOrEmail(requestForgotPasswordDto.getUsername(), requestForgotPasswordDto.getEmail())
+                .orElseThrow(() -> new AppException(ResponseCode.USERNAME_NOT_FOUND));
+        user.setTempCode(generateCode());
+        user.setCodeTarget(CodeTarget.RESET_PASSWORD);
+        try {
+            emailService.send(user.getEmail(), adminMail, "Yêu cầu đặt lại mật khẩu",
+                    "<p>Mã đặt lại mật khẩu của bạn là:</p>" +
+                            "<h1 style='color:blue; font-size:24px; text-align:center'>" + user.getTempCode()
+                            + "</h1>");
+            userRepo.save(user);
+        } catch (MessagingException e) {
+            throw new AppException(ResponseCode.EMAIL_ADDRESS_MAY_NOT_EXIST);
+        }
+    }
+
+    @Override
+    public void requestVerifyEmail(User user, RequestVerifyEmailDto requestVerifyEmailDto) {
+        user.setTempCode(generateCode());
+        user.setCodeTarget(CodeTarget.VERIFY_EMAIL);
+        try {
+            String targetMail = Optional.ofNullable(requestVerifyEmailDto).map(r -> r.getEmail())
+                    .orElse(user.getEmail());
+            emailService.send(targetMail, adminMail, "Xác thực email",
+                    "<p>Mã xác thực email của bạn là:</p>" +
+                            "<h1 style='co lor:blue; font-size:24px; text-align:center'>"
+                            + user.getTempCode() + "</h1>");
+            userRepo.save(user);
+        } catch (MessagingException e) {
+            throw new AppException(ResponseCode.EMAIL_ADDRESS_MAY_NOT_EXIST);
+        }
+    }
+
+    @Override
+    public void verifyEmail(User user, VerifyEmailDto verifyEmailDto) {
+        if (user.getTempCode() == null) {
+            throw new AppException(ResponseCode.INVALID_REQUEST);
+        }
+        if (user.getTempCode().equals(verifyEmailDto.getCode())) {
+            user.setTempCode(null);
+            user.setCodeTarget(null);
+            user.setVerified(true);
+            userRepo.save(user);
+        }
     }
 
     @Override
@@ -68,7 +116,7 @@ public class AuthService implements IAuthService, UserDetailsService {
             throw new AppException(ResponseCode.USERNAME_OR_PASSWORD_INCORRECT);
         }
         var userToken = userTokenRepo.findByLastModifiedByAndType(user.getUsername(), TokenType.REFRESH);
-        String refreshToken = userToken.isPresent() 
+        String refreshToken = userToken.isPresent()
                 ? userToken.get().getToken()
                 : userTokenService.addNew(TokenType.REFRESH, userTokenService.generateRefreshToken());
         return AuthDto.builder()
@@ -87,7 +135,15 @@ public class AuthService implements IAuthService, UserDetailsService {
         user.setUsername(signUpDto.getUsername());
         user.setFullname(signUpDto.getFullname());
         user.setEmail(signUpDto.getEmail());
+        user.setLevel(signUpDto.getLevel());
         user.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
+        user.setAllowMail(true);
+        user.setVerified(false);
+        user.setAllowNotification(false);
+        user.setQuota(UserConstants.QUOTA_PER_DAY);
+        user.setPlan(SubscriptionPlan.FREE);
+        user.setIsFirstTry(true);
+        user.setRole(Role.USER);
 
         var response = cloudFileService.save(signUpDto.getAvatar(), CloudFileType.USER_AVATAR);
         user.setAvatarUrl(response.getUrl());
@@ -111,31 +167,18 @@ public class AuthService implements IAuthService, UserDetailsService {
     }
 
     @Override
-    public void changePassword(User current, ChangePasswordDto changePasswordDto) {
+    public void changePassword(User user, ChangePasswordDto changePasswordDto) {
+        if (user.getTempCode() == null || user.getCodeTarget() != CodeTarget.RESET_PASSWORD) {
+            throw new AppException(ResponseCode.INVALID_REQUEST);
+        }
         if (!passwordEncoder.matches(changePasswordDto.getOldPassword(),
-                current.getPassword())) {
+                user.getPassword())) {
             throw new AppException(ResponseCode.USERNAME_OR_PASSWORD_INCORRECT);
         }
-        current.setPassword(
-                passwordEncoder.encode(changePasswordDto.getNewPassword()));
-        userRepo.save(current);
-    }
-
-    @Override
-    public String forgotPasswordRequest(String username) {
-        User user = userRepo.findByUsername(username)
-                .orElseThrow(() -> new AppException(ResponseCode.UNAUTHORIZED));
-        user.setTempCode(generateCode());
-        try {
-            emailService.send(user.getEmail(), adminMail, "Cập nhật mật khẩu ứng dụng",
-                    "<p>Code cập nhật mật khẩu của bạn là:</p>" +
-                            "<h1 style='color:blue; font-size:24px; text-align:center'>" + user.getTempCode()
-                            + "</h1>");
-        } catch (MessagingException e) {
-            throw new AppException(ResponseCode.UNEXPECTED_ERROR);
-        }
+        user.setPassword(passwordEncoder.encode(changePasswordDto.getNewPassword()));
+        user.setCodeTarget(null);
+        user.setTempCode(null);
         userRepo.save(user);
-        return user.getTempCode();
     }
 
     @Override
@@ -149,6 +192,7 @@ public class AuthService implements IAuthService, UserDetailsService {
             throw new AppException(ResponseCode.NEW_PASS_IS_SAME_WITH_OLD);
         }
         user.setTempCode(null);
+        user.setCodeTarget(null);
         user.setPassword(passwordEncoder.encode(forgotPasswordDto.getNewPassword()));
         userRepo.save(user);
     }

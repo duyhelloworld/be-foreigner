@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.Data;
 import vn.edu.huce.beforeigner.domains.common.UserLevel;
 import vn.edu.huce.beforeigner.domains.core.SubscriptionPlan;
-import vn.edu.huce.beforeigner.domains.core.TokenProvider;
 
 @Data
 @Builder
@@ -20,13 +19,9 @@ public class UserInfoDto {
     
     private String email;
 
-    private Integer streakDays;
-
     private SubscriptionPlan plan;
 
-    private Integer diamonds;
-
-    private TokenProvider provider;
+    private Integer quota;
 
     private UserLevel level;
 

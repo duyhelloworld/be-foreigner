@@ -15,6 +15,8 @@ public class QuestionDto {
     
     public QuestionType type;
 
+    public Integer index;
+    
     public QuestionLevel level;
 
     public String correctOptionMean;

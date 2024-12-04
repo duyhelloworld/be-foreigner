@@ -20,11 +20,15 @@ public enum ResponseCode {
     USERNAME_MISSING(1009, "Không được bỏ trống tên tài khoản"),
     PASSWORD_MISSING(1010, "Không được bỏ trống mật khẩu"),
     EMAIL_MISSING(1011, "Không được bỏ trống email"),
-    AVATAR_MISSING(1011, "Ảnh đại diện đang bị thiếu"),
+    USERNAME_INVALID(1011, "Tên tài khoản không hợp lệ. Tài khoản hợp lệ là tên chỉ gồm các chữ cái và số"),
+    PASSWORD_INVALID(1, "Mật khẩu không hợp lệ. Mật khẩu hợp lệ gồm 8 kí tự không bao gồm dấu cách"),
     REFRESH_TOKEN_EXPIRED(1012, "Phiên đăng nhập hết hạn"),
     REFRESH_TOKEN_MISSING(1013, "Mã làm mới bị thiếu"),
     REFRESH_TOKEN_NOT_FOUND(1014, "Không tìm thấy mã làm mới"),
-
+    EMAIL_ADDRESS_MAY_NOT_EXIST(1015, "Địa chỉ email có thể không tồn tại"),
+    CODE_INVALID(1016, "Mã không hợp lẹ"),
+    INVALID_REQUEST(101, "Yêu cầu không hợp lệ"),
+    
     // NOTIFICATION
     NOTIFICATION_TOKEN_NOT_FOUND(1015, "Không tìm thấy mã thông báo"),
     NOTIFICATION_TOKEN_MISSING(1016, "Mã thông báo bị thiếu"),
@@ -71,7 +75,11 @@ public enum ResponseCode {
 
     // HISTORY
     LESSON_HISTORY_NOT_FOUND(6000, "Không tìm thấy lịch sử học với bài học này"),
-    RETRY_COUNT_UNAVAILABLE(3001, "Hết lượt dùng miễn phí" );
+    RETRY_COUNT_UNAVAILABLE(6001, "Hết lượt dùng miễn phí" ),
+
+    // LEADER BOARD
+    LEADER_BOARD_TYPE_UNDEFINED(7000, "Loại bảng xếp hạng chưa được định nghĩa"),
+    LEADER_BOARD_TYPE_INVALID(7001, "Loại bảng xếp hạng không hợp lệ"); 
 
     private int code;
 

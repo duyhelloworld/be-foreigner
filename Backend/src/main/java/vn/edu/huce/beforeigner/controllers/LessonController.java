@@ -43,6 +43,7 @@ public class LessonController {
         return ApiResponse.ok(lessonService.getSuggestedLessons(pagingRequest, user));
     }
 
+    @IsUser
     @PutMapping("exam/complete")
     public ApiResponse<Void> completed(
             @AuthenticationPrincipal User user,

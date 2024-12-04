@@ -5,6 +5,7 @@ import org.springframework.util.StringUtils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import vn.edu.huce.beforeigner.domains.core.Role;
 import vn.edu.huce.beforeigner.domains.core.TokenType;
 import vn.edu.huce.beforeigner.domains.core.User;
 import vn.edu.huce.beforeigner.domains.core.repo.UserRepository;
@@ -12,6 +13,7 @@ import vn.edu.huce.beforeigner.infrastructures.cloudmodule.abstracts.ICloudFileS
 import vn.edu.huce.beforeigner.infrastructures.cloudmodule.dtos.CloudFileType;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IUserService;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IUserTokenService;
+import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.SetupDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.UpdateProfileDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.UserDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.UserInfoDto;
@@ -35,7 +37,7 @@ public class UserService implements IUserService {
 
     @Override
     public PagingResult<UserDto> findAllUsers(PagingRequest pagingRequest) {
-        return PagingResult.of(userRepo.findAll(pagingRequest.pageable()), u -> userMapper.toDto(u));
+        return PagingResult.of(userRepo.findByRole(Role.USER, pagingRequest.pageable()), u -> userMapper.toDto(u));
     }
 
     @Override
@@ -67,7 +69,19 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public void saveNotificationToken(User user, String token) {
-        userTokenService.addNew(TokenType.NOTIFICATION, token);
+    public void setup(User user, SetupDto setupDto) {
+        userTokenService.addNew(TokenType.NOTIFICATION, setupDto.getNotificationToken());
+        userRepo.save(user);
     }
+
+    @Override
+	public Integer streak(User user) {
+		if (user.getIsFirstTry()) {
+			user.setIsFirstTry(false);
+			user.setStreakDays(user.getStreakDays() + 1);
+			userRepo.save(user);
+		}
+		return user.getStreakDays();
+	}
+
 }

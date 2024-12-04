@@ -27,13 +27,4 @@ public interface ILessonService {
      * @param lessonId
      */
     void completed(CompletedLessonDto completedLessonDto, User user);
-
-    // PagingResult<LessonDto> getAll(PagingRequest pagingRequest);
-
-    // void addNew(CreateLessonDto createLessonDto);
-
-    // LessonDto update(Integer id, UpdateLessonDto updateLessonDto);
-
-    // void delete(Integer id);
-    
 }

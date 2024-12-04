@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import lombok.RequiredArgsConstructor;
 import vn.edu.huce.beforeigner.annotations.IsAuthenticated;
+import vn.edu.huce.beforeigner.annotations.IsUser;
 import vn.edu.huce.beforeigner.domains.core.User;
 import vn.edu.huce.beforeigner.exceptions.ApiResponse;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IAuthService;
@@ -14,10 +15,12 @@ import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.AuthDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.ForgotPasswordDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.ChangePasswordDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.RenewTokenDto;
+import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.RequestForgotPasswordDto;
+import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.RequestVerifyEmailDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.SignInDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.SignUpDto;
+import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.VerifyEmailDto;
 
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -54,19 +57,21 @@ public class AuthController {
         return ApiResponse.ok(userTokenService.renewAccess(user, renewTokenDto.getRefreshToken()));
     }
 
-    @GetMapping("forgot")
-    public ApiResponse<String> forgot(
-            @RequestParam String username) {
-        return ApiResponse.ok(authService.forgotPasswordRequest(username));
+    @PostMapping("forgot/request")
+    public ApiResponse<Void> forgot(
+            @RequestBody RequestForgotPasswordDto requestForgotPasswordDto) {
+        authService.requestForgotPassword(requestForgotPasswordDto);
+        return ApiResponse.ok();
     }
 
     @PostMapping("forgot/confirm")
-    public ApiResponse<Void> updatePassword(
+    public ApiResponse<Void> verifyForgotPassword(
             @RequestBody ForgotPasswordDto forgotPasswordDto) {
         authService.forgotPassword(forgotPasswordDto);
         return ApiResponse.ok();
     }
 
+    @IsUser
     @PostMapping("change-pass")
     public ApiResponse<Void> changePassword(
             @AuthenticationPrincipal User user,
@@ -75,4 +80,21 @@ public class AuthController {
         return ApiResponse.ok();
     }
 
+    @IsUser
+    @PostMapping("verify-email/request")
+    public ApiResponse<Void> requestVerifyEmail(
+            @AuthenticationPrincipal User user,
+            @RequestBody(required = false) RequestVerifyEmailDto requestVerifyEmailDto) {
+        authService.requestVerifyEmail(user, requestVerifyEmailDto);
+        return ApiResponse.ok();
+    }
+
+    @IsUser
+    @PostMapping("verify-email/confirm")
+    public ApiResponse<Void> verifyEmail(
+            @AuthenticationPrincipal User user,
+            @RequestBody VerifyEmailDto verifyEmailDto) {
+        authService.verifyEmail(user, verifyEmailDto);
+        return ApiResponse.ok();
+    }
 }

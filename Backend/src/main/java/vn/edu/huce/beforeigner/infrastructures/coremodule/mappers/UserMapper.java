@@ -25,11 +25,9 @@ public class UserMapper {
             .fullname(user.getFullname())
             .avatar(user.getAvatarUrl())
             .email(user.getEmail())
-            .streakDays(user.getStreakDays())
             .isAllowMail(user.isAllowMail())
             .isAllowNotification(user.isAllowNotification())
             .level(user.getLevel())
-            .provider(user.getProvider())
             .plan(user.getPlan())
             .build();
     }

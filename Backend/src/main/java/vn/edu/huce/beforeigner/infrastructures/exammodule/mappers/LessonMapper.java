@@ -33,7 +33,7 @@ public class LessonMapper {
                 .status(lesson.getLessonHistories().stream()
                         .findFirst()
                         .map(history -> history.getStatus())
-                        .orElse(LessonStatus.LOCKED))
+                        .orElse(LessonStatus.UNAVAILABLE))
                 .build();
     }
 }

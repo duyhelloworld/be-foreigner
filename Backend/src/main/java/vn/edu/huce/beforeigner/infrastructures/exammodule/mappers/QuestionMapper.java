@@ -10,9 +10,10 @@ import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.questions.Questio
 @Component
 public class QuestionMapper {
 
-    public QuestionDto toDto(Question question) {
+    public QuestionDto.QuestionDtoBuilder toDto(Question question) {
         return QuestionDto.builder()
                 .type(question.getType())
+                .index(question.getIndexInLesson())
                 .sentenseMeaning(question.getSentenseMeaning()) // đề
                 .sentenseAudio(question.getSentenseAudio()) // đề
                 .sentenseWords(Optional.ofNullable(question.getSentenseWords())
@@ -20,7 +21,6 @@ public class QuestionMapper {
                         .orElse(null)) // các từ của đáp án
                 .unrelatedWords(Optional.ofNullable(question.getUnrelatedWords())
                         .map(uw -> uw.split(" "))
-                        .orElse(null)) // từ ko liên quan của đáp án
-                .build();
+                        .orElse(null)); // từ ko liên quan của đáp án
     }
 }

@@ -14,10 +14,10 @@ public class ApiResponse<T> {
         this.data = null; 
     }
 
-    public static <T> ApiResponse<T> error(ResponseCode responseCode, T data) {
+    public static <T> ApiResponse<T> error(ResponseCode responseCode) {
         ApiResponse<T> response = new ApiResponse<>();
         response.setCode(responseCode.getCode());
-        response.setData(data);
+        response.setData(null);
         return response;
     }
 

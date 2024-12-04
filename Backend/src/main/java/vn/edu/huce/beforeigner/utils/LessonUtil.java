@@ -37,12 +37,10 @@ public class LessonUtil {
                 .append(entry.getValue())
                 .append(ANSWER_DELIMITER);
         }
-        
         // Xóa dấu phân tách cuối cùng
         if (encodedString.length() > 0) {
             encodedString.setLength(encodedString.length() - 1);
         }
-        
         return encodedString.toString();
     }
 }

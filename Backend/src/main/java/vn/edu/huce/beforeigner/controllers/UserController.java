@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IUserService;
+import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.SetupDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.UpdateProfileDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.UserDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.UserInfoDto;
@@ -25,7 +26,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -59,11 +59,11 @@ public class UserController {
     }
 
     @IsUser
-    @PostMapping("notification")
-    public ApiResponse<Void> saveNotificationToken(
+    @PostMapping("setup")
+    public ApiResponse<Void> setUpInformation(
             @AuthenticationPrincipal User user,
-            @RequestParam String token) {
-        userService.saveNotificationToken(user, token);
+            @RequestBody SetupDto setupDto) {
+        userService.setup(user, setupDto);
         return ApiResponse.ok();
     }
 
@@ -71,6 +71,12 @@ public class UserController {
     public ApiResponse<String> sendTestNotification() {
         remindService.testCronJob();
         return ApiResponse.ok("Đã gửi thông báo vào " + LocalDateTime.now());
+    }
+
+    @IsUser
+    @GetMapping("streak")
+    public ApiResponse<Integer> streak(@AuthenticationPrincipal User user) {
+        return ApiResponse.ok(userService.streak(user));
     }
 
     @IsUser

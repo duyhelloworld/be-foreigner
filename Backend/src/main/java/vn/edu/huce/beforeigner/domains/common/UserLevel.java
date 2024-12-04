@@ -12,7 +12,7 @@ public enum UserLevel {
     /**
      * Thấp, người mới (A0, A1)
      */
-    BEGINNER(0),
+    BEGINNER(100),
     /**
      * Biết chút chút (A2)
      */

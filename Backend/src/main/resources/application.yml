@@ -27,7 +27,7 @@ spring:
       
 application:
   notification:
-    app-icon: https://res.cloudinary.com/dqzwh7zvo/image/upload/v1726656428/be-foreigner-icon.png
+    app-icon: https://res.cloudinary.com/dqzwh7zvo/image/upload/v1733234774/d1tru2gdki7aewmricar.png
   mail:
     admin-mail: codedaovoiduy@gmail.com
   auth:

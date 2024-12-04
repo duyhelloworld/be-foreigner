@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import lombok.Setter;
+import vn.edu.huce.beforeigner.constants.LessonConstants;
 import vn.edu.huce.beforeigner.domains.base.FullAuditedEntity;
 import vn.edu.huce.beforeigner.domains.common.UserLevel;
 import vn.edu.huce.beforeigner.domains.history.LessonHistory;
@@ -58,7 +59,10 @@ public class Lesson extends FullAuditedEntity {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String coverImageUrl;
 
-    private String publicId;
+    private String coverImagePublicId;
+
+    @Column(nullable = false)
+    private Integer elo = LessonConstants.ELO_OF_LESSON;
 
     @OneToMany(mappedBy = "lesson")
     private Set<LessonHistory> lessonHistories = new HashSet<>();

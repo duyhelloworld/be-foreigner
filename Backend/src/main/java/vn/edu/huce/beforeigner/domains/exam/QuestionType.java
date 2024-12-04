@@ -10,6 +10,14 @@ public enum QuestionType {
      */
     LEARN_BY_AUDIO,
     /**
+     * Cho âm thanh điền từ
+     */
+    GIVE_AUDIO_ENTER_WORD,
+    /**
+     * Cho nghĩa điền từ
+     */
+    GIVE_MEAN_ENTER_WORD,
+    /**
      * Cho file nghe TA, sắp xếp từ TA
      */
     GIVE_AUDIO_REARRANGE_WORDS,
@@ -24,5 +32,5 @@ public enum QuestionType {
     /**
      * Cho audio TA, chọn từ được phát âm
      */
-    GIVE_AUDIO_CHOOSE_WORD
+    GIVE_AUDIO_CHOOSE_WORD,
 }

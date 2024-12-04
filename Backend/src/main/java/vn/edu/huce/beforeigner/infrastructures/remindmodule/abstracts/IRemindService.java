@@ -10,5 +10,7 @@ public interface IRemindService {
     void remindByEmail(LearnRemindDto learnReminderDto, User targetUser);
 
     void testCronJob();
+
+    void remindWordByPushNotification();
     
 }
