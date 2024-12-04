@@ -3,7 +3,7 @@ import SplashScreen from "../common/SplashScreen";
 import { useUserStorage } from "../../hook/UserStorageHooks";
 import { ApiResponse, UserInfo } from "../../types/apimodels";
 import apiClient from "../../config/AxiosConfig";
-import { ApiResponseCode } from "../../types/enum";
+import { ApiResponseCode, UserLevel } from "../../types/enum";
 import { useAppNavigation } from "../../navigation/AppNavigation";
 import messaging, {
   FirebaseMessagingTypes,
@@ -24,39 +24,23 @@ const SetupScreen = () => {
     if (enabled) {
       await messaging().registerDeviceForRemoteMessages();
       const token = await messaging().getToken();
-      const response = await apiClient.post<ApiResponse>("user/notification?token=" + token);
+      // TODO
+      const response = await apiClient.post<ApiResponse>("user/setup", {
+        notificationToken: token,
+        userLevel: UserLevel.BEGINNER,
+      });
       if (response.data.code === ApiResponseCode.OK) {
         await notificationStorage.init();
       } else {
         Alert.alert("Có lỗi khi đăng kí thông báo");
         return;
       }
-
-      messaging().onMessage(
-        async (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
-          Alert.alert(
-            "A new FCM message arrived!",
-            JSON.stringify(remoteMessage)
-          );
-
-          if (remoteMessage.messageId) {
-            notificationStorage.addNotification({
-              id: remoteMessage.messageId,
-              title: remoteMessage.notification?.title ?? "Chưa rõ",
-              content: remoteMessage.notification?.body ?? "Nội dung trống",
-              sendAt: remoteMessage.sentTime ?? 0,
-              isRead: false,
-            })
-          }
-        }
-      )
     }
   }
 
   const handleTask = async () => {
     await requestUserPushNotificationPermission();
     const response = await apiClient.get<ApiResponse>(`user/my-info`);
-    console.log("Check user img: ", response.data.data);
     if (response.data.code === ApiResponseCode.OK) {
       await userStorage.setInfo(response.data.data as UserInfo);
     }

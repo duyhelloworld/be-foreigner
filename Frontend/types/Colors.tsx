@@ -1,6 +1,6 @@
 export const AppColors = {
   green: "#58CC02",
-  lightGreen: "#C4FF61",
+  lightGreen: "#AADD77",
   darkGreen: "#06882A",
   white: "#FFFFFF",
   black: "#000000",
@@ -12,8 +12,10 @@ export const AppColors = {
   purple: "#4B0082",
   grayDark: "#888888",
   gray: "#AAAAAA",
-  lightGray: "#F9F9F9",
+  lightGray: "#999999",
   light: "#EDEDED",
+  bronze: "#CC7744",
+  placeholder: "#F9F9F9",
 };
 
 export const BadgeColors = [

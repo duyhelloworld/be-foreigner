@@ -1,4 +1,4 @@
-import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { QuestionType } from "../../types/enum";
 import GiveMeanChooseWordView from "./questions/GiveMeanChooseWordView";
@@ -19,20 +19,40 @@ import {
 import BottomButton from "../common/BottomButton";
 import LearnWordByValue from "./questions/LearnWordByValue";
 import LearnWordByAudio from "./questions/LearnWordByAudio";
+import GiveMeanEnterWord from "./questions/GiveMeanEnterWord";
+import GiveAudioEnterWord from "./questions/GiveAudioEnterWord";
 
 const renderQuestionView = (question: Question) => {
   switch (question.type) {
+    case "GIVE_MEAN_ENTER_WORD":
+      return (
+        <GiveMeanEnterWord
+          meaning={question.correctOptionMean!}
+          correctWord={question.correctOptionValue!}
+        />
+      );
+    case "GIVE_AUDIO_ENTER_WORD":
+      return (
+        <GiveAudioEnterWord
+          audio={question.correctOptionAudio!}
+          correctWord={question.correctOptionValue!}
+        />
+      );
     case "LEARN_BY_AUDIO":
-      return <LearnWordByAudio
-        audio={question.correctOptionAudio!}
-        mean={question.correctOptionMean!}
-        value={question.correctOptionValue!}
-      />
+      return (
+        <LearnWordByAudio
+          audio={question.correctOptionAudio!}
+          mean={question.correctOptionMean!}
+          value={question.correctOptionValue!}
+        />
+      );
     case "LEARN_BY_WORD":
-      return <LearnWordByValue
-        mean={question.correctOptionMean!}
-        value={question.correctOptionValue!}
-      />
+      return (
+        <LearnWordByValue
+          mean={question.correctOptionMean!}
+          value={question.correctOptionValue!}
+        />
+      );
     case "GIVE_AUDIO_CHOOSE_WORD":
       return (
         <GiveAudioChooseWordView
@@ -120,10 +140,13 @@ const LearnScreen = () => {
 
   function onExit() {
     Alert.prompt("Bạn có muốn thoát không?", "", [
-      { text: "OK", onPress: () => 
-        navigator.navigate("HomeNavigator", { screen: "HomeScreen" }) },
+      {
+        text: "OK",
+        onPress: () =>
+          navigator.navigate("HomeNavigator", { screen: "HomeScreen" }),
+      },
       { text: "Hủy" },
-    ])
+    ]);
   }
 
   return (
@@ -155,7 +178,11 @@ const LearnScreen = () => {
       {isBottomSheetVisible && <View style={styles.overlay} />}
 
       {isCorrect === undefined ? (
-        <BottomButton title="Kiểm tra" onPress={onCheckPress} style={styles.bottomButton} />
+        <BottomButton
+          title="Kiểm tra"
+          onPress={onCheckPress}
+          style={styles.bottomButton}
+        />
       ) : isCorrect ? (
         <CorrectBottomSheet
           message={resultRef.current.message}
@@ -176,6 +203,7 @@ export default LearnScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: 20,
   },
   headingContainer: {
     flexDirection: "row",
@@ -185,7 +213,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   progressBarContainer: {
-    width: "90%",
+    flex: 1,
     marginHorizontal: 10,
     height: 20,
     justifyContent: "flex-end",
@@ -210,6 +238,6 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   bottomButton: {
-    marginHorizontal: "10%"
-  }
+    marginHorizontal: "10%",
+  },
 });

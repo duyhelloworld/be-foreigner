@@ -23,7 +23,7 @@ const LearnWordByAudio = ({ audio, mean, value }: LearnWordByAudioProp) => {
 
   useEffect(() => {
     playAudio();
-  }, [])
+  }, [audio])
   
   async function playAudio() {
     const { sound } = await Sound.createAsync({ uri: audio });
@@ -46,11 +46,9 @@ export default LearnWordByAudio;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: AppColors.lightGray,
-    paddingHorizontal: 20,
+    flex: 0.9
   },
   audioIcon: {
     color: AppColors.white,
@@ -59,7 +57,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: width * 0.5,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 10 },
+    shadowOffset: { width: 2, height: 10 },
     shadowOpacity: 0.3,
     shadowRadius: 10,
     elevation: 10,

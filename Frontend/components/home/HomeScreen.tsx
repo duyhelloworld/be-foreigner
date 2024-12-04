@@ -2,7 +2,6 @@ import {
   ActivityIndicator,
   FlatList,
   StyleSheet,
-  Text,
   View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
@@ -12,6 +11,7 @@ import { AppColors } from "../../types/colors";
 import { ApiResponseCode } from "../../types/enum";
 import LessonInfoView from "./LessonInfoView";
 import apiClient from "../../config/AxiosConfig";
+import GradientBackground from "../common/GradientBackground";
 
 const PAGE_SIZE = 6;
 
@@ -23,6 +23,7 @@ const HomeScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [refreshScrollCount, setRefreshScrollCount] = useState(0);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   async function loadWord() {
     const wordResponse = await apiClient.get<ApiResponse>("word/today");
@@ -79,20 +80,21 @@ const HomeScreen = () => {
     setIsRefreshing(true);
     await loadLesson(0);
     setCurrentPage(0);
+    setRefreshKey((prevKey) => prevKey + 1);
     setIsRefreshing(false);
   }
 
   return (
-    <View style={styles.container}>
-      
+    <GradientBackground>
       <TodayWordView word={todayWord} />
 
       <FlatList
         data={lessons}
-        renderItem={({ item }) => <LessonInfoView lesson={item} />}
-        keyExtractor={(_, index) => index.toString()}
+        renderItem={({ item, index }) => (
+          <LessonInfoView key={`${refreshKey}-${item.id}`} lesson={item} index={index} />
+        )}
+        keyExtractor={(item) => `${refreshKey}-${item.id}`}
         onEndReached={handleLoadMore} 
-        onEndReachedThreshold={0.5} 
         refreshing={isRefreshing} 
         onRefresh={handleRefresh} 
         ListFooterComponent={
@@ -101,7 +103,7 @@ const HomeScreen = () => {
           ) : null
         }
       />
-    </View>
+    </GradientBackground>
   );
 };
 

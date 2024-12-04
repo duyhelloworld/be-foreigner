@@ -1,4 +1,5 @@
-import { LessonStatus, LessonType, QuestionLevel, QuestionType, SubscriptionPlan, UserLevel } from "./enum";
+import { Sound } from "expo-av/build/Audio";
+import { LeaderBoardType, LessonStatus, LessonType, QuestionLevel, QuestionType, SubscriptionPlan, UserLevel } from "./enum";
 
 export interface ApiResponse {
   code: number;
@@ -48,10 +49,11 @@ export interface LessonHistory {
   lessonId: number;
   lessonName: string;
   lessonImage: string;
+  elo: number;
   startAt: string;
   totalTime: string;
-  status: LessonStatus;
   accuracy: number;
+  status: keyof typeof LessonStatus;
 }
 
 export interface Question {
@@ -69,16 +71,17 @@ export interface Question {
   unrelatedWords?: string[];
 };
 
-export interface Ranking {
-  users: RankingUser[],
-  fetchedOn: string
+export interface LeaderBoard {
+  users: LeaderBoardUser[],
+  type: keyof typeof LeaderBoardType
 }
 
-export interface RankingUser {
+export interface LeaderBoardUser {
   elo: number;
   userRank: number;
   username: string;
   avatar: string;
+  userId: number;
 };
 
 export interface AnswerOption {
@@ -107,7 +110,6 @@ export interface UserInfo {
   email: string;
   level: UserLevel;
   plan: SubscriptionPlan;
-  streakDays: number;
   isAllowEmail: boolean;
   isAllowNotification: boolean;
 };

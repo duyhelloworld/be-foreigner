@@ -2,7 +2,7 @@ import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import LearnScreen from "../../components/learn/LearnScreen";
 import CompletedLessonScreen from "../../components/learn/completed/CompletedLessonScreen";
-import StraightScreen from "../../components/learn/completed/StraightScreen";
+import StreakScreen from "../../components/learn/completed/StreakScreen";
 import SplashLearnScreen from "../../components/learn/SplashLearnScreen";
 
 export type LearnNavigatorParams = {
@@ -12,7 +12,7 @@ export type LearnNavigatorParams = {
     historyId: number;
     accuracy: number;
   };
-  StraightScreen: undefined;
+  StreakScreen: { streakDay: number };
 };
 
 const LearnNavigator = () => {
@@ -27,8 +27,8 @@ const LearnNavigator = () => {
         component={CompletedLessonScreen}
       />
       <Stack.Screen 
-        name="StraightScreen"
-        component={StraightScreen}
+        name="StreakScreen"
+        component={StreakScreen}
       />
     </Stack.Navigator>
   );

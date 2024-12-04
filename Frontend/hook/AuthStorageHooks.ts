@@ -11,7 +11,7 @@ export type AuthStorageType = {
   getRefreshToken: () => Promise<string | null>;
 };
 
-const useAuthStorage = () : AuthStorageType => {
+const useAuthStorage = () => {
 
   const saveTokens = async (newTokens: Auth) => {
     await AsyncStorage.setItem(ACCESS_TOKEN_KEY, newTokens.accessToken);
@@ -19,8 +19,7 @@ const useAuthStorage = () : AuthStorageType => {
   };
 
   const removeTokens = async () => {
-    await AsyncStorage.removeItem(ACCESS_TOKEN_KEY);
-    await AsyncStorage.removeItem(REFRESH_TOKEN_KEY);
+    await AsyncStorage.multiRemove([ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY]);
   };
 
   const getAccessToken = async () => {

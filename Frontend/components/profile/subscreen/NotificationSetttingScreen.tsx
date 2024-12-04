@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -9,28 +9,43 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { AppColors } from "../../types/colors";
-import apiClient from "../../config/AxiosConfig";
-import { ApiResponse } from "../../types/apimodels";
-import { ApiResponseCode } from "../../types/enum";
-import BottomButton from "../common/BottomButton";
+import { AppColors } from "../../../types/colors";
+import apiClient from "../../../config/AxiosConfig";
+import { ApiResponse } from "../../../types/apimodels";
+import { ApiResponseCode } from "../../../types/enum";
+import { useAppNavigation } from "../../../navigation/AppNavigation";
+import { useUserStorage } from "../../../hook/UserStorageHooks";
 
 const NotificationSettingScreen: React.FC = () => {
-  const [emailNotifications, setEmailNotifications] = useState(true);
-  const [pushNotifications, setPushNotifications] = useState(true);
+  const [emailNotification, setEmailNotification] = useState(true);
+  const [pushNotification, setPushNotification] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState("");
+  const navigator = useAppNavigation();
+  const userStorage = useUserStorage();
 
   async function saveSettings() {
     setIsLoading(true);
-    const response = await apiClient.put<ApiResponse>("user/notification/setting");
+    const response = await apiClient.put<ApiResponse>(
+      "user/notification/setting"
+    );
     if (response.data.code === ApiResponseCode.OK) {
-      setMessage("Lưu cài đặt thành công");
       setIsLoading(false);
+      navigator.goBack();
     } else {
-      setMessage(response.data.data as string[][0])
+      alert(response.data.data as string[][0]);
     }
-  };
+  }
+
+  useEffect(() => {
+    async function load() {
+      const user = await userStorage.getInfo();
+      if (user) {
+        setEmailNotification(user?.isAllowEmail);
+        setPushNotification(user?.isAllowNotification);
+      }
+    }
+    load();
+  }, []);
 
   return (
     <ScrollView style={styles.container}>
@@ -41,10 +56,10 @@ const NotificationSettingScreen: React.FC = () => {
             <Text style={styles.settingText}>Thông báo qua Email</Text>
           </View>
           <Switch
-            value={emailNotifications}
-            onValueChange={setEmailNotifications}
+            value={emailNotification}
+            onValueChange={setEmailNotification}
             trackColor={{ false: "#767577", true: "#3b82f6" }}
-            thumbColor={emailNotifications ? "#fff" : "#f4f3f4"}
+            thumbColor={emailNotification ? "#fff" : "#f4f3f4"}
           />
         </View>
       </View>
@@ -56,17 +71,21 @@ const NotificationSettingScreen: React.FC = () => {
             <Text style={styles.settingText}>Thông báo đẩy</Text>
           </View>
           <Switch
-            value={pushNotifications}
-            onValueChange={setPushNotifications}
+            value={pushNotification}
+            onValueChange={setPushNotification}
             trackColor={{ false: "#767577", true: "#3b82f6" }}
-            thumbColor={pushNotifications ? "#fff" : "#f4f3f4"}
+            thumbColor={pushNotification ? "#fff" : "#f4f3f4"}
           />
         </View>
       </View>
 
-      {isLoading ? <ActivityIndicator size={"large"} color={AppColors.green} /> : <Pressable style={styles.saveButton} onPress={saveSettings}>
-        <Text style={styles.saveButtonText}>Lưu Cài Đặt</Text>
-      </Pressable>}
+      {isLoading ? (
+        <ActivityIndicator size={"large"} color={AppColors.green} />
+      ) : (
+        <Pressable style={styles.saveButton} onPress={saveSettings}>
+          <Text style={styles.saveButtonText}>Lưu Cài Đặt</Text>
+        </Pressable>
+      )}
     </ScrollView>
   );
 };

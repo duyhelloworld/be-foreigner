@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { ProfileNavigatorParams } from "../../navigation/navigators/ProfileNavigator";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
-import { RootNavigatorParams } from "../../navigation/AppNavigation";
+import { RootNavigatorParams, useAppNavigation } from "../../navigation/AppNavigation";
 import { AppColors } from "../../types/colors";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
@@ -26,7 +26,7 @@ const ProfileScreenButton = ({
   hightlightText = false,
   showBadge = false,
 }: ProfileScreenButtonProp) => {
-  const navigator = useNavigation<NavigationProp<RootNavigatorParams>>();
+  const navigator = useAppNavigation();
   return (
     <Pressable
       style={[styles.button, { backgroundColor }]}
@@ -42,7 +42,7 @@ const ProfileScreenButton = ({
       <Text
         style={[
           styles.buttonText,
-          { color: textColor, fontWeight: hightlightText ? "500" : "300" },
+          { color: textColor, fontWeight: hightlightText ? "500" : "400" },
         ]}
       >
         {label}
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     width: "100%",
-    padding: 15,
+    padding: 20,
     borderRadius: 10,
     marginVertical: 8,
     elevation: 2,

@@ -1,11 +1,12 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import NotificationSetttingScreen from "../../components/profile/NotificationSetttingScreen";
-import LogoutScreen from "../../components/profile/LogoutScreen";
-import UpgradePlanScreen from "../../components/profile/UpgradePlanScreen";
-import ChangePasswordScreen from "../../components/profile/ChangePasswordScreen";
-import UpdateProfileScreen from "../../components/profile/UpdateProfileScreen";
-import LessonHistoryScreen from "../../components/profile/LessonHistoryScreen";
+import NotificationSetttingScreen from "../../components/profile/subscreen/NotificationSetttingScreen";
+import LogoutScreen from "../../components/profile/subscreen/LogoutScreen";
+import UpgradePlanScreen from "../../components/profile/subscreen/UpgradePlanScreen";
+import ChangePasswordScreen from "../../components/profile/subscreen/ChangePasswordScreen";
+import UpdateProfileScreen from "../../components/profile/subscreen/UpdateProfileScreen";
+import LessonHistoryScreen from "../../components/profile/subscreen/LessonHistoryScreen";
+import StatisticScreen from "../../components/profile/subscreen/StatisticScreen";
 
 export type ProfileNavigatorParams = {
   UpdateProfileScreen: undefined;
@@ -50,12 +51,12 @@ const ProfileNavigator = () => {
       <Stack.Screen
         name="LessonHistoryScreen"
         component={LessonHistoryScreen}
-        options={{ headerShown: false }}
+        options={{ title: "Lịch sử học bài" }}
       />
       <Stack.Screen
-        name="LogoutScreen"
-        component={LogoutScreen}
-        options={{ headerShown: false }}
+        name="StatisticScreen"
+        component={StatisticScreen}
+        options={{ title: "Thống kê bài học" }}
       />
     </Stack.Navigator>
   );

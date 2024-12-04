@@ -7,11 +7,11 @@ import {
   ScrollView,
   ActivityIndicator,
 } from "react-native";
-import apiClient from "../../config/AxiosConfig";
-import { ApiResponse } from "../../types/apimodels";
-import { ApiResponseCode } from "../../types/enum";
-import InputTextView from "../auth/InputTextView";
-import { AppColors } from "../../types/colors";
+import apiClient from "../../../config/AxiosConfig";
+import { ApiResponse } from "../../../types/apimodels";
+import { ApiResponseCode } from "../../../types/enum";
+import InputTextView from "../../auth/InputTextView";
+import { AppColors } from "../../../types/colors";
 
 const ChangePasswordScreen = () => {
   const [oldPassword, setOldPassword] = useState<string>();

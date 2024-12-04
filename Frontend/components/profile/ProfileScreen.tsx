@@ -1,16 +1,13 @@
-import React, { useCallback, useEffect, useState } from "react";
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
 import ProfileScreenButton from "./ProfileScreenButton";
 import { AppColors } from "../../types/colors";
 import { UserInfo } from "../../types/apimodels";
 import { useUserStorage } from "../../hook/UserStorageHooks";
 import ProfileFooterView from "./ProfileFooterView";
+import GradientBackground from "../common/GradientBackground";
+
+const { width, height } = Dimensions.get("window");
 
 const ProfileScreen = () => {
   const [user, setUser] = useState<UserInfo>();
@@ -26,16 +23,19 @@ const ProfileScreen = () => {
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.topContainer}>
-          <Image
-            source={
-              { uri: user?.avatar }
-            }
-            style={styles.avatar}
-          />
-          <Text style={styles.username}>{user?.username}</Text>
-        </View>
+      <View style={styles.avatarUserIconContainer}>
+        <Image
+          source={
+            user
+              ? { uri: user.avatar }
+              : require("../../assets/default-avatar.jpg")
+          }
+          style={styles.avatar}
+        />
+        <Text style={styles.textLabel}>{user?.username}</Text>
+      </View>
+
+      <GradientBackground>
         <View style={styles.bottomContainer}>
           <ProfileScreenButton
             label="Nâng cấp tài khoản"
@@ -49,9 +49,11 @@ const ProfileScreen = () => {
           />
           <ProfileScreenButton
             label="Lịch sử học bài"
+            targetScreen="LessonHistoryScreen"
           />
           <ProfileScreenButton
             label="Thống kê kết quả học"
+            targetScreen="StatisticScreen"
           />
           <ProfileScreenButton
             label="Cập nhật thông tin"
@@ -70,13 +72,13 @@ const ProfileScreen = () => {
           />
         </View>
         <ProfileFooterView
-          companyName="Duy Nến Dev"
+          companyName="Duy nến dev"
           email="duy0184466@huce.edu.vn"
           releaseYear={2024}
           facebookUrl="https://facebook.com/duyhelloworld"
           githubUrl="https://github.com/duyhelloworld"
         />
-      </ScrollView>
+      </GradientBackground>
     </View>
   );
 };
@@ -84,15 +86,7 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  topContainer: {
-    backgroundColor: AppColors.green,
-    flexDirection: "row",
-    alignItems: "flex-end",
-    padding: 10,
+    marginTop: 30,
   },
   bottomContainer: {
     flexDirection: "column",
@@ -100,17 +94,20 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     backgroundColor: AppColors.white,
   },
-  username: {
+  textLabel: {
     fontWeight: "700",
     color: AppColors.white,
-    maxWidth: "40%",
     fontSize: 23,
   },
   avatar: {
-    width: 200,
-    height: 200,
+    width: height * 0.15,
+    height: height * 0.15,
     borderRadius: 100,
-    maxWidth: "60%",
+  },
+  avatarUserIconContainer: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    backgroundColor: AppColors.darkGreen
   },
 });
 

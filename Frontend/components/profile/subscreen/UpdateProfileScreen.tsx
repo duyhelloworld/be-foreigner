@@ -8,13 +8,13 @@ import {
   Pressable,
   ActivityIndicator,
 } from "react-native";
-import { AppColors } from "../../types/colors";
-import { ApiResponse, UserInfo } from "../../types/apimodels";
+import { AppColors } from "../../../types/colors";
+import { ApiResponse, UserInfo } from "../../../types/apimodels";
 import { MediaTypeOptions, launchImageLibraryAsync } from "expo-image-picker";
-import InputTextView from "../auth/InputTextView";
-import { useUserStorage } from "../../hook/UserStorageHooks";
-import apiClient from "../../config/AxiosConfig";
-import { ApiResponseCode, ContentType } from "../../types/enum";
+import InputTextView from "../../auth/InputTextView";
+import { useUserStorage } from "../../../hook/UserStorageHooks";
+import apiClient from "../../../config/AxiosConfig";
+import { ApiResponseCode, ContentType } from "../../../types/enum";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function UpdateProfileScreen() {

@@ -19,8 +19,8 @@ const LearnWordByValue = ({ mean, value }: LearnWordByValueProp) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.meanText}>{mean}</Text>
       <Text style={styles.valueText}>{value}</Text>
+      <Text style={styles.meanText}>{mean}</Text>
     </View>
   );
 };
@@ -31,16 +31,15 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
     alignItems: "center",
+    flex: 0.9
   },
-  meanText: {
+  valueText: {
     color: AppColors.blue,
     fontSize: 40
   },
-  valueText: {
+  meanText: {
     color: AppColors.gray,
     fontSize: 30,
     marginTop: 20,
-    lineHeight: 40,
-    letterSpacing: 0.5,
   },
 });

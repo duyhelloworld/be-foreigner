@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     borderColor: AppColors.light,
     borderWidth: 1,
     borderRadius: 8,
-    backgroundColor: AppColors.lightGray,
+    backgroundColor: AppColors.placeholder,
     paddingHorizontal: 15,
   },
   input: {

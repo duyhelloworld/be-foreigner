@@ -2,10 +2,10 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "../../components/home/HomeScreen";
 import ProfileScreen from "../../components/profile/ProfileScreen";
-import RankingScreen from "../../components/ranking/RankingScreen";
 import NotificationScreen from "../../components/notification/NotificationScreen";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { AppColors } from "../../types/colors";
+import LeaderBoardScreen from "../../components/leaderboard/LeaderBoardScreen";
 
 const ICON_SIZE = 23;
 const ICON_COLOR = AppColors.darkGreen;
@@ -14,7 +14,7 @@ const ICON_COLOR_FOCUSED = AppColors.green;
 export type HomeNavigatorParams = {
   HomeScreen: undefined;
   NotificationScreen: undefined;
-  RankingScreen: undefined;
+  LeaderBoardScreen: undefined;
   ProfileScreen: undefined;
 };
 
@@ -28,7 +28,7 @@ function getTabbarIcon(screen: keyof HomeNavigatorParams, isFocused: boolean ) {
           color={isFocused ? ICON_COLOR_FOCUSED : ICON_COLOR}
         />
       );
-    case "RankingScreen":
+    case "LeaderBoardScreen":
       return (
         <Ionicons
           name="stats-chart-outline"
@@ -75,10 +75,10 @@ const HomeNavigator = () => {
         }}
       />
        <Tab.Screen
-        name="RankingScreen"
-        component={RankingScreen}
+        name="LeaderBoardScreen"
+        component={LeaderBoardScreen}
         options={{
-          tabBarIcon: (prop) => getTabbarIcon("RankingScreen", prop.focused),
+          tabBarIcon: (prop) => getTabbarIcon("LeaderBoardScreen", prop.focused),
         }}
       />
       <Tab.Screen
@@ -92,7 +92,6 @@ const HomeNavigator = () => {
         name="ProfileScreen"
         component={ProfileScreen}
         options={{
-          tabBarStyle: {display: "none"},
           tabBarIcon: (prop) => getTabbarIcon("ProfileScreen", prop.focused),
         }}
       />

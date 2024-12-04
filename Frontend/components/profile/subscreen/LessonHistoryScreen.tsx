@@ -1,10 +1,7 @@
-
-
 import React, { useEffect, useRef } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, Animated, Easing, useAnimatedValue } from 'react-native';
-import Svg, { Circle } from 'react-native-svg';
-import { LessonHistory } from '../../types/apimodels';
-import { LessonStatus } from '../../types/enum';
+import { LessonHistory } from '../../../types/apimodels';
+import { LessonStatus } from '../../../types/enum';
 
 interface LessonHistoryProps {
   history?: LessonHistory[];
@@ -13,12 +10,13 @@ interface LessonHistoryProps {
 const defaultHistory: LessonHistory[] = [
   {
     lessonId: 1,
-    lessonName: "Basic Vocabulary",
+    lessonName: "Gia đình",
     lessonImage: "https://example.com/vocab.png",
     startAt: "2023-05-15T10:00:00Z",
     totalTime: "00:30:00",
-    status: LessonStatus.COMPLETED,
+    status: "COMPLETED",
     accuracy: 85,
+    elo: 100,
   },
   {
     lessonId: 2,
@@ -26,8 +24,9 @@ const defaultHistory: LessonHistory[] = [
     lessonImage: "https://example.com/grammar.png",
     startAt: "2023-05-16T14:30:00Z",
     totalTime: "00:45:00",
-    status: LessonStatus.COMPLETED,
+    status: "COMPLETED",
     accuracy: 92,
+    elo: 100,
   },
   {
     lessonId: 3,
@@ -35,12 +34,11 @@ const defaultHistory: LessonHistory[] = [
     lessonImage: "https://example.com/conversation.png",
     startAt: "2023-05-17T09:15:00Z",
     totalTime: "01:00:00",
-    status: LessonStatus.ONGOING,
+    status: "ONGOING",
     accuracy: 78,
+    elo: 100,
   },
 ];
-
-const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 const LessonHistoryScreen: React.FC<LessonHistoryProps> = ({ history = defaultHistory }) => {
   const animatedValues = useRef(history.map(() => useAnimatedValue(0))).current;
@@ -74,25 +72,6 @@ const LessonHistoryScreen: React.FC<LessonHistoryProps> = ({ history = defaultHi
 
     return (
       <View style={styles.accuracyContainer}>
-        <Svg width={radius * 2} height={radius * 2}>
-          <Circle
-            cx={radius}
-            cy={radius}
-            r={radius - 5}
-            stroke="#E0E0E0"
-            strokeWidth={5}
-          />
-          <AnimatedCircle
-            cx={radius}
-            cy={radius}
-            r={radius - 5}
-            stroke="#FF6B6B"
-            strokeWidth={5}
-            strokeDasharray={circumference}
-            strokeDashoffset={strokeDashoffset}
-            strokeLinecap="round"
-          />
-        </Svg>
         <Text style={styles.accuracyText}>{`${accuracy}%`}</Text>
       </View>
     );

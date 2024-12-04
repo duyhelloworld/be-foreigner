@@ -95,10 +95,18 @@ export enum ClaimTypes {
 export enum QuestionType {
   LEARN_BY_WORD = "",
   LEARN_BY_AUDIO = "",
+  GIVE_MEAN_ENTER_WORD = "Điền từ mang nghĩa sau",
+  GIVE_AUDIO_ENTER_WORD = "Điền từ mà bạn nghe được", 
   GIVE_AUDIO_REARRANGE_WORDS = "Sắp xếp lại các từ mà bạn nghe được",
   GIVE_SENTENSE_REARRANGE_WORDS = "Sắp xếp lại các từ để được câu bên dưới",
   GIVE_MEAN_CHOOSE_WORD = "Chọn đáp án đúng",
   GIVE_AUDIO_CHOOSE_WORD = "Chọn từ mà bạn nghe được",
+}
+
+export enum LeaderBoardType {
+  WEEKLY,
+  MONTHLY,
+  ALL_TIME,
 }
 
 export enum LessonStatus {

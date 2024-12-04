@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Pressable, StyleSheet, FlatList } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { Notification } from '../../types/apimodels';
-import { useNotificationStorage } from '../../hook/NotificationStorageHook';
-import { AppColors } from '../../types/colors';
+import React, { useEffect, useState } from "react";
+import { View, Text, Pressable, StyleSheet, FlatList } from "react-native";
+import { Notification } from "../../types/apimodels";
+import { useNotificationStorage } from "../../hook/NotificationStorageHook";
+import GradientBackground from "../common/GradientBackground";
+import { AppColors } from "../../types/colors";
 
 export default function NotificationScreen() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
   const notificationStorage = useNotificationStorage();
 
@@ -17,65 +16,48 @@ export default function NotificationScreen() {
       if (noti.length === 0) {
         noti = [
           {
-            id: '1',
-            content: 'Êy zô Cú xanh tới rồi nè',
+            id: "1",
+            title: "Hú lô, lại là Liongo đây!🦁",
+            content: "Hình như lâu rồi tôi chưa thấy bạn đó",
             isRead: false,
             sendAt: Date.now(),
-            title: 'Nhắc học bài',
           },
           {
-            id: '2',
-            title: "AA",
-            content: 'AAAB',
+            id: "2",
+            title: "🤗Ôi bạn ơi🤗, sao bạn chưa vào học vậy",
+            content:
+              "Lần cuối bạn học cùng tôi là khi nào nhỉ? Hay là để tôi nhắc bạn nhớ nhé!",
             isRead: true,
             sendAt: Date.now(),
           },
           {
-            id: '3',
-            title: "AA",
-            content: 'AAAB',
-            isRead: true,
+            id: "3",
+            title: "Phạm Duy ơi ❤️❤️❤️ bạn ỉm hơi lâu rồi á :D",
+            content:
+              "Hình như tôi chiều các em quá nên các em hư đúng không? Vào học ngayyyy",
+            isRead: false,
             sendAt: Date.now(),
           },
           {
-            id: '4',
-            title: "AA",
-            content: 'AAAB',
-            isRead: true,
+            id: "4",
+            title: "Gào gào gào 🦁🦁🦁, bạn Phạm Duy có ở đây không?",
+            content: "Anh nhắc em, vào học ngay cho anh",
+            isRead: false,
             sendAt: Date.now(),
           },
           {
-            id: '5',
-            title: "AA",
-            content: 'AAAB',
-            isRead: true,
+            id: "5",
+            title: "Duy Phạm ơi! 🕒 Đến giờ học rồi nà",
+            content: "Vừng ơi mở ra...",
+            isRead: false,
             sendAt: Date.now(),
           },
-          {
-            id: '6',
-            title: "AA",
-            content: 'AAABVBJBJKDSJXNVDDJKSBVCXBBFGNFCNNFXGCV N DGCVBGFCNXCFB ',
-            isRead: true,
-            sendAt: Date.now(),
-          }
         ];
       }
       setNotifications(noti);
     }
     loadNoti();
-  }, []);
-
-  const toggleExpand = (id: string) => {
-    setExpandedIds((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(id)) {
-        newSet.delete(id);
-      } else {
-        newSet.add(id);
-      }
-      return newSet;
-    });
-  };
+  }, [notificationStorage]);
 
   const markAllAsRead = () => {
     setNotifications((prev) =>
@@ -83,21 +65,15 @@ export default function NotificationScreen() {
     );
   };
 
-  const markAsRead = (id: string) => {
-    setNotifications((prev) =>
-      prev.map((notification) =>
-        notification.id === id ? { ...notification, isRead: true } : notification
-      )
+  const markAsRead = async (id: string) => {
+    const updatedNotifications = notifications.map((notification) =>
+      notification.id === id ? { ...notification, isRead: true } : notification
     );
-  };
-
-  const handlePressNotification = (id: string) => {
-    markAsRead(id);
-    toggleExpand(id);
+    setNotifications(updatedNotifications);
   };
 
   return (
-    <View style={styles.container}>
+    <GradientBackground>
       <View style={styles.header}>
         <Pressable onPress={markAllAsRead}>
           <Text style={styles.markAllButton}>Đánh dấu tất cả là đã đọc</Text>
@@ -113,50 +89,35 @@ export default function NotificationScreen() {
               styles.notificationItem,
               item.isRead && styles.readNotification,
             ]}
-            onPress={() => handlePressNotification(item.id)}
+            onPress={() => markAsRead(item.id)}
           >
-            <View style={styles.notificationHeader}>
-              <Text style={styles.notificationTitle}>{item.title}</Text>
-              <Pressable onPress={() => toggleExpand(item.id)}>
-                <Ionicons
-                  name={expandedIds.has(item.id) ? 'chevron-up' : 'chevron-down'}
-                  size={24}
-                  color={AppColors.black}
-                />
-              </Pressable>
-            </View>
-            {expandedIds.has(item.id) && (
-              <Text style={styles.notificationBody}>{item.content}</Text>
-            )}
+            <Text style={styles.notificationBody}>{item.content}</Text>
           </Pressable>
         )}
       />
-    </View>
+    </GradientBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f0f0',
     padding: 16,
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    marginTop: 50,
     marginBottom: 16,
   },
   markAllButton: {
-    color: '#007AFF',
-    fontSize: 16,
+    color: AppColors.gray,
+    fontSize: 20,
   },
   notificationItem: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 8,
     padding: 16,
     marginBottom: 16,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
@@ -166,17 +127,17 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   notificationHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   notificationTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   notificationBody: {
     marginTop: 8,
     fontSize: 16,
-    color: '#333',
+    color: "#333",
   },
 });

@@ -19,5 +19,9 @@ export function useUserStorage() {
     }
   };
 
-  return { getInfo, setInfo };
+  async function clear() {
+    await AsyncStorage.removeItem(KEY);
+  }
+
+  return { getInfo, setInfo, clear };
 }

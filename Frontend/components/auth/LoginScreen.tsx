@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   oauthButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: AppColors.lightGray,
+    backgroundColor: AppColors.light,
     borderRadius: 8,
     paddingVertical: 10,
     paddingHorizontal: 15,

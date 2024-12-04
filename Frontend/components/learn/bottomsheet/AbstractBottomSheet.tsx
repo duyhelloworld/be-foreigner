@@ -46,22 +46,18 @@ const AbstractBottomSheet = ({
   const animatedValue = useAnimatedValue(0);
   const lastGestureDy = useRef(0);
 
-  const [audio, setAudio] = useState<Sound>();
+  const load = async () => {
+    const { sound } = await Sound.createAsync(button.buttonAudio);
+    await sound.playAsync();
+  };
 
   useEffect(() => {
-    const load = async () => {
-      const { sound } = await Sound.createAsync(button.buttonAudio);
-      setAudio(sound);
-    };
     load();
   }, [button.buttonAudio]);
 
   useEffect(() => {
-    async function play() {
-      await audio?.playAsync();
-    }
-    play();
     springAnimation(MAX_UPWARD_TRANSLATE_Y);
+    load();
   }, []);
 
   const springAnimation = (toValue: number) => {

@@ -1,5 +1,5 @@
-import { Animated, Image, StyleSheet, Text, View, useAnimatedValue } from "react-native";
-import React, { useEffect } from "react";
+import { Image, StyleSheet, Text, View, useAnimatedValue } from "react-native";
+import React  from "react";
 import { AppColors } from "../../../types/colors";
 import BottomButton from "../../common/BottomButton";
 import apiClient from "../../../config/AxiosConfig";
@@ -22,7 +22,8 @@ const CompletedLessonScreen = () => {
       accuracy,
     });
     if (response.data.code === ApiResponseCode.OK) {
-      navigator.navigate("LearnNavigator", { screen: "StraightScreen" });
+      const streakDay = response.data.data as number;
+      navigator.navigate("LearnNavigator", { screen: "StreakScreen" , params: { streakDay }});
     }
   }
 

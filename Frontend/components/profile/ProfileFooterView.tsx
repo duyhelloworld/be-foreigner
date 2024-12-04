@@ -44,7 +44,6 @@ const ProfileFooterView: React.FC<ProfileFooterViewProps> = ({
     }
   };
 
-  // Helper function to extract Facebook ID from URL
   const getFacebookId = (url: string): string => {
     const match = url.match(
       /(?:https?:\/\/)?(?:www\.)facebook\.com\/(?:(?:\w)*#!\/)?(?:pages\/)?(?:[\w\-]*\/)*([\w\-]*)/
@@ -58,7 +57,7 @@ const ProfileFooterView: React.FC<ProfileFooterViewProps> = ({
         <Ionicons
           name="mail"
           size={24}
-          color="#93C5FD"
+          color={AppColors.gray}
           onPress={handleEmailPress}
           style={styles.icon}
         />
@@ -66,7 +65,7 @@ const ProfileFooterView: React.FC<ProfileFooterViewProps> = ({
           <Ionicons
             name="logo-facebook"
             size={24}
-            color="#93C5FD"
+            color={AppColors.blue}
             onPress={() => handleSocialPress(facebookUrl, "facebook")}
             style={styles.icon}
           />
@@ -75,7 +74,7 @@ const ProfileFooterView: React.FC<ProfileFooterViewProps> = ({
           <Ionicons
             name="logo-github"
             size={24}
-            color="#93C5FD"
+            color={AppColors.black}
             onPress={() => handleSocialPress(githubUrl, "github")}
             style={styles.icon}
           />
@@ -91,7 +90,7 @@ const ProfileFooterView: React.FC<ProfileFooterViewProps> = ({
 
 const styles = StyleSheet.create({
   footer: {
-    backgroundColor: "#1F2937",
+    width: '100%',
     padding: 24,
     alignItems: "center",
   },
@@ -104,7 +103,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   copyright: {
-    color: AppColors.white,
     fontSize: 14,
     textAlign: "center",
     marginBottom: 8,
