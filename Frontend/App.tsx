@@ -1,4 +1,4 @@
-import { Alert, LogBox, StyleSheet, View } from "react-native";
+import { Alert, LogBox } from "react-native";
 import { useEffect } from "react";
 import AppNavigation from "./navigation/AppNavigation";
 import useAuthStorage from "./hook/AuthStorageHooks";
@@ -30,10 +30,9 @@ export default function App() {
       Alert.alert("Background message", JSON.stringify(remoteMessage));
       if (remoteMessage.messageId) {
         notificationStorage.addNotification({
-          id: remoteMessage.messageId,
+          id: 0,
           title: remoteMessage.notification?.title ?? "Chưa rõ",
           content: remoteMessage.notification?.body ?? "Nội dung trống",
-          sendAt: remoteMessage.sentTime ?? 0,
           isRead: false,
         });
       }
@@ -46,10 +45,9 @@ export default function App() {
 
       if (remoteMessage.messageId) {
         notificationStorage.addNotification({
-          id: remoteMessage.messageId,
+          id: 1,
           title: remoteMessage.notification?.title ?? "Chưa rõ",
           content: remoteMessage.notification?.body ?? "Nội dung trống",
-          sendAt: remoteMessage.sentTime ?? 0,
           isRead: false,
         });
       }

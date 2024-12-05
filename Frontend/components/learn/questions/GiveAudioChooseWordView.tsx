@@ -8,7 +8,7 @@ import { AnswerOption } from "../../../types/apimodels";
 
 interface GiveAudioChooseWordViewProp {
   correctOptionMean: string;
-  correctOptionAudio: string;
+  correctOptionAudio: string | Sound;
   answerOptions: AnswerOption[];
 }
 
@@ -19,8 +19,12 @@ const GiveAudioChooseWordView = ({
   const resultRef = useContext(LearnScreenContext);
 
   async function play() {
-    let { sound } = await Sound.createAsync({ uri: correctOptionAudio });
-    await sound.playAsync();
+    if (typeof correctOptionAudio === 'string') {
+      let { sound } = await Sound.createAsync({ uri: correctOptionAudio });
+      await sound.playAsync();
+    } else {
+      await correctOptionAudio.playAsync();
+    }
   }
 
   const onOptionPress = (currentIndex: number) => {

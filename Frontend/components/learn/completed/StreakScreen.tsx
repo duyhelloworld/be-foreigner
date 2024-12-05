@@ -1,142 +1,67 @@
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  StyleSheet,
-  Animated,
-  Easing,
-  useAnimatedValue,
-} from "react-native";
-import {
-  useAppNavigation,
-  useRootParams,
-} from "../../../navigation/AppNavigation";
-import { AppColors } from "../../../types/colors";
+import React, { useEffect, useRef } from "react";
+import { View, Text, StyleSheet, Animated, Easing, Image } from "react-native";
+import GradientBackground from "../../common/GradientBackground";
+import fireImage from "../../../assets/fire.png";
 import BottomButton from "../../common/BottomButton";
+import { useAppNavigation } from "../../../navigation/AppNavigation";
 
-const StreakScreen = () => {
+interface LearningStreakProps {
+  streakDay?: number;
+}
+
+const StreakScreen: React.FC<LearningStreakProps> = ({ streakDay = 100 }) => {
+  const flameOpacity = useRef(new Animated.Value(0)).current;
+  const counterValue = useRef(new Animated.Value(0)).current;
+  const textOpacity = useRef(new Animated.Value(0)).current;
+
   const navigator = useAppNavigation();
 
-  const [currentNumber, setCurrentNumber] = useState(0);
-  const [showCongrats, setShowCongrats] = useState(false);
-  const circleAnimation = useAnimatedValue(0);
-  const numberAnimation = useAnimatedValue(0);
-  const congratsAnimation = useAnimatedValue(0);
-  const streakDay = useRootParams("LearnNavigator", "StreakScreen").streakDay;
-
   useEffect(() => {
-    if (currentNumber < streakDay) {
-      const timer = setTimeout(() => {
-        setCurrentNumber((prev) => {
-          const next = Math.min(prev + 1, streakDay);
-          Animated.timing(circleAnimation, {
-            toValue: next / streakDay,
-            duration: 50,
-            useNativeDriver: true,
-            easing: Easing.linear,
-          }).start();
-          return next;
-        });
-      });
-      return () => clearTimeout(timer);
-    } else if (currentNumber === streakDay) {
-      setTimeout(() => setShowCongrats(true), 1000);
-    }
-  }, [currentNumber, streakDay, circleAnimation]);
-
-  useEffect(() => {
-    if (showCongrats) {
-      Animated.parallel([
-        Animated.timing(numberAnimation, {
-          toValue: 1,
-          duration: 500,
-          useNativeDriver: true,
-        }),
-        Animated.timing(congratsAnimation, {
-          toValue: 1,
-          duration: 500,
-          delay: 300,
-          useNativeDriver: true,
-        }),
-      ]).start();
-    }
-  }, [showCongrats, numberAnimation, congratsAnimation]);
-
-  const circlePath = circleAnimation.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, Math.PI * 2 * 45],
-  });
+    Animated.sequence([
+      Animated.timing(flameOpacity, {
+        toValue: 1,
+        duration: 2000,
+        useNativeDriver: true,
+      }),
+      Animated.timing(counterValue, {
+        toValue: streakDay,
+        duration: 1500,
+        easing: Easing.out(Easing.ease),
+        useNativeDriver: true,
+      }),
+      Animated.timing(textOpacity, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
 
   return (
-    <View style={styles.container}>
-      <Animated.View
-        style={[
-          styles.numberContainer,
-          {
-            transform: [
-              {
-                translateY: numberAnimation.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [0, -50],
-                }),
-              },
-              {
-                scale: numberAnimation.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [1, 0.8],
-                }),
-              },
-            ],
-          },
-        ]}
-      >
-        <Animated.Text
-          style={[
-            styles.number,
-            {
-              opacity: numberAnimation.interpolate({
-                inputRange: [0, 0.5, 1],
-                outputRange: [1, 0, 1],
-              }),
-              transform: [
-                {
-                  scale: numberAnimation.interpolate({
-                    inputRange: [0, 0.5, 1],
-                    outputRange: [1, 0.5, 1],
-                  }),
-                },
-              ],
-            },
-          ]}
+    <GradientBackground>
+      <View style={styles.container}>
+        <Animated.View
+          style={[styles.flameContainer, { opacity: flameOpacity }]}
         >
-          {currentNumber}
+          <Animated.Image source={fireImage} style={styles.flame} />
+        </Animated.View>
+        <Animated.Text style={styles.counter}>
+          {counterValue.interpolate({
+            inputRange: [0, streakDay],
+            outputRange: ["0", streakDay.toString()],
+          })}
         </Animated.Text>
-      </Animated.View>
-      <Animated.Text
-        style={[
-          styles.congratsText,
-          {
-            opacity: congratsAnimation,
-            transform: [
-              {
-                translateY: congratsAnimation.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [20, 0],
-                }),
-              },
-            ],
-          },
-        ]}
-      >
-        Chúc mừng bạn đã đạt được {streakDay} ngày streak!
-      </Animated.Text>
-
-      <BottomButton
-        title="Tiếp tục"
-        onPress={() =>
-          navigator.navigate("HomeNavigator", { screen: "HomeScreen" })
-        }
-      />
-    </View>
+        <Animated.Text style={[styles.congratsText, { opacity: textOpacity }]}>
+          Chúc mừng chuỗi {streakDay} của bạn
+        </Animated.Text>
+        <BottomButton
+          title="Tiếp tục"
+          onPress={() =>
+            navigator.navigate("HomeNavigator", { screen: "HomeScreen" })
+          }
+        />
+      </View>
+    </GradientBackground>
   );
 };
 
@@ -145,27 +70,29 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: AppColors.green,
   },
-  numberContainer: {
-    position: "relative",
+  flameContainer: {
     width: 200,
     height: 200,
-    justifyContent: "center",
-    alignItems: "center",
   },
-  number: {
-    position: "absolute",
-    fontSize: 64,
+  flame: {
+    width: "100%",
+    height: "100%",
+  },
+  counter: {
+    fontSize: 48,
     fontWeight: "bold",
-    color: "white",
+    color: "#FFF",
+    marginTop: 20,
   },
   congratsText: {
-    marginTop: 20,
-    fontSize: 18,
-    fontWeight: "600",
-    color: "white",
+    fontSize: 24,
+    fontWeight: "bold",
     textAlign: "center",
+    marginTop: 20,
+    textShadowColor: "rgba(0, 0, 0, 0.75)",
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 10,
   },
 });
 

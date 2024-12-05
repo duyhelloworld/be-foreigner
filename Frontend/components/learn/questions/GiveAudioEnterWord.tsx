@@ -6,7 +6,7 @@ import { LearnScreenContext } from '../LearnScreenHooks';
 import { AppColors } from '../../../types/colors';
 
 interface GiveAudioEnterWordProps {
-  audio: string;
+  audio: string | Sound;
   correctWord: string;
 }
 
@@ -22,8 +22,12 @@ const GiveAudioEnterWord = ({ audio, correctWord }: GiveAudioEnterWordProps) => 
   }, []);
 
   async function playAudio() {
-    const { sound } = await Sound.createAsync({ uri: audio });
-    await sound.playAsync();
+    if (typeof audio === "string") {
+      const { sound } = await Sound.createAsync({ uri: audio });
+      await sound.playAsync();
+    } else {
+      await audio.playAsync();
+    }
   }
 
   const handleSubmit = () => {

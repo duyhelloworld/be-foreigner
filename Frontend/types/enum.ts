@@ -93,8 +93,7 @@ export enum ClaimTypes {
 }
 
 export enum QuestionType {
-  LEARN_BY_WORD = "",
-  LEARN_BY_AUDIO = "",
+  LEARN_WORD = "Học từ",
   GIVE_MEAN_ENTER_WORD = "Điền từ mang nghĩa sau",
   GIVE_AUDIO_ENTER_WORD = "Điền từ mà bạn nghe được", 
   GIVE_AUDIO_REARRANGE_WORDS = "Sắp xếp lại các từ mà bạn nghe được",

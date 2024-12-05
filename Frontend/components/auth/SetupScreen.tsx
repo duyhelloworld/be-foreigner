@@ -25,6 +25,7 @@ const SetupScreen = () => {
       await messaging().registerDeviceForRemoteMessages();
       const token = await messaging().getToken();
       // TODO
+      console.log(token);
       const response = await apiClient.post<ApiResponse>("user/setup", {
         notificationToken: token,
         userLevel: UserLevel.BEGINNER,

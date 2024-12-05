@@ -1,143 +1,105 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, Pressable, StyleSheet, FlatList } from "react-native";
+import React, { useEffect } from "react";
+import { View, Text, StyleSheet, FlatList, Pressable } from "react-native";
 import { Notification } from "../../types/apimodels";
 import { useNotificationStorage } from "../../hook/NotificationStorageHook";
-import GradientBackground from "../common/GradientBackground";
-import { AppColors } from "../../types/colors";
 
-export default function NotificationScreen() {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-
+const NotificationScreen: React.FC = () => {
+  const [notifications, setNotifications] = React.useState<Notification[]>([]);
   const notificationStorage = useNotificationStorage();
 
   useEffect(() => {
     async function loadNoti() {
       let noti = await notificationStorage.getNotifications();
-      if (noti.length === 0) {
-        noti = [
-          {
-            id: "1",
-            title: "Hú lô, lại là Liongo đây!🦁",
-            content: "Hình như lâu rồi tôi chưa thấy bạn đó",
-            isRead: false,
-            sendAt: Date.now(),
-          },
-          {
-            id: "2",
-            title: "🤗Ôi bạn ơi🤗, sao bạn chưa vào học vậy",
-            content:
-              "Lần cuối bạn học cùng tôi là khi nào nhỉ? Hay là để tôi nhắc bạn nhớ nhé!",
-            isRead: true,
-            sendAt: Date.now(),
-          },
-          {
-            id: "3",
-            title: "Phạm Duy ơi ❤️❤️❤️ bạn ỉm hơi lâu rồi á :D",
-            content:
-              "Hình như tôi chiều các em quá nên các em hư đúng không? Vào học ngayyyy",
-            isRead: false,
-            sendAt: Date.now(),
-          },
-          {
-            id: "4",
-            title: "Gào gào gào 🦁🦁🦁, bạn Phạm Duy có ở đây không?",
-            content: "Anh nhắc em, vào học ngay cho anh",
-            isRead: false,
-            sendAt: Date.now(),
-          },
-          {
-            id: "5",
-            title: "Duy Phạm ơi! 🕒 Đến giờ học rồi nà",
-            content: "Vừng ơi mở ra...",
-            isRead: false,
-            sendAt: Date.now(),
-          },
-        ];
-      }
-      setNotifications(noti);
+      setNotifications(noti!);
     }
     loadNoti();
-  }, [notificationStorage]);
+  }, [notificationStorage, notifications]);
 
-  const markAllAsRead = () => {
-    setNotifications((prev) =>
-      prev.map((notification) => ({ ...notification, isRead: true }))
+  const handleNotificationPress = async (id: number) => {
+    setNotifications(
+      notifications.map((notification) =>
+        notification.id === id
+          ? { ...notification, isRead: true }
+          : notification
+      )
     );
+    await notificationStorage.markRead(id);
   };
 
-  const markAsRead = async (id: string) => {
-    const updatedNotifications = notifications.map((notification) =>
-      notification.id === id ? { ...notification, isRead: true } : notification
-    );
-    setNotifications(updatedNotifications);
-  };
+  const renderNotification = ({ item }: { item: Notification }) => (
+    <Pressable
+      onPress={() => handleNotificationPress(item.id)}
+      style={[
+        styles.notificationItem,
+        item.isRead ? styles.readNotification : styles.unreadNotification,
+      ]}
+    >
+      <Text style={styles.notificationTitle}>{item.title}</Text>
+      <Text style={styles.notificationContent}>{item.content}</Text>
+    </Pressable>
+  );
+
+  const renderEmptyState = () => (
+    <View style={styles.emptyState}>
+      <Text style={styles.emptyStateText}>Không có thông báo nào</Text>
+    </View>
+  );
 
   return (
-    <GradientBackground>
-      <View style={styles.header}>
-        <Pressable onPress={markAllAsRead}>
-          <Text style={styles.markAllButton}>Đánh dấu tất cả là đã đọc</Text>
-        </Pressable>
-      </View>
+    <View style={styles.container}>
+      <Text style={styles.header}>Thông báo</Text>
       <FlatList
         data={notifications}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <Pressable
-            key={item.id}
-            style={[
-              styles.notificationItem,
-              item.isRead && styles.readNotification,
-            ]}
-            onPress={() => markAsRead(item.id)}
-          >
-            <Text style={styles.notificationBody}>{item.content}</Text>
-          </Pressable>
-        )}
+        renderItem={renderNotification}
+        keyExtractor={(item) => item.id.toString()}
+        ListEmptyComponent={renderEmptyState}
       />
-    </GradientBackground>
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    marginTop: 30,
+    backgroundColor: "#f5f5f5",
   },
   header: {
-    marginTop: 50,
-    marginBottom: 16,
-  },
-  markAllButton: {
-    color: AppColors.gray,
-    fontSize: 20,
+    fontSize: 24,
+    fontWeight: "bold",
+    padding: 16,
+    backgroundColor: "#ffffff",
   },
   notificationItem: {
-    backgroundColor: "#fff",
-    borderRadius: 8,
+    backgroundColor: "#ffffff",
     padding: 16,
-    marginBottom: 16,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 3,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e0e0e0",
+  },
+  unreadNotification: {
+    backgroundColor: "#e8f4fd",
   },
   readNotification: {
-    opacity: 0.6,
-  },
-  notificationHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    backgroundColor: "#ffffff",
   },
   notificationTitle: {
     fontSize: 18,
     fontWeight: "bold",
+    marginBottom: 8,
   },
-  notificationBody: {
-    marginTop: 8,
+  notificationContent: {
     fontSize: 16,
-    color: "#333",
+  },
+  emptyState: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 16,
+  },
+  emptyStateText: {
+    fontSize: 18,
+    color: "#757575",
   },
 });
+
+export default NotificationScreen;

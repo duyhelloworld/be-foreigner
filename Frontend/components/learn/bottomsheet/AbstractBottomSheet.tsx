@@ -10,6 +10,8 @@ import {
 import { StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { Sound } from "expo-av/build/Audio";
+import correctSoundEffect from "../../../assets/correct-answer-effect.mp3"
+import incorrectSoundEffect from "../../../assets/incorrect-answer-effect.mp3"
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } =
   Platform.OS === "android"
@@ -22,18 +24,16 @@ const MAX_UPWARD_TRANSLATE_Y =
   BOTTOM_SHEET_MIN_HEIGHT - BOTTOM_SHEET_MAX_HEIGHT;
 const MAX_DOWNWARD_TRANSLATE_Y = 0;
 
-type Button = {
-  text: string;
-  style: ViewStyle;
-  textStyle: TextStyle;
-  buttonAudio: any;
-  onPress: () => void;
-};
-
 interface AbstractBottomSheetProp {
   title: string;
   backgroundColor: string;
-  button: Button;
+  button: {
+    text: string;
+    style: ViewStyle;
+    isCorrect: boolean;
+    onPress: () => void;
+    textStyle?: TextStyle;
+  };
   message: string;
 }
 
@@ -45,20 +45,12 @@ const AbstractBottomSheet = ({
 }: AbstractBottomSheetProp) => {
   const animatedValue = useAnimatedValue(0);
   const lastGestureDy = useRef(0);
+  const [soundEffect, setSoundEffect] = useState<Sound>();
 
   const load = async () => {
-    const { sound } = await Sound.createAsync(button.buttonAudio);
-    await sound.playAsync();
+    const { sound } = await Sound.createAsync(button.isCorrect ? correctSoundEffect : incorrectSoundEffect);
+    setSoundEffect(sound);
   };
-
-  useEffect(() => {
-    load();
-  }, [button.buttonAudio]);
-
-  useEffect(() => {
-    springAnimation(MAX_UPWARD_TRANSLATE_Y);
-    load();
-  }, []);
 
   const springAnimation = (toValue: number) => {
     lastGestureDy.current = toValue;
@@ -67,6 +59,15 @@ const AbstractBottomSheet = ({
       useNativeDriver: false,
     }).start();
   };
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  useEffect(() => {
+    soundEffect?.playAsync();
+    springAnimation(MAX_UPWARD_TRANSLATE_Y);
+  }, []);
 
   const animatedStyle = () => {
     return {
@@ -82,8 +83,6 @@ const AbstractBottomSheet = ({
     };
   };
 
-  
-
   const onClose = () => {
     springAnimation(MAX_DOWNWARD_TRANSLATE_Y);
     button.onPress();
@@ -93,14 +92,12 @@ const AbstractBottomSheet = ({
     <Animated.View style={[styles.bottomSheet, animatedStyle()]}>
       <View style={styles.titleContainer}>
         <Text style={styles.title}>{title}</Text>
-        {message && <Text style={styles.message}>{message}</Text>}
+        <Text style={styles.message}>{message}</Text>
       </View>
 
-      {button && (
-        <Pressable style={button.style} onPress={onClose}>
-          <Text style={button.textStyle}>{button.text}</Text>
-        </Pressable>
-      )}
+      <Pressable style={button.style} onPress={onClose}>
+        <Text style={styles.buttonText}>{button.text}</Text>
+      </Pressable>
     </Animated.View>
   );
 };
@@ -130,6 +127,10 @@ const styles = StyleSheet.create({
     flex: 1,
     borderWidth: 1,
     borderColor: "red",
+  },
+  buttonText: {
+    fontWeight: "600",
+    fontSize: 20,
   },
   title: {
     fontSize: 24,

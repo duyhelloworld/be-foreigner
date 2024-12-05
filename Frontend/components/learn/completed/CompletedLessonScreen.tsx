@@ -1,19 +1,24 @@
-import { Image, StyleSheet, Text, View, useAnimatedValue } from "react-native";
-import React  from "react";
+import React, { useEffect, useRef } from "react";
+import { Animated, Image, StyleSheet, Text, View, Easing, ViewStyle } from "react-native";
 import { AppColors } from "../../../types/colors";
 import BottomButton from "../../common/BottomButton";
 import apiClient from "../../../config/AxiosConfig";
 import { ApiResponse } from "../../../types/apimodels";
 import { ApiResponseCode } from "../../../types/enum";
 import accuracyImage from "../../../assets/accuracy.png";
-import appImage from "../../../assets/icon.png";
-import { useAppNavigation, useRootParams } from "../../../navigation/AppNavigation";
+import appImage from "../../../assets/icon-transparent.png";
+import {
+  useAppNavigation,
+  useRootParams,
+} from "../../../navigation/AppNavigation";
+import GradientBackground from "../../common/GradientBackground";
 
 const CompletedLessonScreen = () => {
   const { accuracy, historyId } = useRootParams(
     "LearnNavigator",
     "CompletedLessonScreen"
   );
+  
   const navigator = useAppNavigation();
 
   async function onContinuePress() {
@@ -23,26 +28,49 @@ const CompletedLessonScreen = () => {
     });
     if (response.data.code === ApiResponseCode.OK) {
       const streakDay = response.data.data as number;
-      navigator.navigate("LearnNavigator", { screen: "StreakScreen" , params: { streakDay }});
+      navigator.navigate("LearnNavigator", {
+        screen: "StreakScreen",
+        params: { streakDay },
+      });
+    }
+    else {
+      alert(response.data.data as string[]);
     }
   }
 
+  const getBatteryColor = () => {
+    if (accuracy < 20) return AppColors.red;
+    if (accuracy < 60) return AppColors.orange;
+    return AppColors.lightGreen;
+  };
+
+  const batteryStyle: ViewStyle = {
+    width: 120,
+    height: accuracy * 160 / 100,
+    borderBottomEndRadius: 20,
+    borderBottomStartRadius: 20,
+    bottom: 0,
+    zIndex: 0,
+    position: 'absolute',
+    borderTopWidth: 1,
+    backgroundColor: getBatteryColor(),
+  }
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.completedText}>Hoàn thành bài học</Text>
+    <GradientBackground style={styles.container}>
       <Image source={appImage} style={styles.appImage} />
+      <Text style={styles.completedText}>Hoàn thành bài học</Text>
       <View style={styles.statisticContainer}>
         <View style={styles.statisticRow}>
           <Image source={accuracyImage} style={styles.statisticImage} />
           <Text style={styles.statisticText}>{accuracy}%</Text>
+          <View style={batteryStyle}></View>
         </View>
       </View>
-      <BottomButton title="Tiếp tục" onPress={onContinuePress} />
-    </View>
+        <BottomButton title="Tiếp tục" onPress={onContinuePress} />
+    </GradientBackground>
   );
 };
-
-export default CompletedLessonScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -50,15 +78,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   completedText: {
-    color: AppColors.green,
+    color: AppColors.white,
     fontWeight: "700",
-    fontSize: 30,
-    marginVertical: 30,
+    fontSize: 40,
+    textShadowColor: AppColors.black,
+    textShadowOffset: {width: 2, height: -3},
+    textShadowRadius: 2,
   },
   appImage: {
     width: 200,
     height: 200,
-    marginTop: 20,
+    marginTop: "15%",
     resizeMode: "contain",
   },
   statisticContainer: {
@@ -69,18 +99,23 @@ const styles = StyleSheet.create({
   statisticRow: {
     borderRadius: 20,
     borderWidth: 2,
-    borderColor: AppColors.green,
+    borderColor: AppColors.lightGray,
+    backgroundColor: AppColors.white,
     padding: 10,
     margin: 5,
   },
   statisticImage: {
-    width: 80,
-    height: 80,
+    width: 100,
+    zIndex: 1,
+    height: 140,
     resizeMode: "contain",
   },
   statisticText: {
     textAlign: "center",
     fontSize: 15,
+    zIndex: 1,
     fontWeight: "800",
   },
 });
+
+export default CompletedLessonScreen;

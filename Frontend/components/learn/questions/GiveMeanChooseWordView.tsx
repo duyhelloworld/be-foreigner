@@ -8,7 +8,7 @@ import { Sound } from "expo-av/build/Audio";
 
 interface GiveMeanChooseWordViewProp {
   correctOptionMean: string;
-  correctOptionAudio: string;
+  correctOptionAudio: string | Sound;
   answerOptions: AnswerOption[];
   level: QuestionLevel;
 }
@@ -27,8 +27,12 @@ const GiveMeanChooseWordView = ({
       setSelectedIndex(currentIndex);
     }
     if (level === QuestionLevel.EASY) {
-      const { sound } = await Sound.createAsync({ uri: correctOptionAudio });
-      await sound.playAsync();
+      if (typeof correctOptionAudio === 'string') {
+        let { sound } = await Sound.createAsync({ uri: correctOptionAudio });
+        await sound.playAsync();
+      } else {
+        await correctOptionAudio.playAsync();
+      }
     }
 
     resultRef.current = {

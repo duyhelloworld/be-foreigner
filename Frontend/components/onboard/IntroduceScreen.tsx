@@ -19,29 +19,25 @@ const screens = [
     title: "Hiện đại & Trẻ trung",
     description: "Trải nghiệm giao diện hiện đại và năng động",
     color: "#3B82F6",
-    image:
-      "https://images.unsplash.com/photo-1507652955-f3dcef5a3be5?ixid=M3w2NTYwNDN8MHwxfHNlYXJjaHwxfHx5b3V8ZW58MHx8fHwxNzMxNTQ2OTg1fDA&ixlib=rb-4.0.3",
+    image: require("../../assets/modern.png"),
   },
   {
     title: "Vui vẻ & Công bằng",
     description: "Tận hưởng không gian vui vẻ và công bằng cho mọi người",
     color: "#10B981",
-    image:
-      "https://images.unsplash.com/photo-1507652955-f3dcef5a3be5?ixid=M3w2NTYwNDN8MHwxfHNlYXJjaHwxfHx5b3V8ZW58MHx8fHwxNzMxNTQ2OTg1fDA&ixlib=rb-4.0.3",
+    image: require("../../assets/funny.png")
   },
   {
     title: "Hoàn toàn Miễn phí",
     description: "Sử dụng tất cả tính năng mà không mất phí",
     color: "#F59E0B",
-    image:
-      "https://images.unsplash.com/photo-1507652955-f3dcef5a3be5?ixid=M3w2NTYwNDN8MHwxfHNlYXJjaHwxfHx5b3V8ZW58MHx8fHwxNzMxNTQ2OTg1fDA&ixlib=rb-4.0.3",
+    image: require("../../assets/free.png")
   },
   {
     title: "Bạn đã sẵn sàng?",
     description: "Hãy bắt đầu trải nghiệm ngay bây giờ!",
-    color: "#EC4899",
-    image:
-      "https://images.unsplash.com/photo-1507652955-f3dcef5a3be5?ixid=M3w2NTYwNDN8MHwxfHNlYXJjaHwxfHx5b3V8ZW58MHx8fHwxNzMxNTQ2OTg1fDA&ixlib=rb-4.0.3",
+    color: "#11AA11",
+    image:require("../../assets/ready.png")
   },
 ];
 
@@ -74,7 +70,7 @@ const IntroduceScreen = () => {
         renderItem={({ item }) => (
           <View style={[styles.slide, { backgroundColor: item.color, width }]}>
             <Image
-              source={{ uri: item.image }}
+              source={item.image}
               style={[
                 styles.image,
                 { width: width * 0.8, height: width * 0.8 },
@@ -128,7 +124,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   image: {
-    resizeMode: "cover",
+    resizeMode: "contain",
     borderRadius: 20,
     marginBottom: 30,
   },

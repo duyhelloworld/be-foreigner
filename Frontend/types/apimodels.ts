@@ -7,10 +7,9 @@ export interface ApiResponse {
 }
 
 export interface Notification {
-  id: string;
+  id: number;
   title: string;
   content: string;
-  sendAt: number;
   isRead: boolean;
 }
 
@@ -59,14 +58,15 @@ export interface LessonHistory {
 export interface Question {
   type: keyof typeof QuestionType;
   level: QuestionLevel;
+  index: number;
 
   correctOptionMean?: string;
   correctOptionValue?: string;
-  correctOptionAudio?: string;
+  correctOptionAudio?: string | Sound;
   answerOptions?: AnswerOption[];
 
   sentenseMeaning?: string;
-  sentenseAudio?: string;
+  sentenseAudio?: string | Sound;
   sentenseWords?: string[];
   unrelatedWords?: string[];
 };
@@ -87,7 +87,7 @@ export interface LeaderBoardUser {
 export interface AnswerOption {
   value: string;
   image: string;
-  audio: string;
+  audio: string | Sound;
   isTrue: boolean;
 }
 

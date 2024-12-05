@@ -6,14 +6,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { Sound } from "expo-av/build/Audio";
 
 interface LearnWordByAudioProp {
-  audio: string;
+  audio: string | Sound;
   mean: string;
   value: string;
 }
 
-const { width } = Dimensions.get("window");
-
-const LearnWordByAudio = ({ audio, mean, value }: LearnWordByAudioProp) => {
+const LearnWord = ({ audio, mean, value }: LearnWordByAudioProp) => {
   const resultRef = useContext(LearnScreenContext);
   resultRef.current = {
     enabled: true,
@@ -26,14 +24,18 @@ const LearnWordByAudio = ({ audio, mean, value }: LearnWordByAudioProp) => {
   }, [audio])
   
   async function playAudio() {
-    const { sound } = await Sound.createAsync({ uri: audio });
-    await sound.playAsync();
+    if (typeof audio === 'string') {
+      const { sound } = await Sound.createAsync({ uri: audio });
+      await sound.playAsync();
+    } else {
+      await audio.playAsync();
+    }
   }
 
   return (
     <View style={styles.container}>
       <Ionicons name="volume-high" 
-        size={width * 0.4} 
+        size={40} 
         style={styles.audioIcon} 
         onPress={playAudio} 
       />
@@ -42,7 +44,7 @@ const LearnWordByAudio = ({ audio, mean, value }: LearnWordByAudioProp) => {
   );
 };
 
-export default LearnWordByAudio;
+export default LearnWord;
 
 const styles = StyleSheet.create({
   container: {
@@ -55,7 +57,7 @@ const styles = StyleSheet.create({
     backgroundColor: AppColors.green,
     padding: 30,
     alignItems: 'center',
-    borderRadius: width * 0.5,
+    borderRadius: 40,
     shadowColor: "#000",
     shadowOffset: { width: 2, height: 10 },
     shadowOpacity: 0.3,

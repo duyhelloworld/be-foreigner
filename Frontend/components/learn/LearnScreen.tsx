@@ -17,10 +17,9 @@ import {
   useRootParams,
 } from "../../navigation/AppNavigation";
 import BottomButton from "../common/BottomButton";
-import LearnWordByValue from "./questions/LearnWordByValue";
-import LearnWordByAudio from "./questions/LearnWordByAudio";
 import GiveMeanEnterWord from "./questions/GiveMeanEnterWord";
 import GiveAudioEnterWord from "./questions/GiveAudioEnterWord";
+import LearnWord from "./questions/LearnWord";
 
 const renderQuestionView = (question: Question) => {
   switch (question.type) {
@@ -38,17 +37,10 @@ const renderQuestionView = (question: Question) => {
           correctWord={question.correctOptionValue!}
         />
       );
-    case "LEARN_BY_AUDIO":
+    case "LEARN_WORD":
       return (
-        <LearnWordByAudio
+        <LearnWord
           audio={question.correctOptionAudio!}
-          mean={question.correctOptionMean!}
-          value={question.correctOptionValue!}
-        />
-      );
-    case "LEARN_BY_WORD":
-      return (
-        <LearnWordByValue
           mean={question.correctOptionMean!}
           value={question.correctOptionValue!}
         />
@@ -111,13 +103,12 @@ const LearnScreen = () => {
   }, [currentIndex]);
 
   function onCheckPress() {
-    const ref = resultRef.current;
-    if (!ref.enabled) {
+    if (!resultRef.current.enabled) {
       return;
     }
-    setIsCorrect(ref.isCorrect);
+    setIsCorrect(resultRef.current.isCorrect);
     setBottomSheetVisible(true);
-    if (!ref.isCorrect) {
+    if (!resultRef.current.isCorrect) {
       setAccuracy(accuracy - accuracy / lesson.questions.length);
     }
   }
@@ -139,7 +130,7 @@ const LearnScreen = () => {
   }
 
   function onExit() {
-    Alert.prompt("Bạn có muốn thoát không?", "", [
+    Alert.alert("Xác nhận", "Bạn có muốn thoát bài học không?", [
       {
         text: "OK",
         onPress: () =>
@@ -165,6 +156,7 @@ const LearnScreen = () => {
         />
       </View>
 
+      <Text>{lesson.questions[currentIndex].level}</Text>
       <Text style={styles.questionTitle}>
         {QuestionType[lesson.questions[currentIndex].type]}
       </Text>

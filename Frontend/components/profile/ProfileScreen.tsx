@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Dimensions, Image, StyleSheet, Text, View } from "react-native";
 import ProfileScreenButton from "./ProfileScreenButton";
 import { AppColors } from "../../types/colors";
@@ -6,6 +6,7 @@ import { UserInfo } from "../../types/apimodels";
 import { useUserStorage } from "../../hook/UserStorageHooks";
 import ProfileFooterView from "./ProfileFooterView";
 import GradientBackground from "../common/GradientBackground";
+import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
 const { width, height } = Dimensions.get("window");
 
@@ -23,19 +24,41 @@ const ProfileScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.avatarUserIconContainer}>
-        <Image
-          source={
-            user
-              ? { uri: user.avatar }
-              : require("../../assets/default-avatar.jpg")
-          }
-          style={styles.avatar}
-        />
-        <Text style={styles.textLabel}>{user?.username}</Text>
+      <View style={styles.header}>
+        <View style={styles.avatarContainer}>
+          <Image
+            source={
+              user
+                ? { uri: user.avatar }
+                : require("../../assets/default-avatar.jpg")
+            }
+            style={styles.avatar}
+          />
+          <Text style={styles.userName}>
+            {user?.fullname || user?.username}
+          </Text>
+        </View>
+        <View style={styles.infoCard}>
+          <View style={styles.infoRow}>
+            <Ionicons name="mail" size={20} color={AppColors.darkGreen} />
+            <Text style={styles.infoText}>{user?.email}</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <MaterialCommunityIcons
+              name="cards-playing-diamond-outline"
+              size={24}
+              color={AppColors.darkGreen}
+            />
+            <Text style={styles.infoText}>{user?.level}</Text>
+          </View>
+          <View style={styles.infoRow}>
+            <Ionicons name="calendar" size={20} color={AppColors.darkGreen} />
+            <Text style={styles.infoText}>09/12/2003</Text>
+          </View>
+        </View>
       </View>
 
-      <GradientBackground>
+      <View>
         <View style={styles.bottomContainer}>
           <ProfileScreenButton
             label="Nâng cấp tài khoản"
@@ -50,10 +73,6 @@ const ProfileScreen = () => {
           <ProfileScreenButton
             label="Lịch sử học bài"
             targetScreen="LessonHistoryScreen"
-          />
-          <ProfileScreenButton
-            label="Thống kê kết quả học"
-            targetScreen="StatisticScreen"
           />
           <ProfileScreenButton
             label="Cập nhật thông tin"
@@ -78,7 +97,7 @@ const ProfileScreen = () => {
           facebookUrl="https://facebook.com/duyhelloworld"
           githubUrl="https://github.com/duyhelloworld"
         />
-      </GradientBackground>
+      </View>
     </View>
   );
 };
@@ -86,28 +105,54 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 30,
+  },
+  header: {
+    backgroundColor: AppColors.darkGreen,
+    paddingTop: 40,
+    paddingHorizontal: 20,
+    paddingBottom: 30,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+  },
+  avatarContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  avatar: {
+    width: 80,
+    height: 80,
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: AppColors.white,
+  },
+  userName: {
+    fontSize: 24,
+    fontWeight: "600",
+    color: AppColors.white,
+    marginLeft: 15,
+  },
+  infoCard: {
+    backgroundColor: AppColors.white,
+    borderRadius: 15,
+    padding: 15,
+    marginHorizontal: 10,
+  },
+  infoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  infoText: {
+    marginLeft: 10,
+    fontSize: 16,
+    color: AppColors.darkGreen,
   },
   bottomContainer: {
     flexDirection: "column",
     paddingHorizontal: 20,
     paddingVertical: 10,
     backgroundColor: AppColors.white,
-  },
-  textLabel: {
-    fontWeight: "700",
-    color: AppColors.white,
-    fontSize: 23,
-  },
-  avatar: {
-    width: height * 0.15,
-    height: height * 0.15,
-    borderRadius: 100,
-  },
-  avatarUserIconContainer: {
-    flexDirection: "row",
-    alignItems: "flex-end",
-    backgroundColor: AppColors.darkGreen
   },
 });
 

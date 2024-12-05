@@ -6,7 +6,7 @@ import { AppColors } from "../../../types/colors";
 import { Sound } from "expo-av/build/Audio";
 
 interface GiveAudioRearrangeWordsProp {
-  sentenseAudio: string;
+  sentenseAudio: string | Sound;
   sentenseWords: string[];
   unrelatedWords?: string[];
 }
@@ -22,10 +22,12 @@ const GiveAudioRearrangeWords = ({
   const [unselectedAnswers, setUnselectedAnswers] = useState<string[]>([]);
 
   async function play() {
-    const { sound } = await Sound.createAsync(
-      { uri: sentenseAudio },
-    );
-    await sound.playAsync();
+    if (typeof sentenseAudio === "string") {
+      const { sound } = await Sound.createAsync({ uri: sentenseAudio });
+      await sound.playAsync();
+    } else {
+      await sentenseAudio.playAsync();
+    }
   }
 
   useEffect(() => {
