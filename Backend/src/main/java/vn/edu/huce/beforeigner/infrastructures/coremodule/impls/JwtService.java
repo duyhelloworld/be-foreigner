@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import vn.edu.huce.beforeigner.exceptions.AppException;
+import vn.edu.huce.beforeigner.exceptions.ResponseCode;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
@@ -58,7 +60,7 @@ public class JwtService implements IJwtService {
     }
 
     @Override
-    public boolean isValidToken(String token) {
+    public boolean isValidToken(String token) throws AppException {
         if (token == null) {
             return false;
         }
@@ -72,7 +74,7 @@ public class JwtService implements IJwtService {
         } catch (IllegalArgumentException e) {
             log.error("Jwt is null / whitespace");
         }
-        return false;
+        throw new AppException(ResponseCode.UNAUTHORIZED);
     }
 
     @Override

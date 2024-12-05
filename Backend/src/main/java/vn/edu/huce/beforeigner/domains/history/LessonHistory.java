@@ -32,6 +32,8 @@ public class LessonHistory extends OwnerAuditedEntity {
     @Enumerated(EnumType.STRING)
     private LessonStatus status;
 
+    private Integer elo;
+
     /**
      * Tổng thời gian làm, null nếu chưa xong
      */

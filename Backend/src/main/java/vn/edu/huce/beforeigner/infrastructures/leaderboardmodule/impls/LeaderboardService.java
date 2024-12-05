@@ -30,11 +30,10 @@ public class LeaderboardService implements ILeaderboardService {
     @Override
     @Transactional
     public LeaderBoardDto fetch(LeaderBoardType type) {
-
         LeaderBoard leaderBoard = leaderBoardRepo.findByType(type)
                 .orElseThrow(() -> new AppException(ResponseCode.LEADER_BOARD_TYPE_UNDEFINED));
         return LeaderBoardDto.builder()
-                .type(leaderBoard.getType())
+                .type(type)
                 .users(leaderBoardUserMapper.toDtos(leaderBoard.getLeaderBoardUsers()))
                 .build();
     }

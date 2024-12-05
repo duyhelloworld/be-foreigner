@@ -28,6 +28,7 @@ public enum ResponseCode {
     EMAIL_ADDRESS_MAY_NOT_EXIST(1015, "Địa chỉ email có thể không tồn tại"),
     CODE_INVALID(1016, "Mã không hợp lẹ"),
     INVALID_REQUEST(101, "Yêu cầu không hợp lệ"),
+    PASSWORD_LENGTH_NOT_ENOUGH(1019, "Độ dài mật khẩu không đủ. Mật khẩu cần dài ít nhất 8 kí tự không bao gồm dấu cách"), 
     
     // NOTIFICATION
     NOTIFICATION_TOKEN_NOT_FOUND(1015, "Không tìm thấy mã thông báo"),
@@ -64,7 +65,7 @@ public enum ResponseCode {
     LESSON_COVER_MISSING(5004, "Thiếu ảnh bài học"),
     LESSON_NAME_MISSING(5005, "Thiếu tên bài học"),
     LESSON_DIAMONDS_MISSING(5006, "Thiếu số kim cương"),
-    LESSON_EXPERIENCES_MISSING(5007, "Thiếu số kinh nghiệm đạt được"),
+    LESSON_ALREADY_COMPLETED(5007, "Bài học này đã hoàn thành trước đó rồi"),
     LESSON_IS_PLUS_ONLY(5008, "Bài học bị khóa. Hãy nâng gói đăng kí của bạn để mở"),
     QUESTION_TYPE_MISSING(5010, "Thiếu loại câu hỏi"),
     QUESTION_SENTENSE_AUDIO_MISSING(5011, "Thiếu âm thanh của câu hỏi"),

@@ -79,21 +79,19 @@ public class LessonService implements ILessonService {
 		Set<QuestionDto> questionDtos = lesson.getQuestions().stream()
 				.map(question -> {
 					var questionDtoBuilder = questionMapper.toDto(question);
-					if (question.getAnswers() != null || !question.getAnswers().isEmpty()) {
+					if (question.getAnswers() != null && !question.getAnswers().isEmpty()) {
 						var correct = question.getAnswers().stream()
 								.filter(a -> a.isTrue())
 								.findFirst()
-								.map(a -> a.getWord())
-								.orElseThrow(() -> new AppException(ResponseCode.UNEXPECTED_ERROR));
+								.map(a -> a.getWord()).get();
 						switch (question.getType()) {
-							case LEARN_BY_WORD:
+							case LEARN_WORD:
 							case GIVE_MEAN_ENTER_WORD:
 								questionDtoBuilder.correctOptionValue(correct.getValue());
 								questionDtoBuilder.correctOptionMean(correct.getMean());
-								break;
-							case LEARN_BY_AUDIO:
-							case GIVE_AUDIO_ENTER_WORD:
 								questionDtoBuilder.correctOptionAudio(correct.getAudioUrl());
+								break;
+							case GIVE_AUDIO_ENTER_WORD:
 								questionDtoBuilder.correctOptionValue(correct.getValue());
 								break;
 							case GIVE_AUDIO_CHOOSE_WORD:
@@ -123,7 +121,10 @@ public class LessonService implements ILessonService {
 	public void completed(CompletedLessonDto completedLessonDto, User user) {
 		LessonHistory lessonHistory = lessonHistoryRepo.findById(completedLessonDto.getHistoryId())
 				.orElseThrow(() -> new AppException(ResponseCode.LESSON_NOT_FOUND));
-		int userElo = lessonHistory.getLesson().getElo();
+		if (lessonHistory.getStatus() == LessonStatus.COMPLETED) {
+			throw new AppException(ResponseCode.LESSON_ALREADY_COMPLETED);
+		}
+		int userElo = lessonHistory.getLesson().getTarget().getElo();
 		if (completedLessonDto.getAccuracy() > LessonConstants.ACCURACY_TO_SUCCESS) {
 			userElo += LessonConstants.BONUS_ELO_WHEN_SUCCESS;
 		}
@@ -133,6 +134,7 @@ public class LessonService implements ILessonService {
 		userRepo.save(user);
 		if (lessonHistory.getStatus() == LessonStatus.ONGOING) {
 			lessonHistory.setAccuracy(completedLessonDto.getAccuracy());
+			lessonHistory.setElo(userElo);
 			lessonHistory
 					.setTotalTime(Duration.between(LocalDateTime.now(), lessonHistory.getCreatedAt()).getSeconds());
 			lessonHistory.setStatus(LessonStatus.COMPLETED);

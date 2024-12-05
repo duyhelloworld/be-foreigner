@@ -9,6 +9,7 @@ import vn.edu.huce.beforeigner.domains.leaderboard.LeaderBoardType;
 public class LeaderBoardDto {
     
     public List<LeaderBoardUserDto> users;
-    
+
     public LeaderBoardType type;
+    
 }

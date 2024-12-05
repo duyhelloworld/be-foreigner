@@ -4,11 +4,7 @@ public enum QuestionType {
     /**
      * Học từ tiếng anh
      */
-    LEARN_BY_WORD,
-    /**
-     * Học phát âm từ tiếng anh 
-     */
-    LEARN_BY_AUDIO,
+    LEARN_WORD,
     /**
      * Cho âm thanh điền từ
      */

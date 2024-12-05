@@ -12,7 +12,13 @@ spring:
     hibernate:
       ddl-auto: update
     defer-datasource-initialization: true
-    
+    # properties:
+    #   jakarta:
+    #     persistence:
+    #       schema-generation:
+    #         scripts:
+    #           action: create
+    #           create-target: metadata.sql
   servlet:
     multipart:
       max-file-size: 10MB
@@ -22,7 +28,7 @@ spring:
       enabled: always
   sql:
     init:
-      mode:  never
+      mode: never
       encoding: UTF-8
       
 application:

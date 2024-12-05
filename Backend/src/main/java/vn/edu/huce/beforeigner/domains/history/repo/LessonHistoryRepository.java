@@ -8,6 +8,7 @@ import vn.edu.huce.beforeigner.domains.history.LessonHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface LessonHistoryRepository extends JpaRepository<LessonHistory, Integer> {

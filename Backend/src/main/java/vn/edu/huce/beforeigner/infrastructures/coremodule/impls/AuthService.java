@@ -10,6 +10,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +44,7 @@ import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.VerifyEmailDto;
 
 @Service
 @RequiredArgsConstructor
-public class AuthService implements IAuthService {
+public class AuthService implements IAuthService, UserDetailsService {
 
     private final UserRepository userRepo;
 
@@ -59,6 +62,11 @@ public class AuthService implements IAuthService {
 
     @Value("${application.mail.admin-mail}")
     private String adminMail;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepo.findByUsername(username).orElse(null);
+    }
 
     @Override
     public void requestForgotPassword(RequestForgotPasswordDto requestForgotPasswordDto) {

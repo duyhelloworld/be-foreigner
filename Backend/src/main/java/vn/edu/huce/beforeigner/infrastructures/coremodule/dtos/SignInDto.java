@@ -3,17 +3,21 @@ package vn.edu.huce.beforeigner.infrastructures.coremodule.dtos;
 import jakarta.validation.Valid;
 import lombok.Data;
 import lombok.ToString;
-import vn.edu.huce.beforeigner.annotations.ValidPass;
-import vn.edu.huce.beforeigner.annotations.ValidUsername;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Min;
 
 @Data
 @Valid
 public class SignInDto {
     
-    @ValidUsername
+    @NotBlank(message = "USERNAME_MISSING")
+    @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "USERNAME_INVALID")
     private String username;
 
     @ToString.Exclude
-    @ValidPass
+    @NotBlank(message = "PASSWORD_MISSING")
+    @Min(value = 8, message = "PASSWORD_LENGTH_NOT_ENOUGH")
+    @Pattern(regexp = "^[a-zA-Z0-9]{8}$", message = "PASSWORD_INVALID")
     private String password;
 }

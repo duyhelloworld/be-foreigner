@@ -1,18 +1,18 @@
 USE `be-foreigner`;
 
-INSERT INTO `user` (id, username, fullname, avatar_url, email, password, streak_days, temp_code, is_first_try, is_allow_mail, is_allow_notification, role, level, quota, plan, provider) 
+INSERT INTO `user` (id, username, fullname, avatar_url, email, password, streak_days, temp_code, is_first_try, is_allow_mail, is_allow_notification, role, level, quota, plan, is_verified) 
 VALUES  
-    (1, 'admin','Chủ thớt', 'https://res.cloudinary.com/dqzwh7zvo/image/upload/v1732243632/user_avatar/wqpodmvtdx2z0rthifkp.png', 'admin@gmail.com', '$2a$10$jVmFLvWWNRJZixLn0KwamuamsP23grqOMxXzQO2MqW5rNaUSe2Ql.', 10, null, true, false, false, 'ADMIN', 'BEGINNER', 5, 'FREE', 'LOCAL'),  
-    (2, 'duyhelloworld',  'Duy Pham', 'https://icons.veryicon.com/png/o/miscellaneous/rookie-official-icon-gallery/225-default-avatar.png', 'duy0184466@huce.edu.vn', '$2a$10$jVmFLvWWNRJZixLn0KwamuamsP23grqOMxXzQO2MqW5rNaUSe2Ql.', 1, null, true, true, true, 'USER', 'BEGINNER', 5, 'FREE', 'LOCAL'),  
-    (3, 'plus', 'Khách VIP', 'https://icons.veryicon.com/png/o/miscellaneous/rookie-official-icon-gallery/225-default-avatar.png','khachvip@huce.edu.vn', '$2a$10$jVmFLvWWNRJZixLn0KwamuamsP23grqOMxXzQO2MqW5rNaUSe2Ql.', 5, null, true, true, true, 'USER', 'BEGINNER', 5, 'PREMIUM_MONTH', 'LOCAL'),  
-    (4, 'lechau',  'Lê Châu', 'https://icons.veryicon.com/png/o/miscellaneous/rookie-official-icon-gallery/225-default-avatar.png','lechau@outlook.com', '$2a$10$jVmFLvWWNRJZixLn0KwamuamsP23grqOMxXzQO2MqW5rNaUSe2Ql.', 1, null, true, true, true, 'USER', 'BEGINNER', 5, 'FREE', 'LOCAL'),  
-    (5, 'phamduy',  'Phạm Duy', 'https://icons.veryicon.com/png/o/miscellaneous/rookie-official-icon-gallery/225-default-avatar.png', 'phamduy@huce.edu.vn', '$2a$10$jVmFLvWWNRJZixLn0KwamuamsP23grqOMxXzQO2MqW5rNaUSe2Ql.', 1, null, true, true, true, 'USER', 'INTERMEDIATE', 5, 'FREE', 'LOCAL'),  
-    (6, 'buiha', 'Bùi Hà', 'https://picsum.photos/300/300', 'buiha@gmail.com','$2a$10$jVmFLvWWNRJZixLn0KwamuamsP23grqOMxXzQO2MqW5rNaUSe2Ql.', 1, null, true, true, true, 'USER', 'BEGINNER', 5, 'FREE', 'LOCAL'),
-    (7, 'hoanglong',  'Bùi Hà', 'https://picsum.photos/300/300', 'hoanglong@gmail.com', '$2a$10$jVmFLvWWNRJZixLn0KwamuamsP23grqOMxXzQO2MqW5rNaUSe2Ql.', 1, null, true, false, false, 'USER', 'MEDIUM', 5, 'FREE', 'LOCAL'),
-    (8, 'hoanglong123', 'Hoàng Long', 'https://picsum.photos/300/300', 'hoanglong123@gmail.com', '$2a$10$jVmFLvWWNRJZixLn0KwamuamsP23grqOMxXzQO2MqW5rNaUSe2Ql.', 1, null, true, true, true, 'USER', 'BEGINNER', 5, 'FREE', 'LOCAL'),
-    (9, 'thuychi',  'Thùy Chi', 'https://picsum.photos/300/300', 'thuychi123@gmail.com', '$2a$10$jVmFLvWWNRJZixLn0KwamuamsP23grqOMxXzQO2MqW5rNaUSe2Ql.', 1, null, true, true, true, 'USER', 'BEGINNER', 5, 'FREE', 'LOCAL'),
-    (10, 'kimbich',  'bitch', 'https://picsum.photos/300/300', 'abc@mail.edu', '$2a$10$jVmFLvWWNRJZixLn0KwamuamsP23grqOMxXzQO2MqW5rNaUSe2Ql.',61, null, true, true, true, 'USER', 'INTERMEDIATE', 5, 'FREE', 'LOCAL'),
-    (11, 'sumachai', 'Sumachai', 'https://picsum.photos/300/300', 'abc@mail.edu', '$2a$10$jVmFLvWWNRJZixLn0KwamuamsP23grqOMxXzQO2MqW5rNaUSe2Ql.',20, null, true, true, true, 'USER', 'BEGINNER', 5, 'FREE', 'LOCAL');
+    (1, 'admin','Chủ thớt', 'https://res.cloudinary.com/dqzwh7zvo/image/upload/v1732243632/user_avatar/wqpodmvtdx2z0rthifkp.png', 'admin@gmail.com', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa', 10, null, true, false, false, 'ADMIN', 'BEGINNER', 5, 'FREE', FALSE),  
+    (2, 'duyhelloworld',  'Duy Pham', 'https://icons.veryicon.com/png/o/miscellaneous/rookie-official-icon-gallery/225-default-avatar.png', 'duy0184466@huce.edu.vn', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa', 1, null, true, true, true, 'USER', 'BEGINNER', 5, 'FREE', FALSE),  
+    (3, 'plus', 'Khách VIP', 'https://icons.veryicon.com/png/o/miscellaneous/rookie-official-icon-gallery/225-default-avatar.png','khachvip@huce.edu.vn', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa', 5, null, true, true, true, 'USER', 'BEGINNER', 5, 'PREMIUM_MONTH', FALSE),  
+    (4, 'lechau',  'Lê Châu', 'https://icons.veryicon.com/png/o/miscellaneous/rookie-official-icon-gallery/225-default-avatar.png','lechau@outlook.com', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa', 1, null, true, true, true, 'USER', 'BEGINNER', 5, 'FREE', FALSE),  
+    (5, 'phamduy',  'Phạm Duy', 'https://icons.veryicon.com/png/o/miscellaneous/rookie-official-icon-gallery/225-default-avatar.png', 'phamduy@huce.edu.vn', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa', 1, null, true, true, true, 'USER', 'INTERMEDIATE', 5, 'FREE', FALSE),  
+    (6, 'buiha', 'Bùi Hà', 'https://picsum.photos/300/300', 'buiha@gmail.com','$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa', 1, null, true, true, true, 'USER', 'BEGINNER', 5, 'FREE', FALSE),
+    (7, 'hoanglong',  'Bùi Hà', 'https://picsum.photos/300/300', 'hoanglong@gmail.com', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa', 1, null, true, false, false, 'USER', 'MEDIUM', 5, 'FREE', FALSE),
+    (8, 'hoanglong123', 'Hoàng Long', 'https://picsum.photos/300/300', 'hoanglong123@gmail.com', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa', 1, null, true, true, true, 'USER', 'BEGINNER', 5, 'FREE', FALSE),
+    (9, 'thuychi',  'Thùy Chi', 'https://picsum.photos/300/300', 'thuychi123@gmail.com', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa', 1, null, true, true, true, 'USER', 'BEGINNER', 5, 'FREE', FALSE),
+    (10, 'kimbich',  'Kim Bích', 'https://picsum.photos/300/300', 'kimbich@mail.edu', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa',61, null, true, true, true, 'USER', 'INTERMEDIATE', 5, 'FREE', FALSE),
+    (11, 'sumachai', 'Sumachai', 'https://picsum.photos/300/300', 'sumachai@mail.edu', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa',20, null, true, true, true, 'USER', 'BEGINNER', 5, 'FREE', FALSE);
     
 INSERT INTO user_token (token, `type`, last_modified_at, last_modified_by, is_disabled) VALUES
     ('3e1c76e7-fc31-4dbf-81c5-8c9bfa4351d2', 'REFRESH', NOW(), 'admin', FALSE),
@@ -67,61 +67,53 @@ INSERT INTO word (id, value, mean, phonetic, audio_url, image_url, created_at, c
 (35, 'Horse', 'Ngựa', '/hɔːrs/', 'https://d1qx7pbj0dvboc.cloudfront.net/horse.mp3', 'https://cdn.media.amplience.net/i/jpl/NY-blog-thumbnail-Horse-Breeds?qlt=80&w=1920&h=960&sm=c', NOW(), 'admin', FALSE),
 (36, 'Elephant', 'Voi', '/ˈel.ɪ.fənt/', 'https://d1qx7pbj0dvboc.cloudfront.net/elephant.mp3', 'https://i.natgeofe.com/n/b64060fa-343c-481b-a24d-7375fef34914/NationalGeographic_1425689_square.jpg', NOW(), 'admin', FALSE);
 
-INSERT INTO lesson (id, elo,  name, target, level, type, cover_image_url, created_at, created_by, is_deleted)
+INSERT INTO lesson (id,   name, target, level, type, cover_image_url, created_at, created_by, is_deleted)
 VALUES 
-    (1, 100, 'Gia đình', 'LEARN_NEW', 'BEGINNER', 'FREE_ACCESS', 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Family_Portrait.jpg/800px-Family_Portrait.jpg', NOW(), 'admin', FALSE),
-    (2, 100, 'Gia đình', 'LEARN_NEW', 'BEGINNER', 'FREE_ACCESS', 'https://phuong3.tayninh.gov.vn/uploads/news/2024_07/doan-van-ke-gia-dinh.jpg', NOW(), 'admin', FALSE),
-    (3, 200, 'Gia đình', 'REVIEW', 'BEGINNER', 'FREE_ACCESS', 'https://file.hstatic.net/1000203256/article/ngay_gia_dinh_viet_nam_6529fc3d90224ff6a8896f5d4d164894.png', NOW(), 'admin', FALSE),
-    (4, 100, 'Nghề nghiệp', 'LEARN_NEW', 'BEGINNER', 'FREE_ACCESS', 'https://res.cloudinary.com/dqzwh7zvo/image/upload/v1732931715/m7dz7yhxliv140btfdq7.png', NOW(), 'admin', FALSE),
-    (5, 100, 'Các công việc', 'LEARN_NEW', 'BEGINNER', 'FREE_ACCESS', 'https://res.cloudinary.com/dqzwh7zvo/image/upload/v1732931715/m7dz7yhxliv140btfdq7.png', NOW(), 'admin', FALSE),
-    (6, 100, 'Nghề nghiệp ', 'REVIEW', 'BEGINNER', 'FREE_ACCESS', 'https://res.cloudinary.com/dqzwh7zvo/image/upload/v1732931715/m7dz7yhxliv140btfdq7.png', NOW(), 'admin', FALSE),
-    (7, 100, 'Trường học p1', 'LEARN_NEW', 'BEGINNER', 'FREE_ACCESS', 'https://dictionary.cambridge.org/vi/images/thumb/school_noun_002_32354.jpg', NOW(), 'admin', FALSE),
-    (8, 100, 'Trường học p2', 'LEARN_NEW', 'BEGINNER', 'FREE_ACCESS', 'https://dictionary.cambridge.org/vi/images/thumb/school_noun_002_32354.jpg', NOW(), 'admin', FALSE),
-    (9, 100, 'Trường học (Ôn)', 'REVIEW', 'BEGINNER', 'FREE_ACCESS', 'https://dictionary.cambridge.org/vi/images/thumb/school_noun_002_32354.jpg', NOW(), 'admin', FALSE),
-    (10, 100, 'Động vật p1', 'LEARN_NEW', 'BEGINNER', 'FREE_ACCESS', 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Animals_png_set_by_mossi889-d4uye4q.png/1200px-Animals_png_set_by_mossi889-d4uye4q.png', NOW(), 'admin', FALSE),
-    (11, 100, 'Động vật p2', 'LEARN_NEW', 'BEGINNER', 'FREE_ACCESS', 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Animals_png_set_by_mossi889-d4uye4q.png/1200px-Animals_png_set_by_mossi889-d4uye4q.png', NOW(), 'admin', FALSE),
-    (12, 100, 'Động vật (Ôn)', 'LEARN_NEW', 'BEGINNER', 'FREE_ACCESS', 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Animals_png_set_by_mossi889-d4uye4q.png/1200px-Animals_png_set_by_mossi889-d4uye4q.png', NOW(), 'admin', FALSE),
-    (13, 100, 'Thời tiết p1', 'LEARN_NEW', 'BEGINNER', 'FREE_ACCESS', 'https://www.un.org/sites/un2.un.org/files/styles/large-article-image-style-16-9/public/field/image/2023/03/52196025795_06f077377a_c.jpg', NOW(), 'admin', FALSE),
-    (14, 100, 'Thời tiết p2', 'LEARN_NEW', 'BEGINNER', 'FREE_ACCESS', 'https://www.un.org/sites/un2.un.org/files/styles/large-article-image-style-16-9/public/field/image/2023/03/52196025795_06f077377a_c.jpg', NOW(), 'admin', FALSE),
-    (15, 100, 'Thời tiết (ôn)', 'LEARN_NEW', 'BEGINNER', 'FREE_ACCESS', 'https://www.un.org/sites/un2.un.org/files/styles/large-article-image-style-16-9/public/field/image/2023/03/52196025795_06f077377a_c.jpg', NOW(), 'admin', FALSE),
-    (16, 100, 'Kiểm tra 5 tiết', 'TEST', 'BEGINNER', 'PLUS_ONLY', 'https://images.squarespace-cdn.com/content/v1/5f57c8da5b4e905978984460/5bf55f3d-42ad-466b-b279-8b406d512cd9/Exams.jpeg', NOW(), 'admin', FALSE);
+    (1, 'Gia đình', 'LEARN_NEW', 'BEGINNER', 'FREE_ACCESS', 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Family_Portrait.jpg/800px-Family_Portrait.jpg', NOW(), 'admin', FALSE),
+    (2, 'Gia đình', 'LEARN_NEW', 'BEGINNER', 'FREE_ACCESS', 'https://phuong3.tayninh.gov.vn/uploads/news/2024_07/doan-van-ke-gia-dinh.jpg', NOW(), 'admin', FALSE),
+    (3, 'Gia đình', 'REVIEW', 'BEGINNER', 'FREE_ACCESS', 'https://file.hstatic.net/1000203256/article/ngay_gia_dinh_viet_nam_6529fc3d90224ff6a8896f5d4d164894.png', NOW(), 'admin', FALSE),
+    (4, 'Nghề nghiệp', 'LEARN_NEW', 'BEGINNER', 'FREE_ACCESS', 'https://res.cloudinary.com/dqzwh7zvo/image/upload/v1732931715/m7dz7yhxliv140btfdq7.png', NOW(), 'admin', FALSE),
+    (5, 'Các công việc', 'LEARN_NEW', 'BEGINNER', 'FREE_ACCESS', 'https://res.cloudinary.com/dqzwh7zvo/image/upload/v1732931715/m7dz7yhxliv140btfdq7.png', NOW(), 'admin', FALSE),
+    (6, 'Nghề nghiệp ', 'REVIEW', 'BEGINNER', 'FREE_ACCESS', 'https://res.cloudinary.com/dqzwh7zvo/image/upload/v1732931715/m7dz7yhxliv140btfdq7.png', NOW(), 'admin', FALSE),
+    (7, 'Trường học p1', 'LEARN_NEW', 'BEGINNER', 'FREE_ACCESS', 'https://dictionary.cambridge.org/vi/images/thumb/school_noun_002_32354.jpg', NOW(), 'admin', FALSE),
+    (8, 'Trường học p2', 'LEARN_NEW', 'BEGINNER', 'FREE_ACCESS', 'https://dictionary.cambridge.org/vi/images/thumb/school_noun_002_32354.jpg', NOW(), 'admin', FALSE),
+    (9, 'Trường học (Ôn)', 'REVIEW', 'BEGINNER', 'FREE_ACCESS', 'https://dictionary.cambridge.org/vi/images/thumb/school_noun_002_32354.jpg', NOW(), 'admin', FALSE),
+    (10, 'Động vật p1', 'LEARN_NEW', 'BEGINNER', 'FREE_ACCESS', 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Animals_png_set_by_mossi889-d4uye4q.png/1200px-Animals_png_set_by_mossi889-d4uye4q.png', NOW(), 'admin', FALSE),
+    (11, 'Động vật p2', 'LEARN_NEW', 'BEGINNER', 'FREE_ACCESS', 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Animals_png_set_by_mossi889-d4uye4q.png/1200px-Animals_png_set_by_mossi889-d4uye4q.png', NOW(), 'admin', FALSE),
+    (12, 'Động vật (Ôn)', 'LEARN_NEW', 'BEGINNER', 'FREE_ACCESS', 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Animals_png_set_by_mossi889-d4uye4q.png/1200px-Animals_png_set_by_mossi889-d4uye4q.png', NOW(), 'admin', FALSE),
+    (13, 'Thời tiết p1', 'LEARN_NEW', 'BEGINNER', 'FREE_ACCESS', 'https://www.un.org/sites/un2.un.org/files/styles/large-article-image-style-16-9/public/field/image/2023/03/52196025795_06f077377a_c.jpg', NOW(), 'admin', FALSE),
+    (14, 'Thời tiết p2', 'LEARN_NEW', 'BEGINNER', 'FREE_ACCESS', 'https://www.un.org/sites/un2.un.org/files/styles/large-article-image-style-16-9/public/field/image/2023/03/52196025795_06f077377a_c.jpg', NOW(), 'admin', FALSE),
+    (15, 'Thời tiết (ôn)', 'LEARN_NEW', 'BEGINNER', 'FREE_ACCESS', 'https://www.un.org/sites/un2.un.org/files/styles/large-article-image-style-16-9/public/field/image/2023/03/52196025795_06f077377a_c.jpg', NOW(), 'admin', FALSE),
+    (16, 'Kiểm tra 5 tiết', 'TEST', 'BEGINNER', 'PLUS_ONLY', 'https://images.squarespace-cdn.com/content/v1/5f57c8da5b4e905978984460/5bf55f3d-42ad-466b-b279-8b406d512cd9/Exams.jpeg', NOW(), 'admin', FALSE);
 
 INSERT INTO question (id, index_in_lesson, lesson_id, type, sentense_meaning, sentense_words, sentense_audio, unrelated_words, level, created_at, created_by, is_deleted) VALUES
 -- Câu hỏi cho Lesson 1: Gia đình - Family - Father - Mother - Grandparent
-    (1, 1, 1, 'LEARN_BY_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
-    (2, 2, 1, 'LEARN_BY_AUDIO', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
-    (3, 3, 1, 'LEARN_BY_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
-    (4, 4, 1, 'LEARN_BY_AUDIO', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
-    (5, 5, 1, 'LEARN_BY_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
-    (6, 6, 1, 'LEARN_BY_AUDIO', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
-    (7, 7, 1, 'LEARN_BY_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
-    (8, 8, 1, 'LEARN_BY_AUDIO', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
-    (9, 9, 1, 'GIVE_SENTENSE_REARRANGE_WORDS', 'Chúng tôi là gia đình', 'We are family', NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
-    (10, 10, 1, 'GIVE_MEAN_ENTER_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
-    (11, 11, 1, 'GIVE_AUDIO_REARRANGE_WORDS', 'Đây là bố tôi', 'This is my father', 'https://res.cloudinary.com/dqzwh7zvo/video/upload/v1732937422/audio/leiyjr3zfk3rhthfrsd6.mp3', NULL, 'EASY', NOW(), 'admin', FALSE), 
-    (12, 12, 1, 'GIVE_AUDIO_REARRANGE_WORDS', 'Cô ấy là mẹ của tôi', 'She is my mother', 'https://res.cloudinary.com/dqzwh7zvo/video/upload/v1732937397/audio/ttcklx5wgjswnlqzqken.mp3', 'my your their', 'HARD', NOW(), 'admin', FALSE), 
-    (13, 13, 1, 'GIVE_SENTENSE_REARRANGE_WORDS', 'Ông ấy là bố tôi', 'He is my father', NULL, 'gold like', 'EASY', NOW(), 'admin', FALSE),
-    (14, 14, 1, 'GIVE_AUDIO_CHOOSE_WORD', NULL, NULL, NULL, NULL, 'HARD', NOW(), 'admin', FALSE),
-    (15, 15, 1, 'GIVE_SENTENSE_REARRANGE_WORDS', 'Ông ấy là bố tôi', 'He is my father', NULL, 'him mine am his', 'HARD', NOW(), 'admin', FALSE),
-    (16, 16, 1, 'GIVE_SENTENSE_REARRANGE_WORDS', 'Đây là ông bà tôi', 'This is my grandparent', NULL, 'parent ', 'HARD', NOW(), 'admin', FALSE),
-    (17, 17, 1, 'GIVE_AUDIO_CHOOSE_WORD', NULL, NULL, NULL, NULL, 'HARD', NOW(), 'admin', FALSE),
+    (1, 1, 1, 'LEARN_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
+    (2, 2, 1, 'LEARN_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
+    (3, 3, 1, 'LEARN_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
+    (4, 4, 1, 'LEARN_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
+    (9, 5, 1, 'GIVE_SENTENSE_REARRANGE_WORDS', 'Chúng tôi là gia đình', 'We are family', NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
+    (10, 6, 1, 'GIVE_MEAN_ENTER_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
+    (11, 7, 1, 'GIVE_AUDIO_REARRANGE_WORDS', 'Đây là bố tôi', 'This is my father', 'https://res.cloudinary.com/dqzwh7zvo/video/upload/v1732937422/audio/leiyjr3zfk3rhthfrsd6.mp3', NULL, 'EASY', NOW(), 'admin', FALSE), 
+    (12, 8, 1, 'GIVE_AUDIO_REARRANGE_WORDS', 'Cô ấy là mẹ của tôi', 'She is my mother', 'https://res.cloudinary.com/dqzwh7zvo/video/upload/v1732937397/audio/ttcklx5wgjswnlqzqken.mp3', 'my your their', 'HARD', NOW(), 'admin', FALSE), 
+    (13, 9, 1, 'GIVE_SENTENSE_REARRANGE_WORDS', 'Ông ấy là bố tôi', 'He is my father', NULL, 'gold like', 'EASY', NOW(), 'admin', FALSE),
+    (14, 10, 1, 'GIVE_AUDIO_CHOOSE_WORD', NULL, NULL, NULL, NULL, 'HARD', NOW(), 'admin', FALSE),
+    (15, 11, 1, 'GIVE_SENTENSE_REARRANGE_WORDS', 'Ông ấy là bố tôi', 'He is my father', NULL, 'him mine am his', 'HARD', NOW(), 'admin', FALSE),
+    (16, 12, 1, 'GIVE_SENTENSE_REARRANGE_WORDS', 'Đây là ông bà tôi', 'This is my grandparent', NULL, 'parent ', 'HARD', NOW(), 'admin', FALSE),
+    (17, 13, 1, 'GIVE_AUDIO_CHOOSE_WORD', NULL, NULL, NULL, NULL, 'HARD', NOW(), 'admin', FALSE),
 -- Câu hỏi cho Lesson 2: Gia đình - Child - Parent - Brother - Sister
-    (18, 1, 2, 'LEARN_BY_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
-    (19, 2, 2, 'LEARN_BY_AUDIO', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
-    (20, 3, 2, 'LEARN_BY_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
-    (21, 4, 2, 'LEARN_BY_AUDIO', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
-    (22, 5, 2, 'LEARN_BY_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
-    (23, 6, 2, 'LEARN_BY_AUDIO', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
-    (24, 7, 2, 'LEARN_BY_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
-    (25, 8, 2, 'LEARN_BY_AUDIO', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
-    (26, 9, 2, 'GIVE_SENTENSE_REARRANGE_WORDS', 'Đó là con của chúng tôi', 'That is our child', NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
-    (27, 10, 2, 'GIVE_SENTENSE_REARRANGE_WORDS', 'Tôi có một anh trai', 'I have a brother', NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
-    (28, 11, 2, 'GIVE_AUDIO_REARRANGE_WORDS', 'Cô ấy là chị tôi', 'She is my sister', 'https://res.cloudinary.com/dqzwh7zvo/video/upload/v1732937422/audio/leiyjr3zfk3rhthfrsd6.mp3', 'Her', 'EASY', NOW(), 'admin', FALSE), -- 'They are happy.'
-    (29, 12, 2, 'GIVE_AUDIO_REARRANGE_WORDS', 'Cha mẹ tôi ở đằng kia', 'My parent is there', 'https://res.cloudinary.com/dqzwh7zvo/video/upload/v1732937397/audio/ttcklx5wgjswnlqzqken.mp3', 'my your their', 'HARD', NOW(), 'admin', FALSE), -- 'She is my teacher.'
-    (30, 13, 2, 'GIVE_SENTENSE_REARRANGE_WORDS', 'Anh ấy là anh bạn à', 'Is he your brother ?', NULL, 'family father', 'EASY', NOW(), 'admin', FALSE),
-    (31, 14, 2, 'GIVE_SENTENSE_REARRANGE_WORDS', 'Ông ấy là bố tôi', 'He is my father', NULL, 'him mine am his', 'HARD', NOW(), 'admin', FALSE),
-    (32, 15, 2, 'GIVE_AUDIO_REARRANGE_WORDS', 'Tôi có một chị gái và hai anh trai', 'I have a sister and two brother', '', 'parent three an', 'HARD', NOW(), 'admin', FALSE),
-    (33, 16, 2, 'GIVE_MEAN_CHOOSE_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),    
+    (18, 1, 2, 'LEARN_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
+    (19, 2, 2, 'LEARN_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
+    (20, 3, 2, 'LEARN_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
+    (21, 4, 2, 'LEARN_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
+    (26, 5, 2, 'GIVE_SENTENSE_REARRANGE_WORDS', 'Đó là con của chúng tôi', 'That is our child', NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
+    (27, 6, 2, 'GIVE_SENTENSE_REARRANGE_WORDS', 'Tôi có một anh trai', 'I have a brother', NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
+    (28, 7, 2, 'GIVE_AUDIO_REARRANGE_WORDS', 'Cô ấy là chị tôi', 'She is my sister', 'https://res.cloudinary.com/dqzwh7zvo/video/upload/v1732937422/audio/leiyjr3zfk3rhthfrsd6.mp3', 'Her', 'EASY', NOW(), 'admin', FALSE), -- 'They are happy.'
+    (29, 8, 2, 'GIVE_AUDIO_REARRANGE_WORDS', 'Cha mẹ tôi ở đằng kia', 'My parent is there', 'https://res.cloudinary.com/dqzwh7zvo/video/upload/v1732937397/audio/ttcklx5wgjswnlqzqken.mp3', 'my your their', 'HARD', NOW(), 'admin', FALSE), -- 'She is my teacher.'
+    (30, 9, 2, 'GIVE_SENTENSE_REARRANGE_WORDS', 'Anh ấy là anh bạn à', 'Is he your brother ?', NULL, 'family father', 'EASY', NOW(), 'admin', FALSE),
+    (31, 10, 2, 'GIVE_SENTENSE_REARRANGE_WORDS', 'Ông ấy là bố tôi', 'He is my father', NULL, 'him mine am his', 'HARD', NOW(), 'admin', FALSE),
+    (32, 11, 2, 'GIVE_AUDIO_REARRANGE_WORDS', 'Tôi có một chị gái và hai anh trai', 'I have a sister and two brother', '', 'parent three an', 'HARD', NOW(), 'admin', FALSE),
+    (33, 12, 2, 'GIVE_MEAN_CHOOSE_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),    
 -- Câu hỏi cho Lesson 3: Gia đình ôn lại
     (34, 1,  3, 'GIVE_MEAN_CHOOSE_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
     (35, 2,  3, 'GIVE_SENTENSE_REARRANGE_WORDS', 'Anh ấy là anh bạn à', 'Is he your brother ?', NULL, 'family father', 'EASY', NOW(), 'admin', FALSE),
@@ -153,13 +145,9 @@ INSERT INTO question (id, index_in_lesson, lesson_id, type, sentense_meaning, se
 INSERT INTO answer (question_id, word_id, is_true, created_at, created_by, is_deleted) VALUES
     -- Câu hỏi học mới lesson 1
     (1, 1, TRUE, NOW(), 'admin', FALSE),
-    (2, 1, TRUE, NOW(), 'admin', FALSE),
-    (3, 2, TRUE, NOW(), 'admin', FALSE),
-    (4, 2, TRUE, NOW(), 'admin', FALSE),
-    (5, 3, TRUE, NOW(), 'admin', FALSE),
-    (6, 3, TRUE, NOW(), 'admin', FALSE),
-    (7, 4, TRUE, NOW(), 'admin', FALSE),
-    (8, 4, TRUE, NOW(), 'admin', FALSE),
+    (2, 2, TRUE, NOW(), 'admin', FALSE),
+    (3, 3, TRUE, NOW(), 'admin', FALSE),
+    (4, 4, TRUE, NOW(), 'admin', FALSE),
     (10, 3, TRUE, NOW(), 'admin', FALSE),
     (14, 4, TRUE, NOW(), 'admin', FALSE),
     (14, 3, FALSE, NOW(), 'admin', FALSE),
@@ -171,13 +159,9 @@ INSERT INTO answer (question_id, word_id, is_true, created_at, created_by, is_de
     (17, 5, FALSE, NOW(), 'admin', FALSE),
     -- Câu hỏi học mới lesson 2
     (18, 5, TRUE, NOW(), 'admin', FALSE),
-    (19, 5, TRUE, NOW(), 'admin', FALSE),
-    (20, 6, TRUE, NOW(), 'admin', FALSE),
-    (21, 6, TRUE, NOW(), 'admin', FALSE),
-    (22, 7, TRUE, NOW(), 'admin', FALSE),
-    (23, 7, TRUE, NOW(), 'admin', FALSE),
-    (24, 8, TRUE, NOW(), 'admin', FALSE),
-    (25, 8, TRUE, NOW(), 'admin', FALSE),
+    (19, 6, TRUE, NOW(), 'admin', FALSE),
+    (20, 7, TRUE, NOW(), 'admin', FALSE),
+    (21, 8, TRUE, NOW(), 'admin', FALSE),
     (33, 6, FALSE, NOW(), 'admin', FALSE),
     (33, 1, FALSE, NOW(), 'admin', FALSE),
     (33, 8, TRUE, NOW(), 'admin', FALSE),
@@ -192,24 +176,24 @@ INSERT INTO answer (question_id, word_id, is_true, created_at, created_by, is_de
     (36, 2, FALSE, NOW(), 'admin', FALSE),
     (36, 3, FALSE, NOW(), 'admin', FALSE);
 
-INSERT INTO lesson_history (lesson_id, owner, status, total_time, accuracy, created_at, is_disabled) 
+INSERT INTO lesson_history (lesson_id, owner, status, total_time, accuracy, created_at, is_disabled, elo) 
 VALUES
-    (1, 'duyhelloworld', 'COMPLETED', 300, 95, NOW(), FALSE),
-    (1, 'duyhelloworld', 'COMPLETED', 270, 100, NOW(), FALSE),
-    (1, 'duyhelloworld', 'COMPLETED', 280, 97, NOW(), FALSE),
-    (4, 'duyhelloworld', 'COMPLETED', 290, 85, NOW(), FALSE),
-    (4, 'duyhelloworld', 'COMPLETED', 290, 90, NOW(), FALSE),
-    (4, 'duyhelloworld', 'COMPLETED', 240, 100, NOW(), FALSE),
-    (2, 'duyhelloworld', 'ONGOING', NULL, NULL, NOW(), FALSE),
-    (1, 'plus', 'COMPLETED', 350, 90, NOW(), FALSE),
-    (3, 'plus', 'COMPLETED', 320, 85, NOW(), FALSE),
-    (4, 'plus', 'ONGOING', NULL, NULL, NOW(), FALSE),
-    (2, 'lechau', 'COMPLETED', 300, 92, NOW(), FALSE),
-    (3, 'lechau', 'ONGOING', NULL, NULL, NOW(), FALSE),
-    (1, 'phamduy', 'ONGOING', NULL, NULL, NOW(), FALSE),
-    (2, 'phamduy', 'COMPLETED', 340, 88, NOW(), FALSE),
-    (1, 'buiha', 'COMPLETED', 290, 80, NOW(), FALSE),
-    (4, 'buiha', 'ONGOING', NULL, NULL, NOW(), FALSE);
+    (1, 'duyhelloworld', 'COMPLETED', 300, 95, NOW(), FALSE, 100),
+    (1, 'duyhelloworld', 'COMPLETED', 270, 100, NOW(), FALSE, 150),
+    (1, 'duyhelloworld', 'COMPLETED', 280, 97, NOW(), FALSE, 100),
+    (4, 'duyhelloworld', 'COMPLETED', 290, 85, NOW(), FALSE, 100),
+    (4, 'duyhelloworld', 'COMPLETED', 290, 90, NOW(), FALSE, 100),
+    (4, 'duyhelloworld', 'COMPLETED', 240, 100, NOW(), FALSE, 150),
+    (2, 'duyhelloworld', 'ONGOING', NULL, NULL, NOW(), FALSE, NULL),
+    (1, 'plus', 'COMPLETED', 350, 90, NOW(), FALSE, 100),
+    (3, 'plus', 'COMPLETED', 320, 85, NOW(), FALSE, 100),
+    (4, 'plus', 'ONGOING', NULL, NULL, NOW(), FALSE, NULL),
+    (2, 'lechau', 'COMPLETED', 300, 92, NOW(), FALSE, 100),
+    (3, 'lechau', 'ONGOING', NULL, NULL, NOW(), FALSE, NULL),
+    (1, 'phamduy', 'ONGOING', NULL, NULL, NOW(), FALSE, NULL),
+    (2, 'phamduy', 'COMPLETED', 340, 88, NOW(), FALSE, 80),
+    (1, 'buiha', 'COMPLETED', 290, 80, NOW(), FALSE, 90),
+    (4, 'buiha', 'ONGOING', NULL, NULL, NOW(), FALSE, NULL);
 
 INSERT INTO leader_board (`type`, created_by, created_at, is_deleted)
 VALUES 
@@ -219,15 +203,15 @@ VALUES
 
 INSERT INTO leader_board_user (leader_board_id, user_id, elo, user_rank) 
 VALUES 
-    (1, 1, 1600, 1), 
-    (1, 2, 1500, 2), 
-    (1, 3, 1400, 3), 
-    (1, 4, 1300, 4), 
-    (1, 5, 1000, 5), 
-    (1, 6, 500, 6),
-    (1, 7, 500, 7),
+    (1, 2, 1600, 1), 
+    (1, 3, 1500, 2), 
+    (1, 4, 1400, 3), 
+    (1, 5, 1300, 4), 
+    (1, 6, 1000, 5), 
+    (1, 7, 500, 6),
+    (1, 8, 500, 7),
     (2, 1, 2100, 1),
-    (2, 2, 2000, 2),
-    (2, 3, 1900, 3),
+    (2, 3, 2000, 2),
+    (2, 2, 1900, 3),
     (2, 4, 1800, 4),
-    (2, 5, 1400, 5);
+    (2, 6, 1400, 5);

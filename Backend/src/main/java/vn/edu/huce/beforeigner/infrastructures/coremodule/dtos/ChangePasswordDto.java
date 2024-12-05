@@ -2,19 +2,27 @@ package vn.edu.huce.beforeigner.infrastructures.coremodule.dtos;
 
 import jakarta.validation.Valid;
 import lombok.Data;
-import vn.edu.huce.beforeigner.annotations.ValidCode;
-import vn.edu.huce.beforeigner.annotations.ValidPass;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Min;
 
 @Data
 @Valid
 public class ChangePasswordDto {
 
-    @ValidCode
+    @NotBlank(message = "CODE_MISSING")
+    @Pattern(regexp = "\\d{6}", message = "CODE_INVALID")
+    @Size(message = "CODE_INVALID")
     private String code;
 
-    @ValidPass
+    @NotBlank(message = "PASSWORD_MISSING")
+    @Min(value = 8, message = "PASSWORD_LENGTH_NOT_ENOUGH")
+    @Pattern(regexp = "^[^\s]{8,}$'", message = "PASSWORD_INVALID")
     private String newPassword;
 
-    @ValidPass
+    @NotBlank(message = "PASSWORD_MISSING")
+    @Min(value = 8, message = "PASSWORD_LENGTH_NOT_ENOUGH")
+    @Pattern(regexp = "^[^\s]{8,}$'", message = "PASSWORD_INVALID")
     private String oldPassword;
 }

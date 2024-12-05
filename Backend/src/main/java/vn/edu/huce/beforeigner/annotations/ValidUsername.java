@@ -1,10 +1,14 @@
 package vn.edu.huce.beforeigner.annotations;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-@NotBlank(message = "USERNAME_MISSING")
-@Pattern(regexp = "^[a-z0-9]+$", message = "USERNAME_INVALID")
+@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE})
+@Retention(RetentionPolicy.RUNTIME)
+// @NotBlank(message = "USERNAME_MISSING")
+// @Pattern(regexp = "^[a-zA-Z0-9]+$", message = "USERNAME_INVALID")
 public @interface ValidUsername {
     
 }
