@@ -14,9 +14,9 @@ import InputTextView from "../../auth/InputTextView";
 import { AppColors } from "../../../types/colors";
 
 const ChangePasswordScreen = () => {
-  const [oldPassword, setOldPassword] = useState<string>();
-  const [newPassword, setNewPassword] = useState<string>();
-  const [confirmPassword, setConfirmPassword] = useState<string>();
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [messages, setMessages] = useState<string[]>([]);
   const [isSuccess, setIsSuccess] = useState<boolean>();

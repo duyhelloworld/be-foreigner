@@ -1,67 +1,48 @@
-import { Alert, LogBox } from "react-native";
+import { LogBox } from "react-native";
 import { useEffect } from "react";
 import AppNavigation from "./navigation/AppNavigation";
 import useAuthStorage from "./hook/AuthStorageHooks";
 import { setupAxiosClient } from "./config/AxiosConfig";
-import * as Network from "expo-network";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
+import messaging, {
   FirebaseMessagingTypes,
-  getMessaging,
 } from "@react-native-firebase/messaging";
 import { useNotificationStorage } from "./hook/NotificationStorageHook";
+import { Notification, isRemind } from "./types/apimodels";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { NetworkCheckerProvider } from "./context/NetworkContext";
 
 export default function App() {
-  LogBox.ignoreLogs(["Require cycles "]);
+  LogBox.ignoreLogs(["Require cycles ", 'Non-serializable values were found in the navigation state', ]);
 
   const authStorage = useAuthStorage();
   const notificationStorage = useNotificationStorage();
   setupAxiosClient(authStorage);
 
-  async function checkNetwork() {
-    const state = await Network.getNetworkStateAsync();
-    if (!state.isConnected || !state.isInternetReachable) {
-      alert("Lỗi kết nối : Ứng dụng hiện tại đang ngoại tuyến");
+  async function addNew(remoteMessage: FirebaseMessagingTypes.RemoteMessage) {
+    if (remoteMessage.messageId) {
+      let notification: Notification = {
+        id: remoteMessage.messageId,
+        title: remoteMessage.notification?.title ?? "Chưa rõ",
+        content: remoteMessage.notification?.body ?? "Nội dung trống",
+        isRead: false,
+      };
+      if (isRemind(remoteMessage.data)) {
+        notification.lessonId = remoteMessage.data.lessonId;
+      }
+      notificationStorage.addNotification(notification);
     }
   }
 
-  getMessaging().setBackgroundMessageHandler(
-    async (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
-      Alert.alert("Background message", JSON.stringify(remoteMessage));
-      if (remoteMessage.messageId) {
-        notificationStorage.addNotification({
-          id: 0,
-          title: remoteMessage.notification?.title ?? "Chưa rõ",
-          content: remoteMessage.notification?.body ?? "Nội dung trống",
-          isRead: false,
-        });
-      }
-    }
-  );
-
-  getMessaging().onMessage(
-    async (remoteMessage: FirebaseMessagingTypes.RemoteMessage) => {
-      Alert.alert("A new FCM message arrived!", JSON.stringify(remoteMessage));
-
-      if (remoteMessage.messageId) {
-        notificationStorage.addNotification({
-          id: 1,
-          title: remoteMessage.notification?.title ?? "Chưa rõ",
-          content: remoteMessage.notification?.body ?? "Nội dung trống",
-          isRead: false,
-        });
-      }
-    }
-  );
-
-  async function clearData() {
-    await AsyncStorage.clear();
-  }
-
+  messaging().onMessage(addNew);
+  messaging().setBackgroundMessageHandler(addNew);
+  
   useEffect(() => {
-    checkNetwork();
-    // clearData();
+    AsyncStorage.clear();
   }, []);
 
-  return <AppNavigation />;
+  return (
+    <NetworkCheckerProvider>
+      <AppNavigation />
+    </NetworkCheckerProvider>
+  );
 }

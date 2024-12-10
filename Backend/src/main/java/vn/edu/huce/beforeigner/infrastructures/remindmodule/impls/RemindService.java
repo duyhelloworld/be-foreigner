@@ -5,6 +5,8 @@ import java.util.Map;
 import java.time.LocalTime;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -19,6 +21,7 @@ import vn.edu.huce.beforeigner.domains.core.TokenType;
 import vn.edu.huce.beforeigner.domains.core.User;
 import vn.edu.huce.beforeigner.domains.core.repo.UserRepository;
 import vn.edu.huce.beforeigner.domains.core.repo.UserTokenRepository;
+import vn.edu.huce.beforeigner.domains.exam.Lesson;
 import vn.edu.huce.beforeigner.domains.exam.repo.LessonRepository;
 import vn.edu.huce.beforeigner.domains.remind.Remind;
 import vn.edu.huce.beforeigner.domains.remind.RemindType;
@@ -28,6 +31,7 @@ import vn.edu.huce.beforeigner.infrastructures.commonmodule.abstracts.IPushNotif
 import vn.edu.huce.beforeigner.infrastructures.remindmodule.abstracts.IRemindService;
 import vn.edu.huce.beforeigner.infrastructures.remindmodule.dtos.LearnRemindDto;
 import vn.edu.huce.beforeigner.utils.NotificationUtil;
+import vn.edu.huce.beforeigner.utils.NumberUtils;
 
 @Slf4j
 @Service
@@ -41,7 +45,7 @@ public class RemindService implements IRemindService {
     private String adminMail;
 
     private final UserRepository userRepo;
-    
+
     private final LessonRepository lessonRepo;
 
     private final UserTokenRepository userTokenRepo;
@@ -60,7 +64,7 @@ public class RemindService implements IRemindService {
                 .findByLastModifiedByAndType(AuditorConfig.getAuditor(targetUser), TokenType.NOTIFICATION);
         if (userToken.isEmpty()) {
             return;
-        }     
+        }
         Remind remind = new Remind();
         remind.setType(RemindType.NOTIFICATION);
         remind.setTitle(NotificationUtil.getRemindTitle(targetUser.getFullname()));
@@ -69,12 +73,12 @@ public class RemindService implements IRemindService {
         data.put("lessonId", learnReminderDto.getLessonId().toString());
         try {
             pushNotificationService.send(userToken.get().getToken(), remind.getTitle(), remind.getBody(),
-            data);
+                    data);
             remind.setData(objectMapper.writeValueAsString(data));
             remindRepo.save(remind);
             log.info("Send push notification success");
         } catch (FirebaseMessagingException e) {
-            log.error("Error when sending message: \n- Message : {}",
+            log.error("Error when sending push notification: \n- Message : {}",
                     e.getMessage());
         } catch (JsonProcessingException e) {
             log.error("Error when save remind: Unable to cast data to string");
@@ -104,31 +108,39 @@ public class RemindService implements IRemindService {
 
     @Override
     public void testCronJob() {
-        userRepo.findUsersWantBeNotify()
-                .stream().forEach(u -> {
-                    log.info("Start cronjob : {}", LocalTime.now());
-                    int total = 0;
-                    LearnRemindDto learnRemindDto = new LearnRemindDto();
-                    if (u.isAllowMail()) {
-                        log.info("Sending mail to {}", u.getUsername());
-                        learnRemindDto.setLessonId(lessonRepo.findRandomLessonByUserLevel(u.getLevel()).map(l -> l.getId()).orElse(1));
-                        remindByEmail(learnRemindDto, u);
-                        total++;
-                    }
-                    if (u.isAllowNotification()) {
-                        log.info("Sending notification to {} : {}", u.getUsername(), u.getEmail());
-                        learnRemindDto.setLessonId(lessonRepo.findRandomLessonByUserLevel(u.getLevel()).map(l -> l.getId()).orElse(1));
-                        remindByNotification(learnRemindDto, u);
-                        total++;
-                    }
-                    log.info("OK! Remind {} users!", total);
-                });
+        log.info("Start cronjob : {}", LocalTime.now());
+        var users = userRepo.findUsersWantBeNotify();
+        int totalEmail = 0, totalNoti = 0;
+        for (User u : users) {
+            Page<Lesson> pageLesson = lessonRepo.findAll(
+                    Pageable.ofSize(1).withPage(NumberUtils.randomNumber(0, (int) lessonRepo.count())));
+            if (pageLesson.isEmpty()) {
+                log.info("Error when find lesson correspond {}", u.getUsername());
+                continue;
+            }
+            var learnRemindDto = LearnRemindDto.builder()
+                .lessonId(pageLesson.getContent().get(0).getId())
+                .build();
+            if (u.isAllowMail()) {
+                log.info("Sending mail to user {}: {}", u.getUsername(), u.getEmail());
+                remindByEmail(learnRemindDto, u);
+                totalEmail++;
+            }
+            if (u.isAllowNotification()) {
+                log.info("Sending push notification to {} : {}", u.getUsername(), u.getEmail());
+                remindByNotification(learnRemindDto, u);
+                totalNoti++;
+            }
+        }
+        log.info("OK! Remind {} users by email and {} users by notification!", totalEmail, totalNoti);   
     }
 
     @Override
     public void remindWordByPushNotification() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'remindWordByPushNotification'");
+        // userRepo.findUsersGotLearnNotification()
+        // .forEach(u -> {
+        // log.info("Start remindWordByPushNotification !");
+        // });
     }
-    
+
 }

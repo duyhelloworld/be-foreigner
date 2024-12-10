@@ -2,6 +2,7 @@ package vn.edu.huce.beforeigner.infrastructures.cloudmodule.impls;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Base64;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -72,6 +73,36 @@ public class CloudFileService implements ICloudFileService {
             }
         } catch (IOException e) {
             log.error("Error when delete {} : ", publicId, e.getMessage());
+        }
+    }
+
+    @Override
+    public UploadResponse save(String base64, String filename, CloudFileType fileType) {
+        try {
+            if (base64 != null && !base64.isBlank()) {
+                var file = Base64.getDecoder().decode(base64);
+                var options = CloudinaryUtils.getOptions();
+                var folderName = CloudFileType.getFolderName(fileType);
+                options.put("folder", folderName);
+                options.put("display_name", filename);
+                options.put("asset_folder", folderName);
+                options.put("resource_type", "auto");
+                options.put("return_error", true);
+                var uploadResponse = cloudinary.uploader().upload(file, options);
+                if (uploadResponse.containsKey("error")) {
+                    throw new AppException(ResponseCode.FILE_UPLOAD_ERROR);
+                }
+                ResourceResponse resource = objectMapper
+                        .convertValue(uploadResponse, ResourceResponse.class);
+                return UploadResponse.builder().publicId(resource.getPublicId()).filename(filename)
+                        .url(resource.getUrl()).build();
+            } else {
+                return UploadResponse.builder()
+                .url(fileType.getDefaultUrl()).build();
+            }
+        } catch (IOException e) {
+            log.error("Error when read and write content of '{}' : ", filename, e.getMessage());
+            throw new AppException(ResponseCode.FILE_UPLOAD_ERROR);
         }
     }
 }

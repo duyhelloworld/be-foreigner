@@ -40,7 +40,7 @@ public class User implements UserDetails {
     @Column(length = 200)
     private String fullname;
 
-    @Column(length = 100, unique = true)
+    @Column(length = 100, nullable = false)
     private String email;
 
     @Column(length = 100)
@@ -65,7 +65,10 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private Integer streakDays = 0;
 
-    private Boolean isFirstTry = true;
+    /**
+     * True nếu đã show, false nếu chưa
+     */
+    private boolean isShowedStreak;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -84,6 +87,9 @@ public class User implements UserDetails {
     private boolean isAllowMail;
 
     private boolean isAllowNotification;
+
+    @Enumerated(EnumType.STRING)
+    private TokenProvider provider = TokenProvider.LOCAL;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private Set<LeaderBoardUser> leaderBoardUsers = new HashSet<>(); 

@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import vn.edu.huce.beforeigner.constants.UserConstants;
 import vn.edu.huce.beforeigner.domains.core.CodeTarget;
 import vn.edu.huce.beforeigner.domains.core.Role;
@@ -42,6 +43,7 @@ import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.SignInDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.SignUpDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.VerifyEmailDto;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AuthService implements IAuthService, UserDetailsService {
@@ -91,7 +93,8 @@ public class AuthService implements IAuthService, UserDetailsService {
         user.setTempCode(generateCode());
         user.setCodeTarget(CodeTarget.VERIFY_EMAIL);
         try {
-            String targetMail = Optional.ofNullable(requestVerifyEmailDto).map(r -> r.getEmail())
+            String targetMail = Optional.ofNullable(requestVerifyEmailDto)
+                    .map(r -> r.getEmail())
                     .orElse(user.getEmail());
             emailService.send(targetMail, adminMail, "Xác thực email",
                     "<p>Mã xác thực email của bạn là:</p>" +
@@ -127,6 +130,7 @@ public class AuthService implements IAuthService, UserDetailsService {
         String refreshToken = userToken.isPresent()
                 ? userToken.get().getToken()
                 : userTokenService.addNew(TokenType.REFRESH, userTokenService.generateRefreshToken());
+        
         return AuthDto.builder()
                 .accessToken(tokenService.buildToken(user))
                 .refreshToken(refreshToken)
@@ -145,15 +149,16 @@ public class AuthService implements IAuthService, UserDetailsService {
         user.setEmail(signUpDto.getEmail());
         user.setLevel(signUpDto.getLevel());
         user.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
-        user.setAllowMail(true);
+        user.setAllowMail(false);
         user.setVerified(false);
-        user.setAllowNotification(false);
+        user.setAllowNotification(true);
         user.setQuota(UserConstants.QUOTA_PER_DAY);
         user.setPlan(SubscriptionPlan.FREE);
-        user.setIsFirstTry(true);
+        user.setShowedStreak(false);
         user.setRole(Role.USER);
+        user.setStreakDays(0);
 
-        var response = cloudFileService.save(signUpDto.getAvatar(), CloudFileType.USER_AVATAR);
+        var response = cloudFileService.save(signUpDto.getAvatar(), signUpDto.getAvatarFilename(), CloudFileType.USER_AVATAR);
         user.setAvatarUrl(response.getUrl());
         user.setAvatarPublicId(response.getPublicId());
         user.setAvatarFilename(response.getFilename());

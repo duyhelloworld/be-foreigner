@@ -17,11 +17,10 @@ const IncorrectBottomSheet = ({
       backgroundColor={AppColors.red}
       title="Sai rồi nà!"
       message={message}
+      isCorrect={false}
       button={{
         text: "Bỏ qua",
-        style: styles.button,
         onPress: onSkipPress,
-        isCorrect: false
       }}
     />
   );
@@ -34,10 +33,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginBottom: 20,
     backgroundColor: "#DDD",
-  },
-  
-  retryButton: {
-    backgroundColor: "#0FF",
   },
 });
 

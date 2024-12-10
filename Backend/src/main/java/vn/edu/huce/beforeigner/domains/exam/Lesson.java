@@ -7,15 +7,17 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import lombok.Setter;
 import vn.edu.huce.beforeigner.domains.base.FullAuditedEntity;
 import vn.edu.huce.beforeigner.domains.common.UserLevel;
 import vn.edu.huce.beforeigner.domains.history.LessonHistory;
-
+import vn.edu.huce.beforeigner.domains.vocab.Word;
 import lombok.Getter;
 
 @Getter
@@ -66,4 +68,6 @@ public class Lesson extends FullAuditedEntity {
     @OneToMany(mappedBy = "lesson")
     private Set<Question> questions = new HashSet<>();
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    private Set<Word> words = new HashSet<>();
 }

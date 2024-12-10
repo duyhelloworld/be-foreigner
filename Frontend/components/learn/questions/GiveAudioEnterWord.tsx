@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Dimensions, StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Sound } from 'expo-av/build/Audio';
-import { LearnScreenContext } from '../LearnScreenHooks';
+import { LearnContext } from '../../../context/LearnContext';
 import { AppColors } from '../../../types/colors';
+import SoundPlayer from 'react-native-sound-player';
 
 interface GiveAudioEnterWordProps {
-  audio: string | Sound;
+  audio: string;
   correctWord: string;
 }
 
@@ -15,19 +15,14 @@ const { width } = Dimensions.get('window');
 const GiveAudioEnterWord = ({ audio, correctWord }: GiveAudioEnterWordProps) => {
   const [enteredWord, setEnteredWord] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const resultRef = useContext(LearnScreenContext);
+  const resultRef = useContext(LearnContext);
 
   useEffect(() => {
-    playAudio();
+    playCorrect();
   }, []);
 
-  async function playAudio() {
-    if (typeof audio === "string") {
-      const { sound } = await Sound.createAsync({ uri: audio });
-      await sound.playAsync();
-    } else {
-      await audio.playAsync();
-    }
+  async function playCorrect() {
+    SoundPlayer.playUrl(audio)
   }
 
   const handleSubmit = () => {
@@ -42,7 +37,7 @@ const GiveAudioEnterWord = ({ audio, correctWord }: GiveAudioEnterWordProps) => 
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={playAudio} style={styles.audioButton}>
+      <TouchableOpacity onPress={playCorrect} style={styles.audioButton}>
         <Ionicons name="volume-high" size={width * 0.2} color={AppColors.white} />
       </TouchableOpacity>
       <Text style={styles.instructionText}>Listen and type the word you hear:</Text>

@@ -15,29 +15,17 @@ const CorrectBottomSheet = ({onContinuePress, message} : CorrectBottomSheetProp)
       title="Chính xác"
       message={message}
       backgroundColor={AppColors.green}
+      isCorrect
       button={{
         text: "Tiếp tục",
-        style: styles.continueButton,
-        textStyle: styles.continueButtonText,
         onPress: onContinuePress,
-        isCorrect: true,
       }}
     />
   );
 };
 
 const styles = StyleSheet.create({
-  continueButton: {
-    maxHeight: "70%",
-    backgroundColor: AppColors.white,
-    padding: 20,
-    borderRadius: 10,
-  },
-  continueButtonText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    textAlign: 'center',
-  },
+  
 });
 
 export default CorrectBottomSheet;

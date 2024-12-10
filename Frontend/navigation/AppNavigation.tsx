@@ -75,7 +75,6 @@ export default function AppNavigation() {
       <SplashScreen
         onTask={load}
         onFinish={() => setIsLoading(false)}
-        totalTime={500}
       />
     );
   }

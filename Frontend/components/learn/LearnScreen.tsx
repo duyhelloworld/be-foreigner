@@ -3,14 +3,13 @@ import React, { useEffect, useRef, useState } from "react";
 import { QuestionType } from "../../types/enum";
 import GiveMeanChooseWordView from "./questions/GiveMeanChooseWordView";
 import GiveWordsRearrangeMeansView from "./questions/GiveSentenseRearrangWordsView";
-import { LessonDetail, Question } from "../../types/apimodels";
+import { Question } from "../../types/apimodels";
 import GiveAudioChooseWordView from "./questions/GiveAudioChooseWordView";
 import CorrectBottomSheet from "./bottomsheet/CorrectBottomSheet";
 import IncorrectBottomSheet from "./bottomsheet/IncorrectBottomSheet";
 import ProgressBar from "../common/ProgressBar";
 import { Ionicons } from "@expo/vector-icons";
 import { AppColors } from "../../types/colors";
-import { QuestionResult, LearnScreenContext } from "./LearnScreenHooks";
 import GiveAudioRearrangeWords from "./questions/GiveAudioRearrangeWords";
 import {
   useAppNavigation,
@@ -20,6 +19,7 @@ import BottomButton from "../common/BottomButton";
 import GiveMeanEnterWord from "./questions/GiveMeanEnterWord";
 import GiveAudioEnterWord from "./questions/GiveAudioEnterWord";
 import LearnWord from "./questions/LearnWord";
+import { LearnContext, useQuestionRef } from "../../context/LearnContext";
 
 const renderQuestionView = (question: Question) => {
   switch (question.type) {
@@ -51,11 +51,13 @@ const renderQuestionView = (question: Question) => {
           answerOptions={question.answerOptions!}
           correctOptionMean={question.correctOptionMean!}
           correctOptionAudio={question.correctOptionAudio!}
+          level={question.level}
         />
       );
     case "GIVE_MEAN_CHOOSE_WORD":
       return (
         <GiveMeanChooseWordView
+          correctOptionValue={question.correctOptionValue!}
           answerOptions={question.answerOptions!}
           correctOptionMean={question.correctOptionMean!}
           correctOptionAudio={question.correctOptionAudio!}
@@ -81,8 +83,7 @@ const renderQuestionView = (question: Question) => {
 };
 
 const LearnScreen = () => {
-  const { jsonLesson } = useRootParams("LearnNavigator", "LearnScreen");
-  const lesson: LessonDetail = JSON.parse(jsonLesson);
+  const { lesson } = useRootParams("LearnNavigator", "LearnScreen");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isCorrect, setIsCorrect] = useState<boolean>();
@@ -90,7 +91,7 @@ const LearnScreen = () => {
   const [isBottomSheetVisible, setBottomSheetVisible] = useState(false);
 
   const navigator = useAppNavigation();
-  const resultRef = useRef<QuestionResult>({} as QuestionResult);
+  const resultRef = useQuestionRef();
 
   useEffect(() => {
     resultRef.current = {
@@ -118,7 +119,6 @@ const LearnScreen = () => {
       setCurrentIndex(currentIndex + 1);
       setBottomSheetVisible(false);
     } else {
-      // Nếu index vượt => completed
       navigator.navigate("LearnNavigator", {
         screen: "CompletedLessonScreen",
         params: {
@@ -156,15 +156,17 @@ const LearnScreen = () => {
         />
       </View>
 
-      <Text>{lesson.questions[currentIndex].level}</Text>
+      {lesson.questions[currentIndex].level === "HARD" ? (
+        <Text style={styles.questionLevel}>Câu hỏi khó</Text>
+      ) : null}
       <Text style={styles.questionTitle}>
         {QuestionType[lesson.questions[currentIndex].type]}
       </Text>
 
       <View style={styles.questionContainer}>
-        <LearnScreenContext.Provider value={resultRef}>
+        <LearnContext.Provider value={resultRef}>
           {renderQuestionView(lesson.questions[currentIndex])}
-        </LearnScreenContext.Provider>
+        </LearnContext.Provider>
       </View>
 
       {isBottomSheetVisible && <View style={styles.overlay} />}
@@ -195,7 +197,18 @@ export default LearnScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 20,
+    marginTop: 30,
+  },
+  questionLevel: {
+    fontWeight: "bold",
+    fontSize: 16,
+    color: AppColors.red,
+    backgroundColor: AppColors.lightGray,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    alignSelf: "center",
+    borderRadius: 8,
+    marginBottom: 10,
   },
   headingContainer: {
     flexDirection: "row",

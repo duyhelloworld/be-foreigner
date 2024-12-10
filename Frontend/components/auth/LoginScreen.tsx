@@ -7,7 +7,7 @@ import {
   Image,
   KeyboardAvoidingView,
   ScrollView,
-  FlatList,
+  ActivityIndicator,
 } from "react-native";
 import googleIcon from "../../assets/google-icon.png";
 import facebookIcon from "../../assets/facebook-icon.png";
@@ -28,6 +28,8 @@ const LoginScreen = () => {
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [apiError, setApiError] = useState<string[]>([]);
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigator = useAppNavigation();
   const authStorage = useAuthStorage();
@@ -37,11 +39,22 @@ const LoginScreen = () => {
     if (!username) {
       setUsernameError("Tài khoản không được để trống");
       isValid = false;
+    } else if (!username.match("^[a-zA-Z0-9]+$")) {
+      setUsernameError(
+        "Tên tài khoản không hợp lệ. Tài khoản hợp lệ là tên chỉ gồm các chữ cái và số."
+      );
+      isValid = false;
     } else {
       setUsernameError("");
     }
+
     if (!password) {
       setPasswordError("Mật khẩu không được để trống");
+      isValid = false;
+    } else if (!password.match("^[a-zA-Z0-9]{8}$")) {
+      setPasswordError(
+        "Mật khẩu không hợp lệ. Mật khẩu hợp lệ gồm 8 kí tự không bao gồm dấu cách"
+      );
       isValid = false;
     } else {
       setPasswordError("");
@@ -51,22 +64,34 @@ const LoginScreen = () => {
 
   async function handleLogin() {
     if (validateForm()) {
+      setIsLoading(true);
       const response = await apiClient.post<ApiResponse>("auth/sign-in", {
         username: username.trim(),
         password: password.trim(),
       });
       if (response.data.code === ApiResponseCode.OK) {
         await authStorage.saveTokens(response.data.data as Auth);
+        setUsernameError("");
+        setPasswordError("");
         navigator.navigate("AuthNavigator", { screen: "SetupScreen" });
       } else {
         setApiError(response.data.data as string[]);
       }
+      setIsLoading(false);
     }
   }
 
   function handleSignup() {
+    setUsernameError("");
+    setPasswordError("");
     navigator.navigate("AuthNavigator", { screen: "SignupScreen" });
   }
+
+  function unhandledLogin() {
+    alert("Chức năng này sẽ sớm ra mắt!");
+  }
+
+  function handleGoogleSignIn() {}
 
   return (
     <KeyboardAvoidingView style={styles.keyboardContainer} behavior="padding">
@@ -87,25 +112,33 @@ const LoginScreen = () => {
           value={password}
           setValue={setPassword}
           error={passwordError}
+          showPassword={showPassword}
+          toggleShowPassword={() => setShowPassword(!showPassword)}
           secure
         />
 
-        {apiError ? <Text style={styles.errorText}>{apiError.join(" ")}</Text> : null}
-        
-        <SubmitButton title="Đăng nhập" onPress={handleLogin} />
+        {apiError ? (
+          <Text style={styles.errorText}>{apiError.join(" ")}</Text>
+        ) : null}
+
+        {isLoading ? (
+          <ActivityIndicator size="large" color={AppColors.green} />
+        ) : (
+          <SubmitButton title="Đăng nhập" onPress={handleLogin} />
+        )}
 
         <View style={styles.oauthContainer}>
           <Text style={styles.oauthText}>Hoặc đăng nhập với:</Text>
           <View style={styles.oauthButtons}>
-            <Pressable style={styles.oauthButton} >
+            <Pressable style={styles.oauthButton} onPress={handleGoogleSignIn}>
               <Image source={googleIcon} style={styles.oauthIcon} />
               <Text style={styles.oauthButtonText}>Google</Text>
             </Pressable>
-            <Pressable style={styles.oauthButton}>
+            <Pressable style={styles.oauthButton} onPress={unhandledLogin}>
               <Image source={facebookIcon} style={styles.oauthIcon} />
               <Text style={styles.oauthButtonText}>Facebook</Text>
             </Pressable>
-            <Pressable style={styles.oauthButton}>
+            <Pressable style={styles.oauthButton} onPress={unhandledLogin}>
               <Image source={appleIcon} style={styles.oauthIcon} />
               <Text style={styles.oauthButtonText}>Apple</Text>
             </Pressable>

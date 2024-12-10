@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { AppColors } from "../../../types/colors";
-import { LearnScreenContext } from "../LearnScreenHooks";
+import { LearnContext } from "../../../context/LearnContext";
 
 interface GiveSentenseRearrangWordsViewProp {
   sentenseWords: string[];
@@ -14,7 +14,7 @@ const GiveSentenseRearrangWordsView = ({
   sentenseWords,
   unrelatedWords,
 }: GiveSentenseRearrangWordsViewProp) => {
-  const resultRef = useContext(LearnScreenContext);
+  const resultRef = useContext(LearnContext);
   const [selectedAnswers, setSelectedAnswers] = useState<string[]>([]);
   const [unselectedAnswers, setUnselectedAnswers] = useState<string[]>([]);
   

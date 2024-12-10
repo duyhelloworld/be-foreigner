@@ -1,12 +1,12 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { LearnScreenContext } from "../LearnScreenHooks";
+import { LearnContext } from "../../../context/LearnContext";
 import { Ionicons } from "@expo/vector-icons";
 import { AppColors } from "../../../types/colors";
-import { Sound } from "expo-av/build/Audio";
+import SoundPlayer from "react-native-sound-player";
 
 interface GiveAudioRearrangeWordsProp {
-  sentenseAudio: string | Sound;
+  sentenseAudio: string;
   sentenseWords: string[];
   unrelatedWords?: string[];
 }
@@ -16,18 +16,13 @@ const GiveAudioRearrangeWords = ({
   sentenseWords,
   unrelatedWords,
 }: GiveAudioRearrangeWordsProp) => {
-  const resultRef = useContext(LearnScreenContext);
+  const resultRef = useContext(LearnContext);
 
   const [selectedAnswers, setSelectedAnswers] = useState<string[]>([]);
   const [unselectedAnswers, setUnselectedAnswers] = useState<string[]>([]);
 
   async function play() {
-    if (typeof sentenseAudio === "string") {
-      const { sound } = await Sound.createAsync({ uri: sentenseAudio });
-      await sound.playAsync();
-    } else {
-      await sentenseAudio.playAsync();
-    }
+    SoundPlayer.playUrl(sentenseAudio);
   }
 
   useEffect(() => {

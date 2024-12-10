@@ -1,18 +1,18 @@
 USE `be-foreigner`;
 
-INSERT INTO `user` (id, username, fullname, avatar_url, email, password, streak_days, temp_code, is_first_try, is_allow_mail, is_allow_notification, role, level, quota, plan, is_verified) 
+INSERT INTO `user` (id, username, fullname, avatar_url, email, password, streak_days, temp_code, is_showed_streak, is_allow_mail, is_allow_notification, role, level, quota, plan, is_verified) 
 VALUES  
-    (1, 'admin','Chủ thớt', 'https://res.cloudinary.com/dqzwh7zvo/image/upload/v1732243632/user_avatar/wqpodmvtdx2z0rthifkp.png', 'admin@gmail.com', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa', 10, null, true, false, false, 'ADMIN', 'BEGINNER', 5, 'FREE', FALSE),  
-    (2, 'duyhelloworld',  'Duy Pham', 'https://icons.veryicon.com/png/o/miscellaneous/rookie-official-icon-gallery/225-default-avatar.png', 'duy0184466@huce.edu.vn', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa', 1, null, true, true, true, 'USER', 'BEGINNER', 5, 'FREE', FALSE),  
-    (3, 'plus', 'Khách VIP', 'https://icons.veryicon.com/png/o/miscellaneous/rookie-official-icon-gallery/225-default-avatar.png','khachvip@huce.edu.vn', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa', 5, null, true, true, true, 'USER', 'BEGINNER', 5, 'PREMIUM_MONTH', FALSE),  
-    (4, 'lechau',  'Lê Châu', 'https://icons.veryicon.com/png/o/miscellaneous/rookie-official-icon-gallery/225-default-avatar.png','lechau@outlook.com', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa', 1, null, true, true, true, 'USER', 'BEGINNER', 5, 'FREE', FALSE),  
-    (5, 'phamduy',  'Phạm Duy', 'https://icons.veryicon.com/png/o/miscellaneous/rookie-official-icon-gallery/225-default-avatar.png', 'phamduy@huce.edu.vn', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa', 1, null, true, true, true, 'USER', 'INTERMEDIATE', 5, 'FREE', FALSE),  
-    (6, 'buiha', 'Bùi Hà', 'https://picsum.photos/300/300', 'buiha@gmail.com','$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa', 1, null, true, true, true, 'USER', 'BEGINNER', 5, 'FREE', FALSE),
-    (7, 'hoanglong',  'Bùi Hà', 'https://picsum.photos/300/300', 'hoanglong@gmail.com', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa', 1, null, true, false, false, 'USER', 'MEDIUM', 5, 'FREE', FALSE),
-    (8, 'hoanglong123', 'Hoàng Long', 'https://picsum.photos/300/300', 'hoanglong123@gmail.com', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa', 1, null, true, true, true, 'USER', 'BEGINNER', 5, 'FREE', FALSE),
-    (9, 'thuychi',  'Thùy Chi', 'https://picsum.photos/300/300', 'thuychi123@gmail.com', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa', 1, null, true, true, true, 'USER', 'BEGINNER', 5, 'FREE', FALSE),
-    (10, 'kimbich',  'Kim Bích', 'https://picsum.photos/300/300', 'kimbich@mail.edu', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa',61, null, true, true, true, 'USER', 'INTERMEDIATE', 5, 'FREE', FALSE),
-    (11, 'sumachai', 'Sumachai', 'https://picsum.photos/300/300', 'sumachai@mail.edu', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa',20, null, true, true, true, 'USER', 'BEGINNER', 5, 'FREE', FALSE);
+    (1, 'admin','Chủ thớt', 'https://res.cloudinary.com/dqzwh7zvo/image/upload/v1732243632/user_avatar/wqpodmvtdx2z0rthifkp.png', 'admin@gmail.com', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa', 0, null, false, false, false, 'ADMIN', 'BEGINNER', 5, 'FREE', FALSE),  
+    (2, 'duyhelloworld',  'Duy Pham', 'https://icons.veryicon.com/png/o/miscellaneous/rookie-official-icon-gallery/225-default-avatar.png', 'duy0184466@huce.edu.vn', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa', 1, null, false, false, false, 'USER', 'BEGINNER', 5, 'FREE', FALSE),  
+    (3, 'plus', 'Khách VIP', 'https://icons.veryicon.com/png/o/miscellaneous/rookie-official-icon-gallery/225-default-avatar.png','khachvip@huce.edu.vn', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa', 5, null, false, false, false, 'USER', 'BEGINNER', 5, 'PREMIUM_MONTH', FALSE),  
+    (4, 'lechau',  'Lê Châu', 'https://icons.veryicon.com/png/o/miscellaneous/rookie-official-icon-gallery/225-default-avatar.png','lechau@outlook.com', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa', 1, null, false, false, false, 'USER', 'BEGINNER', 5, 'FREE', FALSE),  
+    (5, 'phamduy',  'Phạm Duy', 'https://icons.veryicon.com/png/o/miscellaneous/rookie-official-icon-gallery/225-default-avatar.png', 'phamduy@huce.edu.vn', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa', 1, null, false, false, false, 'USER', 'INTERMEDIATE', 5, 'FREE', FALSE),  
+    (6, 'buiha', 'Bùi Hà', 'https://picsum.photos/300/300', 'buiha@gmail.com','$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa', 1, null, false, false, false, 'USER', 'BEGINNER', 5, 'FREE', FALSE),
+    (7, 'hoanglong',  'Bùi Hà', 'https://picsum.photos/300/300', 'hoanglong@gmail.com', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa', 1, null, false, false, false, 'USER', 'MEDIUM', 5, 'FREE', FALSE),
+    (8, 'hoanglong123', 'Hoàng Long', 'https://picsum.photos/300/300', 'hoanglong123@gmail.com', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa', 1, null, false, false, false, 'USER', 'BEGINNER', 5, 'FREE', FALSE),
+    (9, 'thuychi',  'Thùy Chi', 'https://picsum.photos/300/300', 'thuychi123@gmail.com', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa', 1, null, false, false, false, 'USER', 'BEGINNER', 5, 'FREE', FALSE),
+    (10, 'kimbich',  'Kim Bích', 'https://picsum.photos/300/300', 'kimbich@mail.edu', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa',61, null, false, false, false, 'USER', 'INTERMEDIATE', 5, 'FREE', FALSE),
+    (11, 'sumachai', 'Sumachai', 'https://picsum.photos/300/300', 'sumachai@mail.edu', '$2a$12$Fnk7pPcDWVGq9SylQUB5qOfkj4IeNjWo/n0zSlNTSDpDWkuB08xVa',20, null, false, false, false, 'USER', 'BEGINNER', 5, 'FREE', FALSE);
     
 INSERT INTO user_token (token, `type`, last_modified_at, last_modified_by, is_disabled) VALUES
     ('3e1c76e7-fc31-4dbf-81c5-8c9bfa4351d2', 'REFRESH', NOW(), 'admin', FALSE),
@@ -20,13 +20,11 @@ INSERT INTO user_token (token, `type`, last_modified_at, last_modified_by, is_di
     ('9d71c5de-bf1f-4f5e-908d-c54e1d4fbd94', 'REFRESH', NOW(), 'plus', FALSE),
     ('a8e2f91b-cf88-4f77-84bb-1f76c6714383', 'REFRESH', NOW(), 'lechau', FALSE),
     ('d6b22e91-75ea-4ab0-9603-9efec18461d6', 'REFRESH', NOW(), 'phamduy', FALSE),
-    ('ec8c37d3-3e59-4c4c-b3ad-1cd4185c2cb1', 'REFRESH', NOW(), 'buiha', FALSE),
-    ('cgkY0O2aQIqKpH7ftIe2G-:APA91bEqstwjNGiWIVnoD41hVQPJ5yv2HOEB6iNhfJ2mTcz7bzKLnqjaElini2eeB5K3M3XC5qg5pMu0t-EnXeS1S8WLET_reA04C8xG6fmI56OGx6TAKew', 'NOTIFICATION', NOW(), 'duyhelloworld', FALSE),
-    ('cgkY0O2aQIqKpH7ftIe2G-:APA91bEqstwjNGiWIVnoD41hVQPJ5yv2HOEB6iNhfJ2mTcz7bzKLnqjaElini2eeB5K3M3XC5qg5pMu0t-EnXeS1S8WLET_reA04C8xG6fmI56OGx6TAKew', 'NOTIFICATION', NOW(), 'phamduy', FALSE);
+    ('ec8c37d3-3e59-4c4c-b3ad-1cd4185c2cb1', 'REFRESH', NOW(), 'buiha', FALSE);
     
 INSERT INTO word (id, value, mean, phonetic, audio_url, image_url, created_at, created_by, is_deleted) VALUES 
 -- Chủ đề: Gia đình
-(1, 'Family', 'Gia đình', '/ˈfæm.əl.i/', 'https://d1qx7pbj0dvboc.cloudfront.net/family.mp3', 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Family_Portrait.jpg/800px-Family_Portrait.jpg', NOW(), 'admin', FALSE),
+(1, 'Family', 'Gia đình', '/ˈfæm.əl.i/', 'https://res.cloudinary.com/dqzwh7zvo/video/upload/v1733582121/znqjx87mx5mx1zj6lvui.mp3', 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Family_Portrait.jpg/800px-Family_Portrait.jpg', NOW(), 'admin', FALSE),
 (2, 'Father', 'Cha', '/ˈfɑː.ðər/', 'https://d1qx7pbj0dvboc.cloudfront.net/father.mp3', 'https://images.unsplash.com/photo-1657664058220-a1bfc04e2e14?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', NOW(), 'admin', FALSE),
 (3, 'Mother', 'Mẹ', '/ˈmʌð.ər/', 'https://d1qx7pbj0dvboc.cloudfront.net/mother.mp3', 'https://images.unsplash.com/photo-1542385151-efd9000785a0?q=80&w=1378&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', NOW(), 'admin', FALSE),
 (4, 'Grandparent', 'Ông bà', '/ˈɡræn.per.ənts/', 'https://d1qx7pbj0dvboc.cloudfront.net/grandparent.mp3', 'https://images.unsplash.com/photo-1581579439002-e29ac578f8d4?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fGdyYW5kcGFyZW50fGVufDB8fDB8fHwy', NOW(), 'admin', FALSE),
@@ -92,15 +90,16 @@ INSERT INTO question (id, index_in_lesson, lesson_id, type, sentense_meaning, se
     (2, 2, 1, 'LEARN_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
     (3, 3, 1, 'LEARN_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
     (4, 4, 1, 'LEARN_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
-    (9, 5, 1, 'GIVE_SENTENSE_REARRANGE_WORDS', 'Chúng tôi là gia đình', 'We are family', NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
-    (10, 6, 1, 'GIVE_MEAN_ENTER_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
-    (11, 7, 1, 'GIVE_AUDIO_REARRANGE_WORDS', 'Đây là bố tôi', 'This is my father', 'https://res.cloudinary.com/dqzwh7zvo/video/upload/v1732937422/audio/leiyjr3zfk3rhthfrsd6.mp3', NULL, 'EASY', NOW(), 'admin', FALSE), 
-    (12, 8, 1, 'GIVE_AUDIO_REARRANGE_WORDS', 'Cô ấy là mẹ của tôi', 'She is my mother', 'https://res.cloudinary.com/dqzwh7zvo/video/upload/v1732937397/audio/ttcklx5wgjswnlqzqken.mp3', 'my your their', 'HARD', NOW(), 'admin', FALSE), 
-    (13, 9, 1, 'GIVE_SENTENSE_REARRANGE_WORDS', 'Ông ấy là bố tôi', 'He is my father', NULL, 'gold like', 'EASY', NOW(), 'admin', FALSE),
-    (14, 10, 1, 'GIVE_AUDIO_CHOOSE_WORD', NULL, NULL, NULL, NULL, 'HARD', NOW(), 'admin', FALSE),
-    (15, 11, 1, 'GIVE_SENTENSE_REARRANGE_WORDS', 'Ông ấy là bố tôi', 'He is my father', NULL, 'him mine am his', 'HARD', NOW(), 'admin', FALSE),
-    (16, 12, 1, 'GIVE_SENTENSE_REARRANGE_WORDS', 'Đây là ông bà tôi', 'This is my grandparent', NULL, 'parent ', 'HARD', NOW(), 'admin', FALSE),
-    (17, 13, 1, 'GIVE_AUDIO_CHOOSE_WORD', NULL, NULL, NULL, NULL, 'HARD', NOW(), 'admin', FALSE),
+    (5, 5, 1, 'GIVE_MEAN_CHOOSE_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
+    (9, 6, 1, 'GIVE_SENTENSE_REARRANGE_WORDS', 'Chúng tôi là gia đình', 'We are family', NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
+    (10, 7, 1, 'GIVE_MEAN_ENTER_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
+    (11, 8, 1, 'GIVE_AUDIO_REARRANGE_WORDS', 'Đây là bố tôi', 'This is my father', 'https://res.cloudinary.com/dqzwh7zvo/video/upload/v1732937422/audio/leiyjr3zfk3rhthfrsd6.mp3', NULL, 'EASY', NOW(), 'admin', FALSE), 
+    (12, 9, 1, 'GIVE_AUDIO_REARRANGE_WORDS', 'Cô ấy là mẹ của tôi', 'She is my mother', 'https://res.cloudinary.com/dqzwh7zvo/video/upload/v1732937397/audio/ttcklx5wgjswnlqzqken.mp3', 'my your their', 'HARD', NOW(), 'admin', FALSE), 
+    (13, 10, 1, 'GIVE_SENTENSE_REARRANGE_WORDS', 'Ông ấy là bố tôi', 'He is my father', NULL, 'gold like', 'EASY', NOW(), 'admin', FALSE),
+    (14, 11, 1, 'GIVE_AUDIO_CHOOSE_WORD', NULL, NULL, NULL, NULL, 'HARD', NOW(), 'admin', FALSE),
+    (15, 12, 1, 'GIVE_SENTENSE_REARRANGE_WORDS', 'Ông ấy là bố tôi', 'He is my father', NULL, 'him mine am his', 'HARD', NOW(), 'admin', FALSE),
+    (16, 13, 1, 'GIVE_SENTENSE_REARRANGE_WORDS', 'Đây là ông bà tôi', 'This is my grandparent', NULL, 'parent ', 'HARD', NOW(), 'admin', FALSE),
+    (17, 14, 1, 'GIVE_AUDIO_CHOOSE_WORD', NULL, NULL, NULL, NULL, 'HARD', NOW(), 'admin', FALSE),
 -- Câu hỏi cho Lesson 2: Gia đình - Child - Parent - Brother - Sister
     (18, 1, 2, 'LEARN_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
     (19, 2, 2, 'LEARN_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
@@ -148,6 +147,10 @@ INSERT INTO answer (question_id, word_id, is_true, created_at, created_by, is_de
     (2, 2, TRUE, NOW(), 'admin', FALSE),
     (3, 3, TRUE, NOW(), 'admin', FALSE),
     (4, 4, TRUE, NOW(), 'admin', FALSE),
+    (5, 1, FALSE, NOW(), 'admin', FALSE),
+    (5, 2, TRUE, NOW(), 'admin', FALSE),
+    (5, 3, FALSE, NOW(), 'admin', FALSE),
+    (5, 4, FALSE, NOW(), 'admin', FALSE),
     (10, 3, TRUE, NOW(), 'admin', FALSE),
     (14, 4, TRUE, NOW(), 'admin', FALSE),
     (14, 3, FALSE, NOW(), 'admin', FALSE),

@@ -4,6 +4,7 @@ import vn.edu.huce.beforeigner.domains.core.User;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.SetupDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.UpdateProfileDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.UserDto;
+import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.StreakDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.UserInfoDto;
 import vn.edu.huce.beforeigner.infrastructures.remindmodule.dtos.UserRemindSettingDto;
 import vn.edu.huce.beforeigner.utils.paging.PagingRequest;
@@ -21,5 +22,5 @@ public interface IUserService {
 
     UserInfoDto updateProfile(User user, UpdateProfileDto updateProfileDto);
 
-    Integer streak(User user);
+    StreakDto streak(User user);
 }

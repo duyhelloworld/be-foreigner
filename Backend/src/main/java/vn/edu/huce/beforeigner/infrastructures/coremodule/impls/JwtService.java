@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import vn.edu.huce.beforeigner.exceptions.AppException;
-import vn.edu.huce.beforeigner.exceptions.ResponseCode;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
@@ -74,7 +73,7 @@ public class JwtService implements IJwtService {
         } catch (IllegalArgumentException e) {
             log.error("Jwt is null / whitespace");
         }
-        throw new AppException(ResponseCode.UNAUTHORIZED);
+        return false;
     }
 
     @Override

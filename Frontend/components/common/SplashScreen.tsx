@@ -16,7 +16,6 @@ const { width } = Dimensions.get("window");
 interface SplashScreenProps {
   onTask: () => Promise<void>;
   onFinish: () => void;
-  totalTime: number;
   label?: string;
   sublabel?: string;
 }
@@ -24,7 +23,6 @@ interface SplashScreenProps {
 const SplashScreen = ({
   onTask,
   onFinish,
-  totalTime,
   label = "Đang tải...",
   sublabel = "Chúng tôi luôn cố gắng làm những gì tốt nhất",
 }: SplashScreenProps) => {
@@ -35,60 +33,66 @@ const SplashScreen = ({
   const subtitleAnim = useAnimatedValue(0);
 
   useEffect(() => {
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 500,
-        useNativeDriver: true,
-      }),
-      Animated.timing(scaleAnim, {
-        toValue: 1,
-        duration: 500,
-        useNativeDriver: true,
-      }),
-      Animated.timing(titleAnim, {
-        toValue: 0,
-        delay: 500,
-        duration: 300,
-        useNativeDriver: true,
-      }),
-      Animated.timing(subtitleAnim, {
-        toValue: 1,
-        delay: 1000,
-        duration: 1000,
-        useNativeDriver: true,
-      }),
-    ]).start();
 
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(rotateAnim, {
+    const runTaskAndAnimations = async () => {
+      // Start animations
+      const animations = Animated.parallel([
+        Animated.timing(fadeAnim, {
           toValue: 1,
-          duration: 1000,
-          easing: Easing.linear,
+          duration: 500,
           useNativeDriver: true,
         }),
-        Animated.timing(rotateAnim, {
-          toValue: -1,
-          duration: 1000,
-          easing: Easing.linear,
+        Animated.timing(scaleAnim, {
+          toValue: 1,
+          duration: 500,
           useNativeDriver: true,
         }),
-        Animated.timing(rotateAnim, {
+        Animated.timing(titleAnim, {
           toValue: 0,
-          duration: 1000,
-          easing: Easing.linear,
+          delay: 500,
+          duration: 300,
           useNativeDriver: true,
         }),
-      ])
-    ).start();
+        Animated.timing(subtitleAnim, {
+          toValue: 1,
+          delay: 1000,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+      ]);
 
-    const timer = setTimeout(async () => {
+      animations.start();
+
+      // Start rotation animation
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(rotateAnim, {
+            toValue: 1,
+            duration: 1000,
+            easing: Easing.linear,
+            useNativeDriver: true,
+          }),
+          Animated.timing(rotateAnim, {
+            toValue: -1,
+            duration: 1000,
+            easing: Easing.linear,
+            useNativeDriver: true,
+          }),
+          Animated.timing(rotateAnim, {
+            toValue: 0,
+            duration: 1000,
+            easing: Easing.linear,
+            useNativeDriver: true,
+          }),
+        ])
+      ).start();
       await onTask();
+      animations.stop();
+      rotateAnim.stopAnimation();
       onFinish();
-    }, totalTime);
+    };
 
-    return () => clearTimeout(timer);
+    runTaskAndAnimations();
   }, []);
 
   const spin = rotateAnim.interpolate({

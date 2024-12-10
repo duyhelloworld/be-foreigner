@@ -11,12 +11,14 @@ public class LessonHistoryMapper {
     
     public LessonHistoryDto toDto(LessonHistory lessonHistory) {
         return LessonHistoryDto.builder()
+            .historyId(lessonHistory.getId())
             .accuracy(lessonHistory.getAccuracy())
             .lessonId(lessonHistory.getLesson().getId())
             .lessonName(lessonHistory.getLesson().getName())
             .elo(lessonHistory.getLesson().getTarget().getElo())
             .lessonImage(lessonHistory.getLesson().getCoverImageUrl())
-            .startAt(lessonHistory.getCreatedAt())
+            .startedAt(DatetimeUtils.dateToString(lessonHistory.getCreatedAt()))
+            .completedAt(DatetimeUtils.dateToString(lessonHistory.getUpdatedAt()))
             .totalTime(DatetimeUtils.formatDuration(lessonHistory.getTotalTime()))
             .status(lessonHistory.getStatus())
             .build();

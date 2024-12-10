@@ -7,9 +7,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ResponseCode {
     OK(1000, "OK"),
-    ERROR_WHEN_VALIDATE(999, "Lỗi kiểm tra thông tin"),
-    SYSTEM_VARIABLE_INVALID_DATA(9900, "Error when access server config"),
+    ERROR_WHEN_VALIDATE(9000, "Lỗi kiểm tra thông tin"),
     UNEXPECTED_ERROR(9999, "Lỗi không xác định"),
+    NOT_FOUND(9004, "Không tìm thấy tài nguyên"), 
     
     // AUTH
     UNAUTHORIZED(1001, "Không thể xác thực"), 
@@ -17,33 +17,33 @@ public enum ResponseCode {
     USERNAME_NOT_FOUND(1003, "Không tồn tại tài khoản"),
     USERNAME_EXISTED(1004, "Tên tài khoản đã tồn tại"),
     USERNAME_OR_PASSWORD_INCORRECT(1005, "Sai tài khoản hoặc mật khẩu"),
-    USERNAME_MISSING(1009, "Không được bỏ trống tên tài khoản"),
-    PASSWORD_MISSING(1010, "Không được bỏ trống mật khẩu"),
-    EMAIL_MISSING(1011, "Không được bỏ trống email"),
-    USERNAME_INVALID(1011, "Tên tài khoản không hợp lệ. Tài khoản hợp lệ là tên chỉ gồm các chữ cái và số"),
-    PASSWORD_INVALID(1, "Mật khẩu không hợp lệ. Mật khẩu hợp lệ gồm 8 kí tự không bao gồm dấu cách"),
-    REFRESH_TOKEN_EXPIRED(1012, "Phiên đăng nhập hết hạn"),
-    REFRESH_TOKEN_MISSING(1013, "Mã làm mới bị thiếu"),
-    REFRESH_TOKEN_NOT_FOUND(1014, "Không tìm thấy mã làm mới"),
-    EMAIL_ADDRESS_MAY_NOT_EXIST(1015, "Địa chỉ email có thể không tồn tại"),
-    CODE_INVALID(1016, "Mã không hợp lẹ"),
-    INVALID_REQUEST(101, "Yêu cầu không hợp lệ"),
-    PASSWORD_LENGTH_NOT_ENOUGH(1019, "Độ dài mật khẩu không đủ. Mật khẩu cần dài ít nhất 8 kí tự không bao gồm dấu cách"), 
-    
+    USERNAME_MISSING(1006, "Không được bỏ trống tên tài khoản"),
+    PASSWORD_MISSING(1007, "Không được bỏ trống mật khẩu"),
+    EMAIL_MISSING(1008, "Không được bỏ trống email"),
+    USERNAME_INVALID(1009, "Tên tài khoản không hợp lệ. Tài khoản hợp lệ là tên chỉ gồm các chữ cái và số"),
+    PASSWORD_INVALID(1010, "Mật khẩu không hợp lệ. Mật khẩu hợp lệ gồm 8 kí tự không bao gồm dấu cách"),
+    REFRESH_TOKEN_EXPIRED(1011, "Phiên đăng nhập hết hạn"),
+    REFRESH_TOKEN_MISSING(1012, "Mã làm mới bị thiếu"),
+    REFRESH_TOKEN_NOT_FOUND(1013, "Không tìm thấy mã làm mới"),
+    EMAIL_ADDRESS_MAY_NOT_EXIST(1014, "Địa chỉ email có thể không tồn tại"),
+    CODE_INVALID(1015, "Mã không hợp lệ"),
+    INVALID_REQUEST(1016, "Yêu cầu không hợp lệ"),
+    PASSWORD_LENGTH_NOT_ENOUGH(1017, "Độ dài mật khẩu không đủ. Mật khẩu cần dài ít nhất 8 kí tự không bao gồm dấu cách"), 
+    EMAIL_INVALID(1018, "Email không hợp lệ. Hãy điền 1 email hợp lệ."),
+    USER_LEVEL_MISSING(1019, "Người dùng chưa lựa chọn trình độ hiện tại"), 
+    FULLNAME_OUT_MAX_SIZE(1020, "Tên đầy đủ vượt quá 255 kí tự"),
     // NOTIFICATION
-    NOTIFICATION_TOKEN_NOT_FOUND(1015, "Không tìm thấy mã thông báo"),
-    NOTIFICATION_TOKEN_MISSING(1016, "Mã thông báo bị thiếu"),
-    NOTIFICATION_TOKEN_INVALID(1017, "Mã thông báo lỗi"),
+    NOTIFICATION_TOKEN_NOT_FOUND(1100, "Không tìm thấy mã thông báo"),
+    NOTIFICATION_TOKEN_MISSING(1101, "Mã thông báo bị thiếu"),
+    NOTIFICATION_TOKEN_INVALID(1102, "Mã thông báo lỗi"),
 
     // MAIL
-    NEW_PASS_IS_SAME_WITH_OLD(1018, "Mật khẩu mới không đựợc trùng với mật khẩu cũ"),
-    WRONG_RESET_PASSWORD_CODE(1019, "Mã cập nhật mật khẩu không hợp lệ"), 
-
-    TOKEN_EXISTED(1020, "Mã đã tồn tại trong hệ thống"),
+    NEW_PASS_IS_SAME_WITH_OLD(1200, "Mật khẩu mới không đựợc trùng với mật khẩu cũ"),
+    WRONG_RESET_PASSWORD_CODE(1201, "Mã cập nhật mật khẩu không hợp lệ"),
 
     // STORAGE
-    FILE_UPLOAD_ERROR(2001, "Xảy ra lỗi khi tải lên file"),
-    DEFAULT_FILE_NOT_FOUND(2002, "Ảnh đại diện mặc định không có trên hệ thống"),
+    FILE_UPLOAD_ERROR(1202, "Xảy ra lỗi khi tải lên file"),
+    DEFAULT_FILE_NOT_FOUND(1203, "Ảnh đại diện mặc định không có trên hệ thống"),
 
     // VOCAB
     WORD_NOT_FOUND(4001, "Không tìm thấy từ này"),
@@ -65,14 +65,12 @@ public enum ResponseCode {
     LESSON_COVER_MISSING(5004, "Thiếu ảnh bài học"),
     LESSON_NAME_MISSING(5005, "Thiếu tên bài học"),
     LESSON_DIAMONDS_MISSING(5006, "Thiếu số kim cương"),
-    LESSON_ALREADY_COMPLETED(5007, "Bài học này đã hoàn thành trước đó rồi"),
     LESSON_IS_PLUS_ONLY(5008, "Bài học bị khóa. Hãy nâng gói đăng kí của bạn để mở"),
     QUESTION_TYPE_MISSING(5010, "Thiếu loại câu hỏi"),
     QUESTION_SENTENSE_AUDIO_MISSING(5011, "Thiếu âm thanh của câu hỏi"),
     QUESTION_SENTENSE_WORDS_MISSING(5012, "Thiếu đáp án câu hỏi"),
     QUESTION_SENTENSE_MEANING_MISSING(5013, "Thiếu câu hỏi"),
     QUESTION_MATCHING_MISSING(5014, "Thiếu các đáp án cho câu hỏi nối"),
-    CORRECT_ANSWER_NOT_FOUND(5015, "Không tìm thấy đáp án đúng"),
 
     // HISTORY
     LESSON_HISTORY_NOT_FOUND(6000, "Không tìm thấy lịch sử học với bài học này"),

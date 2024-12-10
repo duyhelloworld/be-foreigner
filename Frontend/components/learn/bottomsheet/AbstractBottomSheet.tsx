@@ -9,9 +9,10 @@ import {
 } from "react-native";
 import { StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
-import { Sound } from "expo-av/build/Audio";
-import correctSoundEffect from "../../../assets/correct-answer-effect.mp3"
-import incorrectSoundEffect from "../../../assets/incorrect-answer-effect.mp3"
+import correctSoundEffect from "../../../assets/correct-answer-effect.mp3";
+import incorrectSoundEffect from "../../../assets/incorrect-answer-effect.mp3";
+import { AppColors } from "../../../types/colors";
+import SoundPlayer from "react-native-sound-player";
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } =
   Platform.OS === "android"
@@ -27,14 +28,12 @@ const MAX_DOWNWARD_TRANSLATE_Y = 0;
 interface AbstractBottomSheetProp {
   title: string;
   backgroundColor: string;
+  isCorrect: boolean;
+  message: string;
   button: {
     text: string;
-    style: ViewStyle;
-    isCorrect: boolean;
     onPress: () => void;
-    textStyle?: TextStyle;
   };
-  message: string;
 }
 
 const AbstractBottomSheet = ({
@@ -42,15 +41,10 @@ const AbstractBottomSheet = ({
   backgroundColor,
   message,
   button,
+  isCorrect,
 }: AbstractBottomSheetProp) => {
   const animatedValue = useAnimatedValue(0);
   const lastGestureDy = useRef(0);
-  const [soundEffect, setSoundEffect] = useState<Sound>();
-
-  const load = async () => {
-    const { sound } = await Sound.createAsync(button.isCorrect ? correctSoundEffect : incorrectSoundEffect);
-    setSoundEffect(sound);
-  };
 
   const springAnimation = (toValue: number) => {
     lastGestureDy.current = toValue;
@@ -61,11 +55,7 @@ const AbstractBottomSheet = ({
   };
 
   useEffect(() => {
-    load();
-  }, []);
-
-  useEffect(() => {
-    soundEffect?.playAsync();
+    SoundPlayer.playAsset(isCorrect ? correctSoundEffect : incorrectSoundEffect);
     springAnimation(MAX_UPWARD_TRANSLATE_Y);
   }, []);
 
@@ -95,7 +85,7 @@ const AbstractBottomSheet = ({
         <Text style={styles.message}>{message}</Text>
       </View>
 
-      <Pressable style={button.style} onPress={onClose}>
+      <Pressable style={styles.buttonStyle} onPress={onClose}>
         <Text style={styles.buttonText}>{button.text}</Text>
       </Pressable>
     </Animated.View>
@@ -137,5 +127,16 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "white",
     marginBottom: 20,
+  },
+  buttonStyle: {
+    maxHeight: "70%",
+    backgroundColor: AppColors.white,
+    padding: 20,
+    borderRadius: 10,
+  },
+  continueButtonText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: 'center',
   },
 });

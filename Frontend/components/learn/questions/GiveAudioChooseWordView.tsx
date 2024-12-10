@@ -1,30 +1,27 @@
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { AppColors } from "../../../types/colors";
-import { LearnScreenContext } from "../LearnScreenHooks";
-import { Sound } from "expo-av/build/Audio";
+import { LearnContext } from "../../../context/LearnContext";
 import { AnswerOption } from "../../../types/apimodels";
+import { QuestionLevel } from "../../../types/enum";
+import SoundPlayer from "react-native-sound-player";
 
 interface GiveAudioChooseWordViewProp {
   correctOptionMean: string;
-  correctOptionAudio: string | Sound;
+  correctOptionAudio: string;
   answerOptions: AnswerOption[];
+  level: keyof typeof QuestionLevel;
 }
 
 const GiveAudioChooseWordView = ({
-  answerOptions, correctOptionMean, correctOptionAudio
+  answerOptions, correctOptionMean, correctOptionAudio, level
 }: GiveAudioChooseWordViewProp) => {
   const [pressedIndex, setPressedIndex] = useState<number>();
-  const resultRef = useContext(LearnScreenContext);
+  const resultRef = useContext(LearnContext);
 
   async function play() {
-    if (typeof correctOptionAudio === 'string') {
-      let { sound } = await Sound.createAsync({ uri: correctOptionAudio });
-      await sound.playAsync();
-    } else {
-      await correctOptionAudio.playAsync();
-    }
+    SoundPlayer.playUrl(correctOptionAudio);
   }
 
   const onOptionPress = (currentIndex: number) => {
@@ -32,6 +29,9 @@ const GiveAudioChooseWordView = ({
       setPressedIndex(undefined);
     } else {
       setPressedIndex(currentIndex);
+    }
+    if (level === "EASY") {
+      SoundPlayer.playUrl(answerOptions[currentIndex].audio)
     }
     resultRef.current = {
       enabled: true,

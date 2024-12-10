@@ -1,18 +1,18 @@
-import { Dimensions, StyleSheet, Text, View } from "react-native";
-import React, { useContext, useEffect } from "react";
-import { LearnScreenContext } from "../LearnScreenHooks";
+import { StyleSheet, Text, View } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { LearnContext } from "../../../context/LearnContext";
 import { AppColors } from "../../../types/colors";
 import { Ionicons } from "@expo/vector-icons";
-import { Sound } from "expo-av/build/Audio";
+import SoundPlayer from "react-native-sound-player";
 
 interface LearnWordByAudioProp {
-  audio: string | Sound;
+  audio: string;
   mean: string;
   value: string;
 }
 
 const LearnWord = ({ audio, mean, value }: LearnWordByAudioProp) => {
-  const resultRef = useContext(LearnScreenContext);
+  const resultRef = useContext(LearnContext);
   resultRef.current = {
     enabled: true,
     isCorrect: true,
@@ -20,24 +20,19 @@ const LearnWord = ({ audio, mean, value }: LearnWordByAudioProp) => {
   };
 
   useEffect(() => {
-    playAudio();
-  }, [audio])
-  
-  async function playAudio() {
-    if (typeof audio === 'string') {
-      const { sound } = await Sound.createAsync({ uri: audio });
-      await sound.playAsync();
-    } else {
-      await audio.playAsync();
-    }
+    play();
+  }, [])
+
+  function play() {
+    SoundPlayer.playUrl(audio);
   }
 
   return (
     <View style={styles.container}>
       <Ionicons name="volume-high" 
-        size={40} 
+        size={40}
         style={styles.audioIcon} 
-        onPress={playAudio} 
+        onPress={play} 
       />
       <Text style={styles.valueText}>{value}</Text>
     </View>

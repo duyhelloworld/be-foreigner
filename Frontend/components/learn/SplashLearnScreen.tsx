@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { ApiResponse, LessonDetail } from "../../types/apimodels";
 import apiClient from "../../config/AxiosConfig";
 import { ApiResponseCode } from "../../types/enum";
@@ -7,49 +7,98 @@ import {
   useAppNavigation,
   useRootParams,
 } from "../../navigation/AppNavigation";
-import { Sound } from "expo-av/build/Audio";
+import { Alert, Image } from "react-native";
+import { AxiosError, isAxiosError } from "axios";
+import SoundPlayer from "react-native-sound-player";
 
 const SplashLearnScreen = () => {
   const { lessonId } = useRootParams("LearnNavigator", "SplashLearnScreen");
   const navigator = useAppNavigation();
-  let lesson: LessonDetail | undefined;
+  let lessonDetail: LessonDetail | undefined;
+
+  async function preload(lesson: LessonDetail) {
+    if (!lesson.questions || lesson.questions.length === 0) {
+      return;
+    }
+    lesson.questions.sort((q1, q2) => q1.index - q2.index);
+
+    const preloadPromises = lesson.questions.map(async (question) => {
+      if (question.correctOptionAudio) {
+        SoundPlayer.loadUrl(question.correctOptionAudio!);
+      }
+      if (question.sentenseAudio) {
+        SoundPlayer.loadUrl(question.sentenseAudio!);
+      }
+      if (question.answerOptions) {
+        question.answerOptions?.map(async (answer) => {
+          SoundPlayer.loadUrl(answer.audio);
+          await Image.prefetch(answer.image);
+        });
+      }
+    });
+    await Promise.all(preloadPromises);
+    console.log("All preloading lesson finished!");
+    return lesson;
+  }
 
   const handleTask = async () => {
-    const response = await apiClient.get<ApiResponse>(
-      `lesson/exam/${lessonId}`
-    );
-    if (response.data.code === ApiResponseCode.OK) {
-      // const gotLesson = response.data.data as LessonDetail;
-      // for (let question of gotLesson.questions) {
-      //   if (
-      //     question.correctOptionAudio &&
-      //     typeof question.correctOptionAudio === "string"
-      //   ) {
-      //     question.correctOptionAudio = (
-      //       await Sound.createAsync({ uri: question.correctOptionAudio })
-      //     ).sound;
-      //   }
-      //   if (
-      //     question.answerOptions &&
-      //     question.type === "GIVE_AUDIO_CHOOSE_WORD"
-      //   ) {
-      //     question.answerOptions.map(
-      //       async (a) =>
-      //         (a.audio = (await Sound.createAsync({ uri: a.audio })).sound)
-      //     );
-      //   }
-      // }
-      lesson = response.data.data as LessonDetail;
-    } else {
-      alert(response.data.data as string[]);
+    try {
+      const response = await apiClient.get<ApiResponse>(
+        `lesson/exam/${lessonId}`
+      );
+      if (response.data.code === ApiResponseCode.OK) {
+        let responseLesson = response.data.data as LessonDetail;
+        if (
+          !responseLesson.questions ||
+          responseLesson.questions.length === 0
+        ) {
+          Alert.alert(
+            "ĐÂY LÀ CẢNH BÁO TRONG MÔI TRƯỜNG PHÁT TRIỂN",
+            "Bài học '" + responseLesson.name + "' chưa được khởi tạo",
+            [
+              {
+                text: "OK",
+                onPress: () =>
+                  navigator.navigate("HomeNavigator", { screen: "HomeScreen" }),
+              },
+            ]
+          );
+          return;
+        }
+        lessonDetail = await preload(responseLesson);
+      } else {
+        alert(response.data.data as string[]);
+      }
+    } catch (error) {
+      console.error("Error when loading lesson: ", error);
+      if (isAxiosError(error) && error.code === AxiosError.ETIMEDOUT) {
+        Alert.alert(
+          "Timeout!!!",
+          "Lỗi khi tải tài nguyên bài học. Hãy kiểm tra lại kết nối mạng của bạn"
+        );
+      } else {
+        Alert.alert(
+          "🥹 Rất tiếc!",
+          "Đã có lỗi xảy ra khi tải bài học. Chân thành xin lỗi bạn 🙏🙏🙏",
+          [
+            {
+              text: "OK",
+              onPress: () =>
+                navigator.navigate("HomeNavigator", { screen: "HomeScreen" }),
+            },
+          ]
+        );
+      }
     }
   };
 
   const handleFinish = () => {
-    navigator.navigate("LearnNavigator", {
-      screen: "LearnScreen",
-      params: { jsonLesson: JSON.stringify(lesson) },
-    });
+    if (lessonDetail) {
+      navigator.navigate("LearnNavigator", {
+        screen: "LearnScreen",
+        params: { lesson: lessonDetail },
+      });
+    }
   };
 
   return (
@@ -58,7 +107,6 @@ const SplashLearnScreen = () => {
       onFinish={handleFinish}
       label="Đang chuẩn bị bài học....."
       sublabel="Mỗi ngày hãy dành vài phút học bài nhé"
-      totalTime={2000}
     />
   );
 };

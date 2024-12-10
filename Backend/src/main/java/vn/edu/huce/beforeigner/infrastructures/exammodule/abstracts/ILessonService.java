@@ -27,4 +27,6 @@ public interface ILessonService {
      * @param lessonId
      */
     void completed(CompletedLessonDto completedLessonDto, User user);
+
+    
 }

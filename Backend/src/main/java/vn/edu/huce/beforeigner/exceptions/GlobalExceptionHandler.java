@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -48,7 +49,11 @@ public class GlobalExceptionHandler {
 
         // Url invalid
         if (ex instanceof FileNotFoundException || ex instanceof NoResourceFoundException) {
-            return ResponseEntity.notFound().build();
+            response = ApiResponse.error(ResponseCode.NOT_FOUND);
+        }
+
+        if (ex instanceof AccessDeniedException) {
+            response = ApiResponse.error(ResponseCode.UNAUTHORIZED);
         }
 
         return ResponseEntity.ok(response);

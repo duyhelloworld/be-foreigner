@@ -6,20 +6,17 @@ import vn.edu.huce.beforeigner.annotations.IsAdmin;
 import vn.edu.huce.beforeigner.annotations.IsUser;
 import vn.edu.huce.beforeigner.domains.core.User;
 import vn.edu.huce.beforeigner.exceptions.ApiResponse;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IUserService;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.SetupDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.UpdateProfileDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.UserDto;
+import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.StreakDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.UserInfoDto;
-import vn.edu.huce.beforeigner.infrastructures.remindmodule.abstracts.IRemindService;
 import vn.edu.huce.beforeigner.infrastructures.remindmodule.dtos.UserRemindSettingDto;
 import vn.edu.huce.beforeigner.utils.paging.PagingRequest;
 import vn.edu.huce.beforeigner.utils.paging.PagingResult;
-
-import java.time.LocalDateTime;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,8 +33,6 @@ public class UserController {
 
     private final IUserService userService;
 
-    private final IRemindService remindService;
-
     @IsAdmin
     @GetMapping("/all")
     public ApiResponse<PagingResult<UserDto>> getAllUsers(PagingRequest pagingRequest) {
@@ -51,10 +46,10 @@ public class UserController {
     }
 
     @IsUser
-    @PutMapping(path = "my-info", consumes = "multipart/form-data")
+    @PutMapping("my-info")
     public ApiResponse<UserInfoDto> updateProfile(
             @AuthenticationPrincipal User user,
-            @ModelAttribute UpdateProfileDto updateProfileDto) {
+            @RequestBody UpdateProfileDto updateProfileDto) {
         return ApiResponse.ok(userService.updateProfile(user, updateProfileDto));
     }
 
@@ -67,15 +62,9 @@ public class UserController {
         return ApiResponse.ok();
     }
 
-    @GetMapping("notification/test")
-    public ApiResponse<String> sendTestNotification() {
-        remindService.testCronJob();
-        return ApiResponse.ok("Đã gửi thông báo vào " + LocalDateTime.now());
-    }
-
     @IsUser
     @GetMapping("streak")
-    public ApiResponse<Integer> streak(@AuthenticationPrincipal User user) {
+    public ApiResponse<StreakDto> streak(@AuthenticationPrincipal User user) {
         return ApiResponse.ok(userService.streak(user));
     }
 

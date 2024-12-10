@@ -1,7 +1,6 @@
 package vn.edu.huce.beforeigner.configurations;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -27,8 +26,7 @@ public class SecurityExceptionHandler implements AccessDeniedHandler {
         response.setStatus(200);
         response.setContentType("application/json");
         var outStream = response.getOutputStream();
-        ApiResponse<List<String>> apiResponse = new ApiResponse<>();
-        apiResponse.setData(List.of(ResponseCode.FORBIDDEN.getMessage()));
+        ApiResponse<?> apiResponse = ApiResponse.error(ResponseCode.UNAUTHORIZED);
         appObjectMapper.writeValue(outStream, apiResponse);
         outStream.flush();
     }

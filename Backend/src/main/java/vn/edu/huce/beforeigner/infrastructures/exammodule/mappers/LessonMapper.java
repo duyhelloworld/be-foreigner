@@ -5,7 +5,6 @@ import java.util.Set;
 import org.springframework.stereotype.Component;
 import lombok.AllArgsConstructor;
 import vn.edu.huce.beforeigner.domains.exam.Lesson;
-import vn.edu.huce.beforeigner.domains.history.LessonStatus;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.LessonDetailDto;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.LessonDto;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.questions.QuestionDto;
@@ -30,10 +29,6 @@ public class LessonMapper {
                 .name(lesson.getName())
                 .cover(lesson.getCoverImageUrl())
                 .type(lesson.getType())
-                .status(lesson.getLessonHistories().stream()
-                        .findFirst()
-                        .map(history -> history.getStatus())
-                        .orElse(LessonStatus.UNAVAILABLE))
                 .build();
     }
 }

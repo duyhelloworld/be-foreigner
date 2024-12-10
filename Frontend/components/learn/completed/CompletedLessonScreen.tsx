@@ -1,40 +1,94 @@
-import React, { useEffect, useRef } from "react";
-import { Animated, Image, StyleSheet, Text, View, Easing, ViewStyle } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  Animated,
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  Easing,
+  ViewStyle,
+  ActivityIndicator,
+} from "react-native";
 import { AppColors } from "../../../types/colors";
 import BottomButton from "../../common/BottomButton";
-import apiClient from "../../../config/AxiosConfig";
-import { ApiResponse } from "../../../types/apimodels";
-import { ApiResponseCode } from "../../../types/enum";
 import accuracyImage from "../../../assets/accuracy.png";
 import appImage from "../../../assets/icon-transparent.png";
+import GradientBackground from "../../common/GradientBackground";
+import { ApiResponseCode } from "../../../types/enum";
 import {
   useAppNavigation,
   useRootParams,
 } from "../../../navigation/AppNavigation";
-import GradientBackground from "../../common/GradientBackground";
+import apiClient from "../../../config/AxiosConfig";
+import { ApiResponse, Streak } from "../../../types/apimodels";
+
+const BATTERY_WIDTH_CONTAINER = 200;
+const BATTERY_WIDTH = 80;
+const BATTERY_HEIGHT = 160;
 
 const CompletedLessonScreen = () => {
+  const batteryHeight = useRef(new Animated.Value(0)).current;
+  const batteryOpacity = useRef(new Animated.Value(0)).current;
+  const textOpacity = useRef(new Animated.Value(0)).current;
+  const buttonOpacity = useRef(new Animated.Value(0)).current;
+  const [animationsComplete, setAnimationsComplete] = useState(false);
+
   const { accuracy, historyId } = useRootParams(
     "LearnNavigator",
     "CompletedLessonScreen"
   );
-  
   const navigator = useAppNavigation();
 
+  const animationSequence = Animated.sequence([
+    Animated.timing(batteryOpacity, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: false,
+    }),
+    Animated.timing(batteryHeight, {
+      toValue: (accuracy * 160) / 100,
+      duration: 1000,
+      easing: Easing.out(Easing.ease),
+      useNativeDriver: false,
+    }),
+    Animated.timing(textOpacity, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: false,
+    }),
+    Animated.timing(buttonOpacity, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: false,
+    })
+  ]);
+
+  useEffect(() => {
+    animationSequence.start(() => setAnimationsComplete(true));
+  }, []);
+
   async function onContinuePress() {
-    const response = await apiClient.put<ApiResponse>("lesson/exam/complete", {
+    if (!animationsComplete) return;
+    setAnimationsComplete(false); 
+    const completedResponse = await apiClient.put<ApiResponse>("lesson/exam/complete", {
       historyId,
       accuracy,
     });
-    if (response.data.code === ApiResponseCode.OK) {
-      const streakDay = response.data.data as number;
-      navigator.navigate("LearnNavigator", {
-        screen: "StreakScreen",
-        params: { streakDay },
-      });
-    }
-    else {
-      alert(response.data.data as string[]);
+    if (completedResponse.data.code === ApiResponseCode.OK) {
+      const streakResponse = await apiClient.get<ApiResponse>("user/streak");
+      if (streakResponse.data.code === ApiResponseCode.OK) {
+        const streak = streakResponse.data.data as Streak;
+        if (streak.hasLearned) {
+          navigator.navigate("HomeNavigator", { screen: "HomeScreen" });
+        } else {
+          navigator.navigate("LearnNavigator", {
+            screen: "StreakScreen",
+            params: { streakDay: streak.streakDays },
+          });
+        }
+      }
+    } else {
+      alert(completedResponse.data.data as string[]);
     }
   }
 
@@ -44,30 +98,46 @@ const CompletedLessonScreen = () => {
     return AppColors.lightGreen;
   };
 
-  const batteryStyle: ViewStyle = {
-    width: 120,
-    height: accuracy * 160 / 100,
-    borderBottomEndRadius: 20,
-    borderBottomStartRadius: 20,
-    bottom: 0,
-    zIndex: 0,
-    position: 'absolute',
-    borderTopWidth: 1,
+  const batteryFillStyle: ViewStyle = {
+    width: 80,
+    height: batteryHeight,
     backgroundColor: getBatteryColor(),
-  }
+  };
 
   return (
     <GradientBackground style={styles.container}>
-      <Image source={appImage} style={styles.appImage} />
-      <Text style={styles.completedText}>Hoàn thành bài học</Text>
-      <View style={styles.statisticContainer}>
-        <View style={styles.statisticRow}>
-          <Image source={accuracyImage} style={styles.statisticImage} />
-          <Text style={styles.statisticText}>{accuracy}%</Text>
-          <View style={batteryStyle}></View>
+      <View style={styles.content}>
+        <Animated.Image
+          source={appImage}
+          style={[styles.appImage, { opacity: textOpacity }]}
+        />
+        <Animated.Text style={[styles.completedText, { opacity: textOpacity }]}>
+          Hoàn thành bài học
+        </Animated.Text>
+
+        <View style={styles.batteryContainer}>
+          <View style={styles.batteryInner}>
+            <Image source={accuracyImage} style={styles.flashImage} />
+            <Animated.View
+              style={[
+                styles.batteryFill,
+                batteryFillStyle,
+                { opacity: batteryOpacity },
+              ]}
+            />
+          </View>
+          <Animated.Text
+            style={[styles.batteryPercentText, { opacity: textOpacity }]}
+          >
+            {accuracy}%
+          </Animated.Text>
         </View>
       </View>
+      <Animated.View
+        style={[styles.buttonContainer, { opacity: buttonOpacity }]}
+      >
         <BottomButton title="Tiếp tục" onPress={onContinuePress} />
+      </Animated.View>
     </GradientBackground>
   );
 };
@@ -75,46 +145,67 @@ const CompletedLessonScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  content: {
+    flex: 1,
     alignItems: "center",
+    justifyContent: "center",
+  },
+  appImage: {
+    width: 200,
+    height: 200,
+    resizeMode: "contain",
+    marginBottom: 20,
   },
   completedText: {
     color: AppColors.white,
     fontWeight: "700",
     fontSize: 40,
     textShadowColor: AppColors.black,
-    textShadowOffset: {width: 2, height: -3},
+    textShadowOffset: { width: 2, height: -3 },
     textShadowRadius: 2,
+    marginBottom: 30,
   },
-  appImage: {
-    width: 200,
-    height: 200,
-    marginTop: "15%",
-    resizeMode: "contain",
-  },
-  statisticContainer: {
-    flexDirection: "row",
-    marginTop: 50,
-    justifyContent: "space-between",
-  },
-  statisticRow: {
+  batteryContainer: {
+    alignItems: "center",
+    backgroundColor: AppColors.white,
     borderRadius: 20,
+    padding: 20,
+    width: BATTERY_WIDTH_CONTAINER,
+  },
+  flashImage: {
+    width: BATTERY_WIDTH,
+    height: BATTERY_HEIGHT,
+    resizeMode: "center",
+    zIndex: 2,
+  },
+  batteryInner: {
+    width: BATTERY_WIDTH,
+    height: BATTERY_HEIGHT,
     borderWidth: 2,
     borderColor: AppColors.lightGray,
-    backgroundColor: AppColors.white,
-    padding: 10,
-    margin: 5,
+    borderRadius: 10,
+    overflow: "hidden",
+    marginBottom: 10,
   },
-  statisticImage: {
-    width: 100,
-    zIndex: 1,
-    height: 140,
-    resizeMode: "contain",
+  batteryFill: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
-  statisticText: {
-    textAlign: "center",
-    fontSize: 15,
-    zIndex: 1,
+  batteryPercentText: {
+    fontSize: 24,
     fontWeight: "800",
+    color: AppColors.darkGreen,
+    textShadowColor: AppColors.black,
+    textShadowOffset: { width: 1, height: 0 },
+    textShadowRadius: 1,
+  },
+  buttonContainer: {
+    paddingHorizontal: 20,
+    alignItems: "center",
+    paddingBottom: 20,
   },
 });
 

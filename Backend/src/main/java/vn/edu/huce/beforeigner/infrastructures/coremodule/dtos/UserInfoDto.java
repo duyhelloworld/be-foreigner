@@ -23,6 +23,8 @@ public class UserInfoDto {
 
     private Integer quota;
 
+    private Integer streakDays;
+
     private UserLevel level;
 
     private boolean isAllowMail;

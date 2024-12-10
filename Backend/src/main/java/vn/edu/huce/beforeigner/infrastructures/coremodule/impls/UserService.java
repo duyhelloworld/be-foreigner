@@ -16,6 +16,7 @@ import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IUserTokenSe
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.SetupDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.UpdateProfileDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.UserDto;
+import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.StreakDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.UserInfoDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.mappers.UserMapper;
 import vn.edu.huce.beforeigner.infrastructures.remindmodule.dtos.UserRemindSettingDto;
@@ -47,9 +48,11 @@ public class UserService implements IUserService {
 
     @Override
     public UserInfoDto updateProfile(User user, UpdateProfileDto updateProfileDto) {
-        if (updateProfileDto.getAvatar() != null && user.getAvatarPublicId() != null) {
-            cloudFileService.delete(user.getAvatarPublicId());
-            var response = cloudFileService.save(updateProfileDto.getAvatar(), CloudFileType.USER_AVATAR);
+        if (StringUtils.hasText(updateProfileDto.getAvatar())) {
+            if (StringUtils.hasText(user.getAvatarPublicId())) {
+                cloudFileService.delete(user.getAvatarPublicId());
+            } 
+            var response = cloudFileService.save(updateProfileDto.getAvatar(), "", CloudFileType.USER_AVATAR);
             user.setAvatarUrl(response.getUrl());
             user.setAvatarPublicId(response.getPublicId());
             user.setAvatarFilename(response.getFilename());
@@ -71,17 +74,24 @@ public class UserService implements IUserService {
     @Override
     public void setup(User user, SetupDto setupDto) {
         userTokenService.addNew(TokenType.NOTIFICATION, setupDto.getNotificationToken());
-        userRepo.save(user);
     }
 
     @Override
-	public Integer streak(User user) {
-		if (user.getIsFirstTry()) {
-			user.setIsFirstTry(false);
-			user.setStreakDays(user.getStreakDays() + 1);
-			userRepo.save(user);
-		}
-		return user.getStreakDays();
+	public StreakDto streak(User user) {
+        var builder = StreakDto.builder();
+        if (user.isShowedStreak()) {
+            // User đã học trước đó
+            builder.streakDays(user.getStreakDays())
+                .hasLearned(true);
+        } else {
+            // User chưa học, tăng streak và set trạng thái đã học
+            user.setStreakDays(user.getStreakDays() + 1);
+            user.setShowedStreak(true);
+            userRepo.save(user);
+            builder.streakDays(user.getStreakDays())
+                .hasLearned(false);
+        }
+        return builder.build();
 	}
 
 }

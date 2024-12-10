@@ -6,14 +6,12 @@ import UpgradePlanScreen from "../../components/profile/subscreen/UpgradePlanScr
 import ChangePasswordScreen from "../../components/profile/subscreen/ChangePasswordScreen";
 import UpdateProfileScreen from "../../components/profile/subscreen/UpdateProfileScreen";
 import LessonHistoryScreen from "../../components/profile/subscreen/LessonHistoryScreen";
-import StatisticScreen from "../../components/profile/subscreen/StatisticScreen";
 
 export type ProfileNavigatorParams = {
   UpdateProfileScreen: undefined;
   ChangePasswordScreen: undefined;
   NotificationSetttingScreen: undefined;
   LessonHistoryScreen: undefined;
-  StatisticScreen: undefined;
   UpgradePlanScreen: undefined;
   LogoutScreen: undefined;
 };
@@ -41,7 +39,7 @@ const ProfileNavigator = () => {
       <Stack.Screen
         name="UpgradePlanScreen"
         component={UpgradePlanScreen}
-        options={{ headerShown: false }}
+        options={{ title: "Nâng cấp gói tài khoản"}}
       />
       <Stack.Screen
         name="LogoutScreen"
@@ -52,11 +50,6 @@ const ProfileNavigator = () => {
         name="LessonHistoryScreen"
         component={LessonHistoryScreen}
         options={{ title: "Lịch sử học bài" }}
-      />
-      <Stack.Screen
-        name="StatisticScreen"
-        component={StatisticScreen}
-        options={{ title: "Thống kê bài học" }}
       />
     </Stack.Navigator>
   );

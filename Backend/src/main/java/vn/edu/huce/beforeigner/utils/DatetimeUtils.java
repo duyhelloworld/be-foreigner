@@ -4,6 +4,7 @@ import java.util.Date;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 
 public abstract class DatetimeUtils {
 
@@ -34,5 +35,13 @@ public abstract class DatetimeUtils {
         }
 
         return sb.toString().trim();
+    }
+
+    public static String dateToString(LocalDateTime localDateTime) {
+        if (localDateTime == null) {
+            return "--:-- -/-/----";
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
+        return localDateTime.format(formatter);
     }
 }

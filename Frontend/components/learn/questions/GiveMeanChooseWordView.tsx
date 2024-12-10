@@ -1,24 +1,44 @@
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import React, { useContext, useState } from "react";
+import {
+  Dimensions,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import React, { useContext, useRef, useState } from "react";
 import { AppColors } from "../../../types/colors";
-import { LearnScreenContext } from "../LearnScreenHooks";
+import { LearnContext } from "../../../context/LearnContext";
 import { AnswerOption } from "../../../types/apimodels";
 import { QuestionLevel } from "../../../types/enum";
-import { Sound } from "expo-av/build/Audio";
+import { Ionicons } from "@expo/vector-icons";
+import SoundPlayer from "react-native-sound-player";
 
 interface GiveMeanChooseWordViewProp {
   correctOptionMean: string;
-  correctOptionAudio: string | Sound;
+  correctOptionAudio: string;
+  correctOptionValue: string;
   answerOptions: AnswerOption[];
-  level: QuestionLevel;
+  level: keyof typeof QuestionLevel;
 }
 
+const { width, height } = Dimensions.get("screen");
+
 const GiveMeanChooseWordView = ({
-  answerOptions, correctOptionAudio, correctOptionMean,
-  level,
+  answerOptions,
+  correctOptionAudio,
+  correctOptionValue,
+  correctOptionMean,
+  level
 }: GiveMeanChooseWordViewProp) => {
-  const resultRef = useContext(LearnScreenContext);
+  const resultRef = useContext(LearnContext);
   const [selectedIndex, setSelectedIndex] = useState<number>();
+
+  function onCorrectAnsPress() {
+    if (level === "EASY") {
+      SoundPlayer.playUrl(correctOptionAudio);
+    }
+  }
 
   async function onOptionPress(currentIndex: number) {
     if (selectedIndex === currentIndex) {
@@ -26,29 +46,30 @@ const GiveMeanChooseWordView = ({
     } else {
       setSelectedIndex(currentIndex);
     }
-    if (level === QuestionLevel.EASY) {
-      if (typeof correctOptionAudio === 'string') {
-        let { sound } = await Sound.createAsync({ uri: correctOptionAudio });
-        await sound.playAsync();
-      } else {
-        await correctOptionAudio.playAsync();
-      }
-    }
 
     resultRef.current = {
       enabled: true,
       isCorrect: answerOptions[currentIndex].isTrue,
       message: answerOptions[currentIndex].isTrue
         ? ""
-        : `${answerOptions.filter(a => a.isTrue)[0].value} mới là đáp án mà`,
+        : `${correctOptionValue} mới là đáp án mà`,
     };
-  };
+  }
 
   return (
     <View style={styles.container}>
-      <View style={styles.correctAnswerContainer}>
+      <Pressable
+        style={styles.correctAnswerContainer}
+        onPress={onCorrectAnsPress}
+      >
+        <Ionicons
+          name="volume-high"
+          color="white"
+          size={30}
+          style={styles.correctAnswerAudio}
+        />
         <Text style={styles.correctAnswerText}>{correctOptionMean}</Text>
-      </View>
+      </Pressable>
 
       <View style={styles.answersContainer}>
         {answerOptions.map((answer, index) => (
@@ -77,30 +98,39 @@ const styles = StyleSheet.create({
   },
   correctAnswerContainer: {
     flexDirection: "row",
-    maxWidth: "40%",
-    marginLeft: "5%",
+    maxWidth: width * 0.8,
+    marginLeft: 20,
     alignItems: "center",
+    marginBottom: 20,
   },
   correctAnswerText: {
-    marginBottom: "3%",
-    color: AppColors.green,
+    color: AppColors.black,
     fontSize: 23,
+    textShadowColor: AppColors.green,
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
+  },
+  correctAnswerAudio: {
+    backgroundColor: AppColors.green,
+    padding: 10,
+    borderRadius: 10,
+    marginRight: 15,
   },
   answersContainer: {
     flex: 1,
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
   },
   answer: {
-    width: "45%",
+    width: width * 0.45,
+    height: height * 0.25,
     alignItems: "center",
-    marginHorizontal: "2%",
-    marginVertical: "1%",
-    padding: "1%",
+    padding: 2,
+    marginBottom: 20,
     borderWidth: 3,
     borderRadius: 10,
-    borderColor: AppColors.light,
+    borderColor: AppColors.lightGray,
   },
   answerPressed: {
     backgroundColor: AppColors.light,
@@ -108,11 +138,12 @@ const styles = StyleSheet.create({
   },
   answerImage: {
     width: "100%",
-    height: "60%",
+    height: "80%",
     borderRadius: 10,
     marginBottom: 10,
   },
   answerValue: {
     textAlign: "center",
+    fontSize: 18,
   },
 });

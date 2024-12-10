@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import vn.edu.huce.beforeigner.domains.exam.LessonType;
-import vn.edu.huce.beforeigner.domains.history.LessonStatus;
 
 @Getter
 @Setter
@@ -16,8 +15,6 @@ public class LessonDto {
     private String name;
 
     private String cover;
-
-    private LessonStatus status;
 
     private LessonType type;
 }

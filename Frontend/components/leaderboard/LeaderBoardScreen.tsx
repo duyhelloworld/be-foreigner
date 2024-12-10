@@ -7,11 +7,12 @@ import {
   View,
   Animated,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import { ApiResponse, LeaderBoard } from "../../types/apimodels";
 import { useUserStorage } from "../../hook/UserStorageHooks";
 import apiClient from "../../config/AxiosConfig";
-import { ApiResponseCode } from "../../types/enum";
+import { ApiResponseCode, LeaderBoardType } from "../../types/enum";
 import { LinearGradient } from "expo-linear-gradient";
 import { AppColors } from "../../types/colors";
 import LeaderBoardUserView from "./LeaderBoardUserView";
@@ -26,17 +27,18 @@ const LeaderBoardScreen = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showNotification, setShowNotification] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [selectedTab, setSelectedTab] = useState<keyof typeof LeaderBoardType>("WEEKLY");
 
   const navigator = useNavigation<BottomTabNavigationProp<HomeNavigatorParams>>();
   const userStorage = useUserStorage();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(50)).current;
 
-  async function loadData() {
+  async function loadData(leaderboardType: keyof typeof LeaderBoardType) {
     setIsLoading(true);
     const current = await userStorage.getInfo();
     setCurrentUser(current?.username);
-    const response = await apiClient.get<ApiResponse>("leaderboard");
+    const response = await apiClient.get<ApiResponse>(`leaderboard?leaderBoardType=${leaderboardType}`);
     if (response.data.code === ApiResponseCode.OK) {
       const board = response.data.data as LeaderBoard;
       board.users.sort((u1, u2) => u1.userRank - u2.userRank);
@@ -47,13 +49,13 @@ const LeaderBoardScreen = () => {
 
   async function refreshData() {
     setIsRefreshing(true);
-    await loadData();
+    await loadData(selectedTab);
     setRefreshKey((prevKey) => prevKey + 1);
     setIsRefreshing(false);
   }
 
   useEffect(() => {
-    loadData();
+    loadData(selectedTab);
 
     Animated.parallel([
       Animated.timing(fadeAnim, {
@@ -70,7 +72,33 @@ const LeaderBoardScreen = () => {
 
     const timer = setTimeout(() => setShowNotification(false), 1500);
     return () => clearTimeout(timer);
-  }, []);
+  }, [selectedTab]);
+
+  const renderTabs = () => {
+    return (
+      <View style={styles.tabsContainer}>
+        {Object.keys(LeaderBoardType).map((tabKey) => (
+          <TouchableOpacity
+            key={tabKey}
+            style={[
+              styles.tabButton,
+              selectedTab === tabKey && styles.activeTabButton,
+            ]}
+            onPress={() => setSelectedTab(tabKey as keyof typeof LeaderBoardType)}
+          >
+            <Text
+              style={[
+                styles.tabText,
+                selectedTab === tabKey && styles.activeTabText,
+              ]}
+            >
+              {LeaderBoardType[tabKey as keyof typeof LeaderBoardType]}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
+  };
 
   return (
     <LinearGradient
@@ -88,6 +116,7 @@ const LeaderBoardScreen = () => {
           style={styles.LeaderBoardLogo}
         />
         <Text style={styles.title}>Bảng xếp hạng</Text>
+        {renderTabs()}
         {isLoading ? (
           <ActivityIndicator />
         ) : (
@@ -144,5 +173,26 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     marginBottom: 20,
+  },
+  tabsContainer: {
+    flexDirection: "row",
+    marginBottom: 20,
+  },
+  tabButton: {
+    flex: 1,
+    padding: 10,
+    backgroundColor: AppColors.gray,
+    alignItems: "center",
+    marginHorizontal: 5,
+    borderRadius: 10,
+  },
+  activeTabButton: {
+    backgroundColor: AppColors.blue,
+  },
+  tabText: {
+    color: "#FFF",
+  },
+  activeTabText: {
+    fontWeight: "bold",
   },
 });

@@ -28,6 +28,7 @@ public class UserMapper {
             .isAllowMail(user.isAllowMail())
             .isAllowNotification(user.isAllowNotification())
             .level(user.getLevel())
+            .streakDays(user.getStreakDays())
             .plan(user.getPlan())
             .build();
     }

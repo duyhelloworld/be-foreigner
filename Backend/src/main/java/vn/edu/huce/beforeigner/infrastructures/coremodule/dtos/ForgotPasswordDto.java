@@ -4,8 +4,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Min;
 import lombok.Data;
-import vn.edu.huce.beforeigner.annotations.ValidPass;
-import vn.edu.huce.beforeigner.annotations.ValidUsername;
 
 @Data
 public class ForgotPasswordDto {
@@ -19,7 +17,7 @@ public class ForgotPasswordDto {
 
     @NotBlank(message = "PASSWORD_MISSING")
     @Min(value = 8, message = "PASSWORD_LENGTH_NOT_ENOUGH")
-    @Pattern(regexp = "^[^\s]{8,}$'", message = "PASSWORD_INVALID")
+    @Pattern(regexp = "^(?!.*\\s)[A-Za-z0-9!@#$%^&*(),.?\":{}|<>]{8,}$", message = "PASSWORD_INVALID")
     private String newPassword;
 
 }

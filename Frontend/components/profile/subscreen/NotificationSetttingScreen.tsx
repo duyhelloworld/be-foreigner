@@ -26,7 +26,11 @@ const NotificationSettingScreen: React.FC = () => {
   async function saveSettings() {
     setIsLoading(true);
     const response = await apiClient.put<ApiResponse>(
-      "user/notification/setting"
+      "user/notification/setting",
+      {
+        isAllowMail: emailNotification,
+        isAllowNotification: pushNotification
+      }
     );
     if (response.data.code === ApiResponseCode.OK) {
       setIsLoading(false);

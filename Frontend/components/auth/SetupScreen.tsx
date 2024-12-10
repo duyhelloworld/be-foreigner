@@ -25,13 +25,12 @@ const SetupScreen = () => {
       await messaging().registerDeviceForRemoteMessages();
       const token = await messaging().getToken();
       // TODO
-      console.log(token);
       const response = await apiClient.post<ApiResponse>("user/setup", {
         notificationToken: token,
         userLevel: UserLevel.BEGINNER,
       });
       if (response.data.code === ApiResponseCode.OK) {
-        await notificationStorage.init();
+        navigator.navigate("HomeNavigator", {screen: "HomeScreen"});
       } else {
         Alert.alert("Có lỗi khi đăng kí thông báo");
         return;
@@ -57,7 +56,6 @@ const SetupScreen = () => {
       onFinish={handleFinish}
       label="Đợi chút nhé"
       sublabel="Chúng tôi đang thiết lập một số thứ cho bạn"
-      totalTime={2000}
     />
   );
 };

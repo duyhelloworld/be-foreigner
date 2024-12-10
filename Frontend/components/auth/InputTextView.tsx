@@ -4,13 +4,15 @@ import { AppColors } from "../../types/colors";
 import { Ionicons } from "@expo/vector-icons";
 
 interface InputTextViewProp {
-  placeholder?: string;
-  enable? :boolean;
   value?: string;
   setValue?: (v: string) => void;
+  placeholder?: string;
   error?: string;
   secure?: boolean;
-  inputType?: TextInputProps["keyboardType"]
+  inputType?: TextInputProps["keyboardType"],
+  enable?: boolean;
+  showPassword?: boolean; 
+  toggleShowPassword?: () => void;
 }
 
 const InputTextView = ({
@@ -18,11 +20,12 @@ const InputTextView = ({
   value,
   setValue,
   error,
-  enable = true,
   secure = false,
-  inputType = "default"
+  enable = true,
+  inputType = "default",
+  showPassword = false,
+  toggleShowPassword,
 }: InputTextViewProp) => {
-  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <View style={styles.inputContainer}>
@@ -33,14 +36,13 @@ const InputTextView = ({
           style={[styles.input, error ? styles.inputError : null]}
           value={value}
           editable={enable}
-          selectTextOnFocus={enable}
           keyboardType={inputType}
-          onChangeText={setValue}
+          onChangeText={v => setValue && setValue(v)}
           secureTextEntry={secure && !showPassword}
         />
         {secure && (
           <Pressable
-            onPress={() => setShowPassword(!showPassword)}
+            onPress={toggleShowPassword}
             style={styles.showButton}
           >
             <Ionicons

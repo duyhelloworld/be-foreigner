@@ -25,7 +25,7 @@ public class Remind extends CronjobAuditedEntity {
     /**
      * Tiêu đề
      */
-    @Column(nullable = false)
+    @Column(nullable = false, length = 200)
     private String title;
 
     /**
@@ -38,6 +38,9 @@ public class Remind extends CronjobAuditedEntity {
      * Dữ liệu dạng json
      */
     private String data;
+
+    @Column(nullable = false)
+    private Boolean isRead = false;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)

@@ -20,8 +20,7 @@ import { Ionicons } from "@expo/vector-icons";
 export default function UpdateProfileScreen() {
   const [user, setUser] = useState<UserInfo>();
   const [fullname, setFullname] = useState("");
-  const [avatar, setAvatar] = useState("");
-  const [avatarFilename, setAvatarFilename] = useState("");
+  const [avatar, setAvatar] = useState<string | undefined>();
   const [isChanged, setIsChanged] = useState(false);
   const [messages, setMessages] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -44,14 +43,13 @@ export default function UpdateProfileScreen() {
     let result = await launchImageLibraryAsync({
       mediaTypes: MediaTypeOptions.Images,
       allowsEditing: true,
+      base64: true,
       aspect: [1, 1],
       quality: 1,
     });
 
-    if (!result.canceled && result.assets[0].uri) {
-      const uri = result.assets[0].uri;
-      setAvatar(uri);
-      setAvatarFilename(uri.split("/").pop()!);
+    if (!result.canceled) {
+      setAvatar(result.assets[0].base64 ?? undefined);
       setIsChanged(true);
     }
   }
@@ -63,27 +61,17 @@ export default function UpdateProfileScreen() {
 
   async function handleSaveChanges() {
     setIsLoading(true);
-    let formData = new FormData();
-    if (avatar) {
-      let avatarValue: FormDataValue = {
-        uri: avatar,
-        type: "image/*",
-        name: avatarFilename.split(".")[1],
-      };
-      formData.append("avatar", avatarValue);
-    }
+    let data = {
+      fullname: "",
+      avatar: "",
+    };
     if (fullname) {
-      formData.append("fullname", fullname);
+      data.fullname = fullname.trim();
     }
-    const response = await apiClient.putForm<ApiResponse>(
-      "user/my-info",
-      formData,
-      {
-        headers: {
-          "Content-Type": ContentType.FORM_DATA,
-        },
-      }
-    );
+    if (avatar) {
+      data.avatar = avatar;
+    }
+    const response = await apiClient.putForm<ApiResponse>("user/my-info", data);
     setIsLoading(false);
     if (response.data.code === ApiResponseCode.OK) {
       setIsChanged(false);
@@ -105,7 +93,14 @@ export default function UpdateProfileScreen() {
   return (
     <ScrollView>
       <View style={styles.avatarContainer}>
-        <Image source={{ uri: avatar || user?.avatar }} style={styles.avatar} />
+        <Image
+          source={
+            user
+              ? { uri: user.avatar }
+              : require("../../../assets/default-avatar.jpg")
+          }
+          style={styles.avatar}
+        />
         <Ionicons
           name="camera"
           size={24}

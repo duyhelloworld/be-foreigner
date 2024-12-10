@@ -102,7 +102,10 @@ public class LessonService implements ILessonService {
 										.toList());
 								break;
 							case GIVE_MEAN_CHOOSE_WORD:
+								questionDtoBuilder.correctOptionAudio(
+										correct.getAudioUrl());
 								questionDtoBuilder.correctOptionMean(correct.getMean());
+								questionDtoBuilder.correctOptionValue(correct.getValue());
 								questionDtoBuilder.answerOptions(question.getAnswers()
 										.stream().map(a -> answerMapper.toOptionDto(a))
 										.toList());
@@ -120,26 +123,27 @@ public class LessonService implements ILessonService {
 	@Transactional
 	public void completed(CompletedLessonDto completedLessonDto, User user) {
 		LessonHistory lessonHistory = lessonHistoryRepo.findById(completedLessonDto.getHistoryId())
-				.orElseThrow(() -> new AppException(ResponseCode.LESSON_NOT_FOUND));
+				.orElseThrow(() -> new AppException(ResponseCode.LESSON_HISTORY_NOT_FOUND));
 		if (lessonHistory.getStatus() == LessonStatus.COMPLETED) {
-			throw new AppException(ResponseCode.LESSON_ALREADY_COMPLETED);
+			throw new AppException(ResponseCode.INVALID_REQUEST);
 		}
-		int userElo = lessonHistory.getLesson().getTarget().getElo();
-		if (completedLessonDto.getAccuracy() > LessonConstants.ACCURACY_TO_SUCCESS) {
-			userElo += LessonConstants.BONUS_ELO_WHEN_SUCCESS;
-		}
+		lessonHistory.setAccuracy(completedLessonDto.getAccuracy());
+		var totalTime = Duration.between(lessonHistory.getCreatedAt(), LocalDateTime.now());
+		lessonHistory.setTotalTime(totalTime.getSeconds());
+		lessonHistory.setStatus(LessonStatus.COMPLETED);
+		// Cộng elo
+		int totalElo = lessonHistory.getLesson()
+				.getTarget()
+				.getElo()
+				+ completedLessonDto.getAccuracy() > LessonConstants.ACCURACY_TO_SUCCESS
+						? LessonConstants.BONUS_ELO_WHEN_SUCCESS
+						: 0;
+		lessonHistory.setElo(totalElo);
 		for (LeaderBoardUser leaderBoardUser : user.getLeaderBoardUsers()) {
-			leaderBoardUser.setElo(leaderBoardUser.getElo() + userElo);
+			leaderBoardUser.setElo(leaderBoardUser.getElo() + totalElo);
 		}
+		lessonHistoryRepo.save(lessonHistory);
 		userRepo.save(user);
-		if (lessonHistory.getStatus() == LessonStatus.ONGOING) {
-			lessonHistory.setAccuracy(completedLessonDto.getAccuracy());
-			lessonHistory.setElo(userElo);
-			lessonHistory
-					.setTotalTime(Duration.between(LocalDateTime.now(), lessonHistory.getCreatedAt()).getSeconds());
-			lessonHistory.setStatus(LessonStatus.COMPLETED);
-			lessonHistoryRepo.save(lessonHistory);
-		}
 	}
 
 	@Override

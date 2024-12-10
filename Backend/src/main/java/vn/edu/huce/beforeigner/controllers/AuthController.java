@@ -22,7 +22,6 @@ import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.SignInDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.SignUpDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.VerifyEmailDto;
 
-import  org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -41,8 +40,8 @@ public class AuthController {
         return ApiResponse.ok(authService.signIn(signInDto));
     }
 
-    @PostMapping("sign-up")
-    public ApiResponse<AuthDto> signUp(@Valid @ModelAttribute SignUpDto signUpDto) {
+    @PostMapping("register")
+    public ApiResponse<AuthDto> register(@Valid @RequestBody SignUpDto signUpDto) {
         return ApiResponse.ok(authService.signUp(signUpDto));
     }
 

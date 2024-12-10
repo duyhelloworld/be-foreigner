@@ -7,6 +7,7 @@ import { useUserStorage } from "../../hook/UserStorageHooks";
 import ProfileFooterView from "./ProfileFooterView";
 import GradientBackground from "../common/GradientBackground";
 import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { SubscriptionPlan, UserLevel } from "../../types/enum";
 
 const { width, height } = Dimensions.get("window");
 
@@ -45,15 +46,27 @@ const ProfileScreen = () => {
           </View>
           <View style={styles.infoRow}>
             <MaterialCommunityIcons
+              name="crown"
+              size={20}
+              color={AppColors.darkGreen}
+            />
+            <Text style={styles.infoText}>
+              {
+                SubscriptionPlan[
+                  user?.plan as unknown as keyof typeof SubscriptionPlan
+                ]
+              }
+            </Text>
+          </View>
+          <View style={styles.infoRow}>
+            <MaterialCommunityIcons
               name="cards-playing-diamond-outline"
               size={24}
               color={AppColors.darkGreen}
             />
-            <Text style={styles.infoText}>{user?.level}</Text>
-          </View>
-          <View style={styles.infoRow}>
-            <Ionicons name="calendar" size={20} color={AppColors.darkGreen} />
-            <Text style={styles.infoText}>09/12/2003</Text>
+            <Text style={styles.infoText}>
+              {UserLevel[user?.level as unknown as keyof typeof UserLevel]}
+            </Text>
           </View>
         </View>
       </View>

@@ -1,14 +1,13 @@
 package vn.edu.huce.beforeigner.infrastructures.coremodule.dtos;
 
-import org.springframework.web.multipart.MultipartFile;
-
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
 public class UpdateProfileDto {
     
+    @Size(min = 1, max = 255, message = "FULLNAME_OUT_MAX_SIZE")
     private String fullname;
 
-    private MultipartFile avatar;
-    
+    private String avatar;
 }

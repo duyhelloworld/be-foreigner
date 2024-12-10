@@ -1,22 +1,27 @@
-import React, { useContext, useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
-import { LearnScreenContext } from '../LearnScreenHooks';
-import { AppColors } from '../../../types/colors';
+import React, { useContext, useState } from "react";
+import { StyleSheet, Text, View, TextInput } from "react-native";
+import { LearnContext } from "../../../context/LearnContext";
+import { AppColors } from "../../../types/colors";
 
 interface GiveMeanEnterValueProps {
   meaning: string;
   correctWord: string;
 }
 
-const GiveMeanEnterValue = ({ meaning, correctWord }: GiveMeanEnterValueProps) => {
-  const [enteredWord, setEnteredWord] = useState('');
-  const resultRef = useContext(LearnScreenContext);
+const GiveMeanEnterValue = ({
+  meaning,
+  correctWord,
+}: GiveMeanEnterValueProps) => {
+  const [enteredWord, setEnteredWord] = useState("");
+  const resultRef = useContext(LearnContext);
 
-  const isCorrect = JSON.stringify(enteredWord.toLowerCase().trim()) === JSON.stringify(correctWord.toLowerCase());
+  const isCorrect =
+    JSON.stringify(enteredWord.toLowerCase().trim()) ===
+    JSON.stringify(correctWord.toLowerCase());
   resultRef.current = {
     enabled: true,
     isCorrect: isCorrect,
-    message: isCorrect ? '' : `Từ chính xác phải là"${correctWord}".`
+    message: isCorrect ? "" : `Từ chính xác phải là"${correctWord}".`,
   };
 
   return (
@@ -40,8 +45,8 @@ const GiveMeanEnterValue = ({ meaning, correctWord }: GiveMeanEnterValueProps) =
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     paddingHorizontal: 20,
   },
   meaningContainer: {
@@ -49,7 +54,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     marginBottom: 20,
-    width: '100%',
+    width: "100%",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.2,
@@ -59,15 +64,15 @@ const styles = StyleSheet.create({
   meaningText: {
     fontSize: 18,
     color: AppColors.black,
-    textAlign: 'center',
+    textAlign: "center",
   },
   instructionText: {
     fontSize: 18,
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   input: {
-    width: '100%',
+    width: "100%",
     height: 50,
     borderColor: AppColors.gray,
     borderWidth: 1,
@@ -89,12 +94,12 @@ const styles = StyleSheet.create({
   submitButtonText: {
     color: AppColors.white,
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   resultText: {
     marginTop: 20,
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
 

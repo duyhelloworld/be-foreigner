@@ -9,5 +9,7 @@ public interface ICloudFileService {
     
     UploadResponse save(MultipartFile file, CloudFileType fileType);
 
+    UploadResponse save(String base64, String filename, CloudFileType fileType);
+
     void delete(String publicId);
 }

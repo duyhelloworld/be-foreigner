@@ -4,15 +4,16 @@ import LearnScreen from "../../components/learn/LearnScreen";
 import CompletedLessonScreen from "../../components/learn/completed/CompletedLessonScreen";
 import StreakScreen from "../../components/learn/completed/StreakScreen";
 import SplashLearnScreen from "../../components/learn/SplashLearnScreen";
+import { LessonDetail } from "../../types/apimodels";
 
 export type LearnNavigatorParams = {
   SplashLearnScreen: { lessonId: number };
-  LearnScreen: {jsonLesson: string };
+  LearnScreen: {lesson: LessonDetail };
   CompletedLessonScreen: {
     historyId: number;
     accuracy: number;
   };
-  StreakScreen: { streakDay: number };
+  StreakScreen: {streakDay: number};
 };
 
 const LearnNavigator = () => {

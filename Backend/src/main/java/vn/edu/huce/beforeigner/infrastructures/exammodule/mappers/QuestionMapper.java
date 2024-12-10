@@ -13,6 +13,7 @@ public class QuestionMapper {
     public QuestionDto.QuestionDtoBuilder toDto(Question question) {
         return QuestionDto.builder()
                 .type(question.getType())
+                .level(question.getLevel())
                 .index(question.getIndexInLesson())
                 .sentenseMeaning(question.getSentenseMeaning()) // đề
                 .sentenseAudio(question.getSentenseAudio()) // đề

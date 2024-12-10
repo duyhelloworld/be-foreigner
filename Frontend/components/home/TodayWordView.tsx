@@ -9,7 +9,7 @@ import {
   useAnimatedValue,
 } from "react-native";
 import { Word } from "../../types/apimodels";
-import { Sound } from "expo-av/build/Audio";
+import SoundPlayer from "react-native-sound-player";
 
 interface TodayWordViewProps {
   word?: Word;
@@ -17,26 +17,13 @@ interface TodayWordViewProps {
 
 const TodayWordView = ({ word }: TodayWordViewProps) => {
   const [isFlipped, setIsFlipped] = useState(false);
-  const [sound, setSound] = useState<Sound | null>(null);
   const flipAnim = useAnimatedValue(0);
 
-  useEffect(() => {
-    async function loadSound() {
-      if (word && word.audio) {
-        const { sound } = await Sound.createAsync({ uri: word.audio });
-        setSound(sound);
-      }
-    }
-    loadSound();
-  }, [word]);
-
   const toggleSound = async () => {
-    if (sound) {
-      if (isFlipped) {
-        await sound.playAsync();
-      } else {
-        await sound.stopAsync();
-      }
+    if (isFlipped && word) {
+      SoundPlayer.playUrl(word?.audio)
+    } else {
+      SoundPlayer.stop()
     }
   };
 
@@ -76,7 +63,7 @@ const TodayWordView = ({ word }: TodayWordViewProps) => {
           <View style={styles.cardContent}>
             <Text style={styles.title}>Từ vựng hôm nay là :</Text>
             <Text style={styles.wordValue}>{word?.value}</Text>
-            <Text style={styles.wordPhonetic}>/{word?.phonetic}/</Text>
+            <Text style={styles.wordPhonetic}>{word?.phonetic}</Text>
           </View>
         </Animated.View>
         <Animated.View

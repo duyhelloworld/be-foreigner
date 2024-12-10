@@ -10,6 +10,7 @@ export function useUserStorage() {
       JSON.stringify(user)
     );
   }
+  
   const getInfo = async (): Promise<UserInfo | undefined> => {
     const infoString = await AsyncStorage.getItem(KEY);
     if (infoString) {

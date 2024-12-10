@@ -5,6 +5,7 @@ export const AppColors = {
   white: "#FFFFFF",
   black: "#000000",
   yellow: "#FFFF00",
+  yellowLight: "#AAAADD",
   yellowDark: "#CCCC00",
   red: "#FF4444",
   orange: "#FFAA00",
