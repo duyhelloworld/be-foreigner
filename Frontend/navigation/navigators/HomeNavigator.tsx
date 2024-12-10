@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "../../components/home/HomeScreen";
 import ProfileScreen from "../../components/profile/ProfileScreen";
@@ -6,6 +6,7 @@ import NotificationScreen from "../../components/notification/NotificationScreen
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { AppColors } from "../../types/colors";
 import LeaderBoardScreen from "../../components/leaderboard/LeaderBoardScreen";
+import { useNotificationStorage } from "../../hook/NotificationStorageHook";
 
 const ICON_SIZE = 23;
 const ICON_COLOR = AppColors.darkGreen;
@@ -59,6 +60,18 @@ const Tab = createBottomTabNavigator<HomeNavigatorParams>();
 
 const HomeNavigator = () => {
 
+  const notificationStorage = useNotificationStorage();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      const notifications = await notificationStorage.getNotifications();
+      const unread = notifications.filter((notif) => !notif.isRead).length;
+      setUnreadCount(unread);
+    };
+    fetchNotifications();
+  }, [notificationStorage]);
+  
   return (
     <Tab.Navigator
       backBehavior="none"
@@ -86,6 +99,7 @@ const HomeNavigator = () => {
         component={NotificationScreen}
         options={{
           tabBarIcon: (prop) => getTabbarIcon("NotificationScreen", prop.focused),
+          tabBarBadge: unreadCount > 0 ? unreadCount : undefined
         }}
       />
       <Tab.Screen

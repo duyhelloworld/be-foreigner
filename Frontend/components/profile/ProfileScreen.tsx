@@ -21,7 +21,7 @@ const ProfileScreen = () => {
       setUser(current);
     }
     loadUser();
-  }, []);
+  }, [userStorage]);
 
   return (
     <View style={styles.container}>

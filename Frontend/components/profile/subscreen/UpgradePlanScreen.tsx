@@ -6,47 +6,15 @@ import {
   TouchableOpacity,
   FlatList,
   SafeAreaView,
+  Alert,
 } from "react-native";
-import { SubscriptionPlan } from "../../../types/enum";
+import { PlanOption, SubscriptionPlan, getPlanOptions } from "../../../types/enum";
 import { useUserStorage } from "../../../hook/UserStorageHooks";
-
-interface PlanOption {
-  id: number;
-  title: SubscriptionPlan;
-  price: string;
-  description: string;
-}
-
-const planOptions: PlanOption[] = [
-  {
-    id: 0,
-    title: SubscriptionPlan.FREE,
-    price: "Miễn phí",
-    description: "Truy cập các tính năng cơ bản",
-  },
-  {
-    id: 1,
-    title: SubscriptionPlan.PREMIUM_MONTH,
-    price: "99.000đ/tháng",
-    description: "Truy cập đầy đủ tính năng, thanh toán hàng tháng",
-  },
-  {
-    id: 2,
-    title: SubscriptionPlan.PREMIUM_YEAR,
-    price: "999.000đ/năm",
-    description: "Truy cập đầy đủ tính năng, tiết kiệm 15%",
-  },
-  {
-    id: 3,
-    title: SubscriptionPlan.LIFETIME,
-    price: "2.999.000đ",
-    description: "Truy cập trọn đời, không giới hạn",
-  },
-];
 
 const UpgradePlanScreen: React.FC = () => {
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan | null>();
   const [isChoosen, setIsChoosen] = useState(false);
+  const planOptions = getPlanOptions();
 
   const userStorage = useUserStorage();
 
@@ -92,8 +60,7 @@ const UpgradePlanScreen: React.FC = () => {
           style={[styles.upgradeButton, !selectedPlan && styles.disabledButton]}
           disabled={!selectedPlan}
           onPress={() => {
-            // Xử lý logic nâng cấp tài khoản ở đây
-            // console.log(`Nâng cấp lên ${selectedPlan}`);
+            Alert.alert("Báo lỗi", "Hiện tại tính năng này chưa ra mắt");
           }}
         >
           <Text style={styles.upgradeButtonText}>

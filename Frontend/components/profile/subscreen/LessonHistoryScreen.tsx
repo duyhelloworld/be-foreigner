@@ -13,6 +13,7 @@ import { ApiResponse, LessonHistory } from "../../../types/apimodels";
 import apiClient from "../../../config/AxiosConfig";
 import { ApiResponseCode, LessonStatus } from "../../../types/enum";
 import { AppColors } from "../../../types/colors";
+import GradientBackground from "../../common/GradientBackground";
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -182,7 +183,7 @@ const LessonHistoryScreen = () => {
   });
 
   return (
-    <View style={styles.container}>
+    <GradientBackground style={styles.container}>
       <FlatList
         keyExtractor={item => item.historyId.toString()}
         refreshing={isRefresh}
@@ -192,7 +193,7 @@ const LessonHistoryScreen = () => {
           <LessonHistoryItem item={item} index={index} />
         )}
       />
-    </View>
+    </GradientBackground>
   );
 };
 
@@ -206,6 +207,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderRadius: 12,
     padding: 16,
+    marginHorizontal: 10,
     marginBottom: 16,
     elevation: 3,
   },

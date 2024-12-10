@@ -3,8 +3,8 @@ import { AuthStorageType } from "../hook/AuthStorageHooks";
 import { Alert } from "react-native";
 
 // export const ROOT_URL = "http://192.168.32.144:8080/api";
-export const ROOT_URL = "http://192.168.1.53:8080/api";
-// export const ROOT_URL = "http://192.168.1.56:8080/api";
+// export const ROOT_URL = "http://192.168.1.53:8080/api";
+export const ROOT_URL = "http://192.168.1.56:8080/api";
 
 const apiClient = axios.create({
   baseURL: ROOT_URL,

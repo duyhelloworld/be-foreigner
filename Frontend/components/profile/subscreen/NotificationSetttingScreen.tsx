@@ -11,7 +11,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { AppColors } from "../../../types/colors";
 import apiClient from "../../../config/AxiosConfig";
-import { ApiResponse } from "../../../types/apimodels";
+import { ApiResponse, UserInfo } from "../../../types/apimodels";
 import { ApiResponseCode } from "../../../types/enum";
 import { useAppNavigation } from "../../../navigation/AppNavigation";
 import { useUserStorage } from "../../../hook/UserStorageHooks";
@@ -22,6 +22,7 @@ const NotificationSettingScreen: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigator = useAppNavigation();
   const userStorage = useUserStorage();
+  const [user, setUser] = useState<UserInfo>();
 
   async function saveSettings() {
     setIsLoading(true);
@@ -34,6 +35,7 @@ const NotificationSettingScreen: React.FC = () => {
     );
     if (response.data.code === ApiResponseCode.OK) {
       setIsLoading(false);
+      await userStorage.setInfo({...user!, isAllowEmail: emailNotification, isAllowNotification: pushNotification});
       navigator.goBack();
     } else {
       alert(response.data.data as string[][0]);
@@ -44,12 +46,13 @@ const NotificationSettingScreen: React.FC = () => {
     async function load() {
       const user = await userStorage.getInfo();
       if (user) {
+        setUser(user);
         setEmailNotification(user?.isAllowEmail);
         setPushNotification(user?.isAllowNotification);
       }
     }
     load();
-  }, []);
+  }, [userStorage]);
 
   return (
     <ScrollView style={styles.container}>

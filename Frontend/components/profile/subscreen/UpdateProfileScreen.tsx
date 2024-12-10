@@ -20,7 +20,8 @@ import { Ionicons } from "@expo/vector-icons";
 export default function UpdateProfileScreen() {
   const [user, setUser] = useState<UserInfo>();
   const [fullname, setFullname] = useState("");
-  const [avatar, setAvatar] = useState<string | undefined>();
+  const [avatarBase64, setAvatarBase64] = useState<string | undefined>();
+  const [avatarUri, setAvatarUri] = useState("")
   const [isChanged, setIsChanged] = useState(false);
   const [messages, setMessages] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -49,7 +50,8 @@ export default function UpdateProfileScreen() {
     });
 
     if (!result.canceled) {
-      setAvatar(result.assets[0].base64 ?? undefined);
+      setAvatarBase64(result.assets[0].base64 ?? undefined);
+      setAvatarUri(result.assets[0].uri);
       setIsChanged(true);
     }
   }
@@ -68,14 +70,16 @@ export default function UpdateProfileScreen() {
     if (fullname) {
       data.fullname = fullname.trim();
     }
-    if (avatar) {
-      data.avatar = avatar;
+    if (avatarBase64) {
+      data.avatar = avatarBase64;
     }
-    const response = await apiClient.putForm<ApiResponse>("user/my-info", data);
+    const response = await apiClient.put<ApiResponse>("user/my-info", data);
     setIsLoading(false);
     if (response.data.code === ApiResponseCode.OK) {
       setIsChanged(false);
-      setUser(response.data.data as UserInfo);
+      const newInfo = response.data.data as UserInfo;
+      await userStorage.setInfo(newInfo);
+      setUser(newInfo);
       setMessages(["Cập nhật thành công!"]);
       setIsSuccess(true);
     } else {
@@ -96,7 +100,7 @@ export default function UpdateProfileScreen() {
         <Image
           source={
             user
-              ? { uri: user.avatar }
+              ? { uri: avatarUri ? avatarUri : user.avatar } 
               : require("../../../assets/default-avatar.jpg")
           }
           style={styles.avatar}
@@ -221,6 +225,7 @@ const styles = StyleSheet.create({
   },
   message: {
     fontSize: 20,
+    textAlign: "center"
   },
   errorMessage: {
     color: AppColors.red,

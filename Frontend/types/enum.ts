@@ -88,15 +88,51 @@ export enum SubscriptionPlan {
   LIFETIME = "Gói trọn đời",
 }
 
+export interface PlanOption {
+  id: number;
+  title: SubscriptionPlan;
+  price: string;
+  description: string;
+}
+
+export function getPlanOptions() : PlanOption[] {
+  return [
+    {
+      id: 0,
+      title: SubscriptionPlan.FREE,
+      price: "Miễn phí",
+      description: "Truy cập các tính năng cơ bản",
+    },
+    {
+      id: 2,
+      title: SubscriptionPlan.PREMIUM_YEAR,
+      price: "499.000đ/năm",
+      description: "Truy cập đầy đủ tính năng, tiết kiệm 15%",
+    },
+    {
+      id: 1,
+      title: SubscriptionPlan.PREMIUM_MONTH,
+      price: "99.000đ/tháng",
+      description: "Truy cập đầy đủ tính năng, thanh toán hàng tháng",
+    },
+    {
+      id: 3,
+      title: SubscriptionPlan.LIFETIME,
+      price: "999.000đ",
+      description: "Truy cập trọn đời, không giới hạn",
+    },
+  ];
+}
+
 export enum QuestionLevel {
   EASY,
-  HARD
+  HARD,
 }
 
 export enum QuestionType {
   LEARN_WORD = "Học từ",
   GIVE_MEAN_ENTER_WORD = "Điền từ mang nghĩa sau",
-  GIVE_AUDIO_ENTER_WORD = "Điền từ mà bạn nghe được", 
+  GIVE_AUDIO_ENTER_WORD = "Điền từ mà bạn nghe được",
   GIVE_AUDIO_REARRANGE_WORDS = "Sắp xếp lại các từ mà bạn nghe được",
   GIVE_SENTENSE_REARRANGE_WORDS = "Sắp xếp lại các từ để được câu bên dưới",
   GIVE_MEAN_CHOOSE_WORD = "Chọn đáp án đúng",
@@ -111,7 +147,7 @@ export enum LeaderBoardType {
 
 export enum LessonStatus {
   COMPLETED = "Hoàn thành",
-  ONGOING = "Đang học"
+  ONGOING = "Đang học",
 }
 
 export enum LessonType {
