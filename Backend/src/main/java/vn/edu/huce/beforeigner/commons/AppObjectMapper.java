@@ -1,9 +1,13 @@
 package vn.edu.huce.beforeigner.commons;
 
+import java.util.Map;
+
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -32,6 +36,18 @@ public class AppObjectMapper extends ObjectMapper {
         } catch (JsonProcessingException e) {
             log.info("Error when cast {} to JSON : {}", object.getClass().getSimpleName(), e.getMessage());
             return e.getMessage();
+        }
+    }
+
+    public Map<String, String> readJson(String json) {
+        try {
+            return readValue(json, new TypeReference<Map<String, String>>() {});
+        } catch (JsonMappingException e) {
+            log.info("Error when read '{}'' to Map : {}", json, e.getMessage());
+            return null;
+        } catch (JsonProcessingException e) {
+            log.info("Error when read '{}'' to Map : {}", json, e.getMessage());
+            return null;
         }
     }
 }

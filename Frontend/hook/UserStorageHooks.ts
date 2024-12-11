@@ -20,6 +20,11 @@ export function useUserStorage() {
     }
   };
 
+  const saveNotificationSetting = async () => {
+    const user = await getInfo();
+    
+  }
+
   async function clear() {
     await AsyncStorage.removeItem(KEY);
   }

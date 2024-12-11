@@ -22,6 +22,13 @@ public interface ILessonService {
      */
     LessonDetailDto examine(Integer lessonId, User user);
 
+    /** Học tiếp bài học chỉ định
+     * @param lessonHistoryId Học bài học chỉ định
+     * @param user người học
+     * @return
+     */
+    LessonDetailDto examineByHistory(Integer lessonHistoryId, User user);
+
     /**
      * Đánh dấu hoàn thành bài học
      * @param lessonId

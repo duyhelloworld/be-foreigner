@@ -22,7 +22,6 @@ const NotificationSettingScreen: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigator = useAppNavigation();
   const userStorage = useUserStorage();
-  const [user, setUser] = useState<UserInfo>();
 
   async function saveSettings() {
     setIsLoading(true);

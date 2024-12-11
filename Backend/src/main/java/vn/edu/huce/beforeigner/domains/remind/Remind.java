@@ -40,11 +40,11 @@ public class Remind extends CronjobAuditedEntity {
     private String data;
 
     @Column(nullable = false)
-    private Boolean isRead = false;
+    private boolean isRead = false;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private RemindType type;
+    private RemindMethod method;
 
     @ManyToOne
     private User recipient;

@@ -36,7 +36,7 @@ public enum ResponseCode {
     NOTIFICATION_TOKEN_NOT_FOUND(1100, "Không tìm thấy mã thông báo"),
     NOTIFICATION_TOKEN_MISSING(1101, "Mã thông báo bị thiếu"),
     NOTIFICATION_TOKEN_INVALID(1102, "Mã thông báo lỗi"),
-
+    NOTIFICATION_MESSAGE_MAY_NOT_INITILIZED(1103, "Nội dung thông báo có thể đang có lỗi"),
     // MAIL
     NEW_PASS_IS_SAME_WITH_OLD(1200, "Mật khẩu mới không đựợc trùng với mật khẩu cũ"),
     WRONG_RESET_PASSWORD_CODE(1201, "Mã cập nhật mật khẩu không hợp lệ"),
@@ -75,7 +75,8 @@ public enum ResponseCode {
     // HISTORY
     LESSON_HISTORY_NOT_FOUND(6000, "Không tìm thấy lịch sử học với bài học này"),
     RETRY_COUNT_UNAVAILABLE(6001, "Hết lượt dùng miễn phí" ),
-
+    LESSON_IS_ALREADY_COMPLETED(6002, "Bài học này đã hoàn thành trước đó rồi"), 
+    
     // LEADER BOARD
     LEADER_BOARD_TYPE_UNDEFINED(7000, "Loại bảng xếp hạng chưa được định nghĩa"),
     LEADER_BOARD_TYPE_INVALID(7001, "Loại bảng xếp hạng không hợp lệ"); 

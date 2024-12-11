@@ -73,7 +73,7 @@ public class UserService implements IUserService {
 
     @Override
     public void setup(User user, SetupDto setupDto) {
-        userTokenService.addNew(TokenType.NOTIFICATION, setupDto.getNotificationToken());
+        userTokenService.addNew(TokenType.NOTIFICATION, setupDto.getToken());
     }
 
     @Override
@@ -93,5 +93,4 @@ public class UserService implements IUserService {
         }
         return builder.build();
 	}
-
 }

@@ -1,16 +1,18 @@
 package vn.edu.huce.beforeigner.infrastructures.remindmodule.abstracts;
 
+import java.util.List;
+
 import vn.edu.huce.beforeigner.domains.core.User;
-import vn.edu.huce.beforeigner.infrastructures.remindmodule.dtos.LearnRemindDto;
+import vn.edu.huce.beforeigner.domains.remind.RemindMethod;
+import vn.edu.huce.beforeigner.infrastructures.remindmodule.dtos.RemindDto;
 
 public interface IRemindService {
     
-    void remindByNotification(LearnRemindDto learnReminderDto, User targetUser);
+    void remindLearnUser(User user, RemindMethod method, Integer lessonId);
 
-    void remindByEmail(LearnRemindDto learnReminderDto, User targetUser);
+    void remindWordByPushNotification(User user, Integer lessonId);
 
     void testCronJob();
 
-    void remindWordByPushNotification();
-    
+    List<RemindDto> syncNotification(User user);
 }

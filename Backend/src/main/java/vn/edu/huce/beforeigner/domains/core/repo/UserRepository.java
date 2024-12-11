@@ -28,9 +28,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("SELECT u FROM User u WHERE u.role = 'USER' AND u.isAllowMail = true OR u.isAllowNotification = true")
     List<User> findUsersWantBeNotify();
 
-    @Query("SELECT u FROM User u WHERE u.role = 'USER' AND u.isAllowNotification = true")
-    List<User> findUsersGotLearnNotification();
-
     Optional<User> findByIdOrUsername(Integer id, String username);
 
     Page<User> findByRole(Role role, PageRequest pageRequest);

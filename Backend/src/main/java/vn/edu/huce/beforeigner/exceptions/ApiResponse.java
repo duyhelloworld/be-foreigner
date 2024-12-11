@@ -1,5 +1,7 @@
 package vn.edu.huce.beforeigner.exceptions;
 
+import java.util.List;
+
 import lombok.Data;
 
 @Data
@@ -9,15 +11,10 @@ public class ApiResponse<T> {
 
     private T data;
 
-    public ApiResponse() {
-        this.code = ResponseCode.OK.getCode();
-        this.data = null; 
-    }
-
-    public static <T> ApiResponse<T> error(ResponseCode responseCode) {
-        ApiResponse<T> response = new ApiResponse<>();
+    public static ApiResponse<List<String>> error(ResponseCode responseCode) {
+        ApiResponse<List<String>> response = new ApiResponse<>();
         response.setCode(responseCode.getCode());
-        response.setData(null);
+        response.setData(List.of(responseCode.getMessage()));
         return response;
     }
 

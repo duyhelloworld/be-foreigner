@@ -153,4 +153,55 @@ public class LessonService implements ILessonService {
 				lessonRepo.findByLevel(pagingRequest.pageable(), user.getLevel()),
 				lesson -> lessonMapper.toDto(lesson));
 	}
+
+	@Override
+	public LessonDetailDto examineByHistory(Integer lessonHistoryId, User user) {
+		LessonHistory lessonHistory = lessonHistoryRepo.findById(lessonHistoryId)
+				.orElseThrow(() -> new AppException(ResponseCode.LESSON_HISTORY_NOT_FOUND));
+		if (lessonHistory.getStatus() != LessonStatus.ONGOING) {
+			throw new AppException(ResponseCode.LESSON_IS_ALREADY_COMPLETED);
+		}
+		Lesson lesson = lessonHistory.getLesson();
+		Set<QuestionDto> questionDtos = lesson.getQuestions().stream()
+				.map(question -> {
+					var questionDtoBuilder = questionMapper.toDto(question);
+					if (question.getAnswers() != null && !question.getAnswers().isEmpty()) {
+						var correct = question.getAnswers().stream()
+								.filter(a -> a.isTrue())
+								.findFirst()
+								.map(a -> a.getWord()).get();
+						switch (question.getType()) {
+							case LEARN_WORD:
+							case GIVE_MEAN_ENTER_WORD:
+								questionDtoBuilder.correctOptionValue(correct.getValue());
+								questionDtoBuilder.correctOptionMean(correct.getMean());
+								questionDtoBuilder.correctOptionAudio(correct.getAudioUrl());
+								break;
+							case GIVE_AUDIO_ENTER_WORD:
+								questionDtoBuilder.correctOptionValue(correct.getValue());
+								break;
+							case GIVE_AUDIO_CHOOSE_WORD:
+								questionDtoBuilder.correctOptionAudio(
+										correct.getAudioUrl());
+								questionDtoBuilder.answerOptions(question.getAnswers()
+										.stream().map(a -> answerMapper.toOptionDto(a))
+										.toList());
+								break;
+							case GIVE_MEAN_CHOOSE_WORD:
+								questionDtoBuilder.correctOptionAudio(
+										correct.getAudioUrl());
+								questionDtoBuilder.correctOptionMean(correct.getMean());
+								questionDtoBuilder.correctOptionValue(correct.getValue());
+								questionDtoBuilder.answerOptions(question.getAnswers()
+										.stream().map(a -> answerMapper.toOptionDto(a))
+										.toList());
+								break;
+							default:
+								break;
+						}
+					}
+					return questionDtoBuilder.build();
+				}).collect(Collectors.toSet());
+		return lessonMapper.toDetailDto(lesson, questionDtos, lessonHistoryId);
+	}
 }

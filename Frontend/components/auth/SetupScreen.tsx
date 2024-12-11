@@ -24,16 +24,17 @@ const SetupScreen = () => {
     if (enabled) {
       await messaging().registerDeviceForRemoteMessages();
       const token = await messaging().getToken();
-      // TODO
-      const response = await apiClient.post<ApiResponse>("user/setup", {
-        notificationToken: token,
-        userLevel: UserLevel.BEGINNER,
-      });
-      if (response.data.code === ApiResponseCode.OK) {
-        navigator.navigate("HomeNavigator", {screen: "HomeScreen"});
-      } else {
-        Alert.alert("Có lỗi khi đăng kí thông báo");
-        return;
+      if (token) {
+        const response = await apiClient.post<ApiResponse>("user/setup", {
+          token: token,
+          userLevel: UserLevel.BEGINNER,
+        });
+        if (response.data.code === ApiResponseCode.OK) {
+          navigator.navigate("HomeNavigator", {screen: "HomeScreen"});
+        } else {
+          Alert.alert("Có lỗi khi đăng kí thông báo");
+          return;
+        }
       }
     }
   }

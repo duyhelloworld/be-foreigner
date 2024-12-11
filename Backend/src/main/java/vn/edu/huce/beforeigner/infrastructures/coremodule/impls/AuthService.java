@@ -158,6 +158,7 @@ public class AuthService implements IAuthService, UserDetailsService {
         user.setRole(Role.USER);
         user.setStreakDays(0);
 
+        userRepo.save(user);
         var response = cloudFileService.save(signUpDto.getAvatar(), signUpDto.getAvatarFilename(), CloudFileType.USER_AVATAR);
         user.setAvatarUrl(response.getUrl());
         user.setAvatarPublicId(response.getPublicId());
@@ -165,7 +166,6 @@ public class AuthService implements IAuthService, UserDetailsService {
         SecurityContextHolder.getContext()
                 .setAuthentication(new UsernamePasswordAuthenticationToken(user,
                         null, user.getAuthorities()));
-        userRepo.save(user);
         String refreshToken = userTokenService.addNew(TokenType.REFRESH, userTokenService.generateRefreshToken());
         return AuthDto.builder()
                 .accessToken(tokenService.buildToken(user))
