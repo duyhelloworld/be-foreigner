@@ -1,29 +1,46 @@
-import React, { useEffect } from "react";
-import { View, Text, StyleSheet, FlatList, Pressable } from "react-native";
-import { Notification } from "../../types/apimodels";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
+import { ApiResponse, Notification } from "../../types/apimodels";
 import { useNotificationStorage } from "../../hook/NotificationStorageHook";
+import apiClient from "../../config/AxiosConfig";
+import { ApiResponseCode } from "../../types/enum";
 
 const NotificationScreen: React.FC = () => {
-  const [notifications, setNotifications] = React.useState<Notification[]>([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
   const notificationStorage = useNotificationStorage();
 
-  useEffect(() => {
-    async function loadNoti() {
-      let noti = await notificationStorage.getNotifications();
-      setNotifications(noti!);
+  async function loadNoti() {
+    let noti = await notificationStorage.getNotifications();
+    setNotifications(noti);
+  }
+
+  async function refresh() {
+    setRefreshing(true);
+    const response = await apiClient.get<ApiResponse>("remind/sync");
+    if (response.data.code === ApiResponseCode.OK) {
+      await notificationStorage.addAll(response.data.data as Notification[]);
     }
+    setRefreshing(false);
+  }
+
+  useEffect(() => {
     loadNoti();
-  }, [notificationStorage, notifications]);
+  }, [notificationStorage]);
 
   const handleNotificationPress = async (id: number) => {
-    setNotifications(
-      notifications.map((notification) =>
-        notification.id === id
-          ? { ...notification, isRead: true }
-          : notification
-      )
+    const updated = notifications.map((notification) =>
+      notification.id === id ? { ...notification, read: true } : notification
     );
     await notificationStorage.markRead(id);
+    setNotifications(updated);
   };
 
   const renderNotification = ({ item }: { item: Notification }) => (
@@ -31,7 +48,7 @@ const NotificationScreen: React.FC = () => {
       onPress={() => handleNotificationPress(item.id)}
       style={[
         styles.notificationItem,
-        item.isRead ? styles.readNotification : styles.unreadNotification,
+        item.read ? styles.readNotification : styles.unreadNotification,
       ]}
     >
       <Text style={styles.notificationTitle}>{item.title}</Text>
@@ -50,8 +67,9 @@ const NotificationScreen: React.FC = () => {
       <Text style={styles.header}>Thông báo</Text>
       <FlatList
         data={notifications}
+        refreshing={refreshing}
+        onRefresh={refresh}
         renderItem={renderNotification}
-        keyExtractor={(item) => item.id.toString()}
         ListEmptyComponent={renderEmptyState}
       />
     </View>
@@ -63,6 +81,10 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 30,
     backgroundColor: "#f5f5f5",
+  },
+  loading: {
+    alignItems: "center",
+    justifyContent: "center",
   },
   header: {
     fontSize: 24,

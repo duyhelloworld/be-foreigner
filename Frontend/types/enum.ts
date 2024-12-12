@@ -35,43 +35,6 @@ export enum ApiResponseCode {
   // STORAGE
   FILE_UPLOAD_ERROR = 1022,
   DEFAULT_FILE_NOT_FOUND = 1023,
-
-  // VOCAB
-  WORD_NOT_FOUND = 4001,
-  WORD_EXAMPLE_NOT_FOUND = 4002,
-  WORD_VALUE_MISSING = 4002,
-  WORD_PHONETIC_MISSING = 4003,
-  WORD_MEAN_MISSING = 4004,
-  WORD_AUDIO_MISSING = 4005,
-  WORD_IMAGE_MISSING = 4006,
-  WORD_TYPE_MISSING = 4007,
-  WORD_EXAMPLE_SENTENSE_MISSING = 4008,
-  WORD_EXAMPLE_MEAN_MISSING = 4009,
-
-  // EXAM
-  NO_LESSON_WITH_RIGHT_LEVEL_OF_DIFFICULTY = 5000,
-  LESSON_NOT_FOUND = 5001,
-  QUESTION_NOT_FOUND = 5002,
-  ANSWER_NOT_FOUND = 5003,
-  LESSON_COVER_MISSING = 5004,
-  LESSON_NAME_MISSING = 5005,
-  LESSON_DIAMONDS_MISSING = 5006,
-  LESSON_ALREADY_COMPLETED = 5007,
-  LESSON_IS_PLUS_ONLY = 5008,
-  QUESTION_TYPE_MISSING = 5010,
-  QUESTION_SENTENSE_AUDIO_MISSING = 5011,
-  QUESTION_SENTENSE_WORDS_MISSING = 5012,
-  QUESTION_SENTENSE_MEANING_MISSING = 5013,
-  QUESTION_MATCHING_MISSING = 5014,
-  CORRECT_ANSWER_NOT_FOUND = 5015,
-
-  // HISTORY
-  LESSON_HISTORY_NOT_FOUND = 6000,
-  RETRY_COUNT_UNAVAILABLE = 6001,
-
-  // LEADER BOARD
-  LEADER_BOARD_TYPE_UNDEFINED = 7000,
-  LEADER_BOARD_TYPE_INVALID = 7001,
 }
 
 export enum UserLevel {
@@ -83,46 +46,45 @@ export enum UserLevel {
 
 export enum SubscriptionPlan {
   FREE = "Người dùng cơ bản",
-  PREMIUM_MONTH = "Gói VIP tháng",
-  PREMIUM_YEAR = "Gói VIP năm",
-  LIFETIME = "Gói trọn đời",
+  PLUS = "Gói VIP",
 }
 
 export interface PlanOption {
-  id: number;
-  title: SubscriptionPlan;
-  price: string;
+  id: SubscriptionPlan;
+  title: string;
+  price: number;
+  benefits: string[];
   description: string;
 }
 
-export function getPlanOptions() : PlanOption[] {
+export function getPlanOptions(): PlanOption[] {
   return [
     {
-      id: 0,
-      title: SubscriptionPlan.FREE,
-      price: "Miễn phí",
-      description: "Truy cập các tính năng cơ bản",
+      id: SubscriptionPlan.FREE,
+      title: "Gói miễn phí",
+      price: 0,
+      description: "Gói người dùng cơ bản",
+      benefits: [
+        "Truy cập các bài học cơ bản",
+        "Sử dụng các bài kiểm tra từ vựng miễn phí",
+        "Giới hạn học 3 bài mỗi ngày",
+        "Không hỗ trợ tải bài học về ngoại tuyến",
+      ],
     },
     {
-      id: 2,
-      title: SubscriptionPlan.PREMIUM_YEAR,
-      price: "499.000đ/năm",
-      description: "Truy cập đầy đủ tính năng, tiết kiệm 15%",
-    },
-    {
-      id: 1,
-      title: SubscriptionPlan.PREMIUM_MONTH,
-      price: "99.000đ/tháng",
-      description: "Truy cập đầy đủ tính năng, thanh toán hàng tháng",
-    },
-    {
-      id: 3,
-      title: SubscriptionPlan.LIFETIME,
-      price: "999.000đ",
-      description: "Truy cập trọn đời, không giới hạn",
-    },
-  ];
-}
+      id: SubscriptionPlan.PLUS,
+      title: "100.000đ/năm",
+      price: 100000,
+      description: "Gói người dùng VIP",
+      benefits: [
+        "Truy cập không giới hạn tất cả bài học",
+        "Tải bài học về sử dụng ngoại tuyến",
+        "Không quảng cáo",
+        "Hỗ trợ cá nhân hoá lộ trình học",
+        "Tham gia bài kiểm tra nâng cao",
+      ],
+    },  ];
+  }
 
 export enum QuestionLevel {
   EASY,

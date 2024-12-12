@@ -5,16 +5,13 @@ import { AppColors } from "../../types/colors";
 import { UserInfo } from "../../types/apimodels";
 import { useUserStorage } from "../../hook/UserStorageHooks";
 import ProfileFooterView from "./ProfileFooterView";
-import GradientBackground from "../common/GradientBackground";
-import { Feather, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import {  Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { SubscriptionPlan, UserLevel } from "../../types/enum";
-
-const { width, height } = Dimensions.get("window");
 
 const ProfileScreen = () => {
   const [user, setUser] = useState<UserInfo>();
   const userStorage = useUserStorage();
-
+  
   useEffect(() => {
     async function loadUser() {
       const current = await userStorage.getInfo();

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  View,
   Text,
   StyleSheet,
   TouchableOpacity,
@@ -15,7 +14,6 @@ const UpgradePlanScreen: React.FC = () => {
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan | null>();
   const [isChoosen, setIsChoosen] = useState(false);
   const planOptions = getPlanOptions();
-
   const userStorage = useUserStorage();
 
   useEffect(() => {
@@ -36,7 +34,7 @@ const UpgradePlanScreen: React.FC = () => {
         selectedPlan === item.title && styles.selectedPlanCard,
       ]}
       onPress={() => {
-        setSelectedPlan(item.title);
+        setSelectedPlan(item.id);
         setIsChoosen(true);
       }}
     >

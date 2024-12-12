@@ -63,18 +63,10 @@ export default function UpdateProfileScreen() {
 
   async function handleSaveChanges() {
     setIsLoading(true);
-    let data = {
-      fullname: "",
-      avatar: "",
-    };
-    if (fullname) {
-      data.fullname = fullname.trim();
-    }
-    if (avatarBase64) {
-      data.avatar = avatarBase64;
-    }
-    const response = await apiClient.put<ApiResponse>("user/my-info", data);
-    setIsLoading(false);
+    const response = await apiClient.put<ApiResponse>("user/my-info", {
+      fullname: fullname && fullname.trim(),
+      avatar: avatarBase64,
+    });
     if (response.data.code === ApiResponseCode.OK) {
       setIsChanged(false);
       const newInfo = response.data.data as UserInfo;
@@ -86,7 +78,7 @@ export default function UpdateProfileScreen() {
       setIsSuccess(false);
       setMessages(response.data.data as string[]);
     }
-
+    setIsLoading(false);
     const timeoutId = setTimeout(() => {
       setMessages([]);
     }, 3000);

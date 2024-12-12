@@ -3,12 +3,15 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "../../components/home/HomeScreen";
 import ProfileScreen from "../../components/profile/ProfileScreen";
 import NotificationScreen from "../../components/notification/NotificationScreen";
-import { Feather, Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { AppColors } from "../../types/colors";
 import LeaderBoardScreen from "../../components/leaderboard/LeaderBoardScreen";
 import { useNotificationStorage } from "../../hook/NotificationStorageHook";
+import { Alert, BackHandler, Linking } from "react-native";
+import { useAppNavigation } from "../AppNavigation";
 
 const ICON_SIZE = 23;
+const ICON_SIZE_FOCUSED = 30;
 const ICON_COLOR = AppColors.darkGreen;
 const ICON_COLOR_FOCUSED = AppColors.green;
 
@@ -23,33 +26,33 @@ function getTabbarIcon(screen: keyof HomeNavigatorParams, isFocused: boolean ) {
   switch (screen) {
     case "HomeScreen":
       return (
-        <Feather
-          name="home"
-          size={ICON_SIZE}
+        <Ionicons
+          name={isFocused ? "home-sharp" : "home-outline"}
+          size={isFocused ? ICON_SIZE_FOCUSED : ICON_SIZE}
           color={isFocused ? ICON_COLOR_FOCUSED : ICON_COLOR}
         />
       );
     case "LeaderBoardScreen":
       return (
         <Ionicons
-          name="stats-chart-outline"
-          size={ICON_SIZE}
+          name={isFocused ? "stats-chart" : "stats-chart-outline"}
+          size={isFocused ? ICON_SIZE_FOCUSED : ICON_SIZE}
           color={isFocused ? ICON_COLOR_FOCUSED : ICON_COLOR}
         />
       );
     case "ProfileScreen":
       return (
-        <Feather
-          name="user"
-          size={ICON_SIZE}
+        <Ionicons
+          name={isFocused ? "person-sharp" : "person-outline"}
+          size={isFocused ? ICON_SIZE_FOCUSED : ICON_SIZE}
           color={isFocused ? ICON_COLOR_FOCUSED : ICON_COLOR}
         />
       );
     case "NotificationScreen":
       return (
         <Ionicons
-          name="notifications"
-          size={ICON_SIZE}
+          name={isFocused ? "notifications-sharp" : "notifications-outline"}
+          size={isFocused ? ICON_SIZE_FOCUSED : ICON_SIZE}
           color={isFocused ? ICON_COLOR_FOCUSED : ICON_COLOR}
         />
       );
@@ -61,17 +64,37 @@ const Tab = createBottomTabNavigator<HomeNavigatorParams>();
 const HomeNavigator = () => {
 
   const notificationStorage = useNotificationStorage();
+  const navigator = useAppNavigation();
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     const fetchNotifications = async () => {
       const notifications = await notificationStorage.getNotifications();
-      const unread = notifications.filter((notif) => !notif.isRead).length;
+      const unread = notifications.filter((notif) => !notif.read).length;
       setUnreadCount(unread);
     };
     fetchNotifications();
   }, [notificationStorage]);
   
+  useEffect(() => {
+    const onBackPress = () => {
+      Alert.alert(
+        "Xác nhận",
+        "Bạn có muốn thoát ứng dụng không?",
+        [
+          { text: "Hủy", style: "cancel" },
+          { text: "Thoát", onPress: () => BackHandler.exitApp() },
+        ],
+        { cancelable: true }
+      );
+      return true; // Chặn hành vi back mặc định
+    };
+
+    BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+    return () => BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+  }, []);
+
   return (
     <Tab.Navigator
       backBehavior="none"

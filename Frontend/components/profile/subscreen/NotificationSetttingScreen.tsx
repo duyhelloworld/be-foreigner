@@ -11,7 +11,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { AppColors } from "../../../types/colors";
 import apiClient from "../../../config/AxiosConfig";
-import { ApiResponse, UserInfo } from "../../../types/apimodels";
+import { ApiResponse } from "../../../types/apimodels";
 import { ApiResponseCode } from "../../../types/enum";
 import { useAppNavigation } from "../../../navigation/AppNavigation";
 import { useUserStorage } from "../../../hook/UserStorageHooks";
@@ -20,21 +20,25 @@ const NotificationSettingScreen: React.FC = () => {
   const [emailNotification, setEmailNotification] = useState(true);
   const [pushNotification, setPushNotification] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [gettingCurrent, setGettingCurrent] = useState(false);
   const navigator = useAppNavigation();
   const userStorage = useUserStorage();
 
   async function saveSettings() {
     setIsLoading(true);
     const response = await apiClient.put<ApiResponse>(
-      "user/notification/setting",
+      "user/notification-setting",
       {
         isAllowMail: emailNotification,
-        isAllowNotification: pushNotification
+        isAllowNotification: pushNotification,
       }
     );
     if (response.data.code === ApiResponseCode.OK) {
       setIsLoading(false);
-      await userStorage.setInfo({...user!, isAllowEmail: emailNotification, isAllowNotification: pushNotification});
+      await userStorage.saveNotificationSetting({
+        isAllowEmail: emailNotification,
+        isAllowNotification: pushNotification,
+      });
       navigator.goBack();
     } else {
       alert(response.data.data as string[][0]);
@@ -43,15 +47,20 @@ const NotificationSettingScreen: React.FC = () => {
 
   useEffect(() => {
     async function load() {
+      setGettingCurrent(true);
       const user = await userStorage.getInfo();
       if (user) {
-        setUser(user);
         setEmailNotification(user?.isAllowEmail);
-        setPushNotification(user?.isAllowNotification);
+        setPushNotification(user.isAllowNotification);
       }
+      setGettingCurrent(false);
     }
     load();
-  }, [userStorage]);
+  }, [])
+
+  if (gettingCurrent) {
+    return <ActivityIndicator size={20} />
+  }
 
   return (
     <ScrollView style={styles.container}>

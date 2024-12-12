@@ -12,7 +12,6 @@ const apiClient = axios.create({
 });
 
 export function setupAxiosClient(authStorage: AuthStorageType) {
-
   apiClient.interceptors.request.use(
     async (config) => {
       const accessToken = await authStorage.getAccessToken();
@@ -21,17 +20,22 @@ export function setupAxiosClient(authStorage: AuthStorageType) {
       }
       return config;
     },
-    error => {
-      if (axios.isAxiosError(error) && error.message === "Network Error") {
-        Alert.alert(
-          "Không thể kết nối server",
-          "Không thể kết nối đến server. Vui lòng kiểm tra server của bạn.",
-          [{ text: "OK" }]
-        );
-      }
-      return Promise.reject(error);
-    }
+    (error) => Promise.reject(error)
   );
 }
+
+apiClient.interceptors.response.use(
+  (config) => Promise.resolve(config),
+  (error) => {
+    if (axios.isAxiosError(error) && error.message === "Network Error") {
+      Alert.alert(
+        "Không thể kết nối server",
+        "Không thể kết nối đến server. Vui lòng kiểm tra server của bạn.",
+        [{ text: "OK" }]
+      );
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default apiClient;

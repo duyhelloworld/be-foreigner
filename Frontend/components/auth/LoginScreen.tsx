@@ -36,16 +36,20 @@ const LoginScreen = () => {
 
   const validateForm = () => {
     let isValid = true;
+
     if (!username) {
       setUsernameError("Tài khoản không được để trống");
       isValid = false;
-    } else if (!username.match("^[a-zA-Z0-9]+$")) {
-      setUsernameError(
-        "Tên tài khoản không hợp lệ. Tài khoản hợp lệ là tên chỉ gồm các chữ cái và số."
-      );
-      isValid = false;
     } else {
-      setUsernameError("");
+      const trimmedUsername = username.trim();
+      if (!trimmedUsername.match("^[a-zA-Z0-9]+$")) {
+        setUsernameError(
+          "Tên tài khoản không hợp lệ. Tài khoản hợp lệ là tên chỉ gồm các chữ cái và số."
+        );
+        isValid = false;
+      } else {
+        setUsernameError("");
+      }
     }
 
     if (!password) {

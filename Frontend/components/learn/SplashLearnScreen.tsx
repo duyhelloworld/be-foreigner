@@ -12,7 +12,10 @@ import { AxiosError, isAxiosError } from "axios";
 import SoundPlayer from "react-native-sound-player";
 
 const SplashLearnScreen = () => {
-  const { lessonId } = useRootParams("LearnNavigator", "SplashLearnScreen");
+  const { lessonId, lessonHistoryId } = useRootParams(
+    "LearnNavigator",
+    "SplashLearnScreen"
+  );
   const navigator = useAppNavigation();
   let lessonDetail: LessonDetail | undefined;
 
@@ -43,9 +46,10 @@ const SplashLearnScreen = () => {
 
   const handleTask = async () => {
     try {
-      const response = await apiClient.get<ApiResponse>(
-        `lesson/exam/${lessonId}`
-      );
+      let path = lessonHistoryId
+        ? `lesson/exam/history/${lessonHistoryId}`
+        : `lesson/exam/${lessonId}` ?? `lesson/exam/1`;
+      const response = await apiClient.get<ApiResponse>(path);
       if (response.data.code === ApiResponseCode.OK) {
         let responseLesson = response.data.data as LessonDetail;
         if (

@@ -7,13 +7,13 @@ import SplashLearnScreen from "../../components/learn/SplashLearnScreen";
 import { LessonDetail } from "../../types/apimodels";
 
 export type LearnNavigatorParams = {
-  SplashLearnScreen: { lessonId: number };
-  LearnScreen: {lesson: LessonDetail };
+  SplashLearnScreen: { lessonId?: number; lessonHistoryId?: number };
+  LearnScreen: { lesson: LessonDetail };
   CompletedLessonScreen: {
     historyId: number;
     accuracy: number;
   };
-  StreakScreen: {streakDay: number};
+  StreakScreen: { streakDay: number };
 };
 
 const LearnNavigator = () => {
@@ -22,15 +22,15 @@ const LearnNavigator = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="SplashLearnScreen" component={SplashLearnScreen} />
-      <Stack.Screen name="LearnScreen" component={LearnScreen} />
+      <Stack.Screen
+        name="LearnScreen"
+        component={LearnScreen}
+      />
       <Stack.Screen
         name="CompletedLessonScreen"
         component={CompletedLessonScreen}
       />
-      <Stack.Screen 
-        name="StreakScreen"
-        component={StreakScreen}
-      />
+      <Stack.Screen name="StreakScreen" component={StreakScreen} />
     </Stack.Navigator>
   );
 };

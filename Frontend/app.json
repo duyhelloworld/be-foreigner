@@ -11,6 +11,7 @@
     "owner": "duyhelloworld",
     "name": "Be Foreigner",
     "slug": "be-foreigner",
+    "scheme": "beforeigner",
     "description": "Ứng dụng học tiếng Anh hàng đầu cho người mới bắt đầu",
     "version": "1.0.0",
     "orientation": "portrait",

@@ -27,6 +27,7 @@ const ProfileScreenButton = ({
   showBadge = false,
 }: ProfileScreenButtonProp) => {
   const navigator = useAppNavigation();
+  
   return (
     <Pressable
       style={[styles.button, { backgroundColor }]}

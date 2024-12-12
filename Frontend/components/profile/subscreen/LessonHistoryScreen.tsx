@@ -7,6 +7,8 @@ import {
   Animated,
   Easing,
   FlatList,
+  Pressable,
+  Alert,
 } from "react-native";
 import Svg, { Circle } from "react-native-svg";
 import { ApiResponse, LessonHistory } from "../../../types/apimodels";
@@ -14,12 +16,14 @@ import apiClient from "../../../config/AxiosConfig";
 import { ApiResponseCode, LessonStatus } from "../../../types/enum";
 import { AppColors } from "../../../types/colors";
 import GradientBackground from "../../common/GradientBackground";
+import { useAppNavigation } from "../../../navigation/AppNavigation";
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 const LessonHistoryScreen = () => {
   const [histories, setHistories] = useState<LessonHistory[]>([]);
   const [isRefresh, setIsRefresh] = useState(false);
+  const navigator = useAppNavigation();
 
   async function load() {
     const response = await apiClient.get<ApiResponse>(
@@ -66,7 +70,7 @@ const LessonHistoryScreen = () => {
       } else {
         return AppColors.red;
       }
-    }
+    };
 
     return (
       <View style={styles.accuracyContainer}>
@@ -97,98 +101,132 @@ const LessonHistoryScreen = () => {
     );
   };
 
-  const LessonHistoryItem = React.memo(({ item, index }: { item: LessonHistory; index: number }) => {
-    const fadeAnim = useRef(new Animated.Value(0)).current;
-    const scaleAnim = useRef(new Animated.Value(0.8)).current;
-    const circleAnim = useRef(new Animated.Value(0)).current;
+  const LessonHistoryItem = React.memo(
+    ({ item, index }: { item: LessonHistory; index: number }) => {
+      const fadeAnim = useRef(new Animated.Value(0)).current;
+      const scaleAnim = useRef(new Animated.Value(0.8)).current;
+      const circleAnim = useRef(new Animated.Value(0)).current;
 
-    useEffect(() => {
-      fadeAnim.setValue(0);
-      scaleAnim.setValue(0.8);
-      circleAnim.setValue(0);
-      Animated.sequence([
-        Animated.parallel([
-          Animated.timing(fadeAnim, {
-            toValue: 1,
-            duration: 500,
-            delay: index * 100,
+      useEffect(() => {
+        fadeAnim.setValue(0);
+        scaleAnim.setValue(0.8);
+        circleAnim.setValue(0);
+        Animated.sequence([
+          Animated.parallel([
+            Animated.timing(fadeAnim, {
+              toValue: 1,
+              duration: 500,
+              delay: index * 100,
+              useNativeDriver: true,
+            }),
+            Animated.spring(scaleAnim, {
+              toValue: 1,
+              friction: 4,
+              tension: 50,
+              delay: index * 100,
+              useNativeDriver: true,
+            }),
+          ]),
+          Animated.timing(circleAnim, {
+            toValue: item.accuracy ?? 100,
+            duration: 1000,
+            easing: Easing.out(Easing.cubic),
             useNativeDriver: true,
           }),
-          Animated.spring(scaleAnim, {
-            toValue: 1,
-            friction: 4,
-            tension: 50,
-            delay: index * 100,
-            useNativeDriver: true,
-          }),
-        ]),
-        Animated.timing(circleAnim, {
-          toValue: item.accuracy ?? 100,
-          duration: 1000,
-          easing: Easing.out(Easing.cubic),
-          useNativeDriver: true,
-        }),
-      ]).start();
-    }, [item, index]);
+        ]).start();
+      }, [item, index]);
 
-    return (
-      <Animated.View
-        style={[
-          styles.lessonCard,
-          {
-            opacity: fadeAnim,
-            transform: [{ scale: scaleAnim }],
-          },
-        ]}
-      >
-        <View style={styles.lessonHeader}>
-          <Image
-            source={{ uri: item.lessonImage }}
-            style={styles.lessonImage}
-          />
-          <View style={styles.lessonInfo}>
-            <Text style={styles.lessonName}>{item.lessonName}</Text>
-            <Text style={styles.lessonDate}>
-              {item.startedAt}    {item.completedAt}
-            </Text>
+      return (
+        <Animated.View
+          style={[
+            styles.lessonCard,
+            {
+              opacity: fadeAnim,
+              transform: [{ scale: scaleAnim }],
+            },
+          ]}
+        >
+          <Pressable
+            style={styles.lessonHeader}
+            onPress={() => {
+              if (item.status === "COMPLETED") {
+                Alert.alert(
+                  "Thông tin bài học",
+                  `Bài học : ${item.lessonName}\nThời gian làm: ${item.totalTime}\nSố điểm đã cộng: ${item.elo}\nNgày học: ${item.startedAt}\nĐộ chính xác: ${item.accuracy}%`
+                );
+              } else {
+                Alert.alert(
+                  "Xác nhận học tiếp?",
+                  "Bạn có muốn học tiếp bài học này?",
+                  [
+                    {
+                      text: "Có",
+                      onPress: () =>
+                        navigator.navigate("LearnNavigator", {
+                          screen: "SplashLearnScreen",
+                          params: { lessonHistoryId: item.historyId },
+                        }),
+                    },
+                    {
+                      text: "Không",
+                    },
+                  ]
+                );
+              }
+            }}
+          >
+            <Image
+              source={{ uri: item.lessonImage }}
+              style={styles.lessonImage}
+            />
+            <View style={styles.lessonInfo}>
+              <Text style={styles.lessonName}>{item.lessonName}</Text>
+              <Text style={styles.lessonDate}>
+                {item.startedAt} {item.completedAt}
+              </Text>
+            </View>
+          </Pressable>
+          <View style={styles.lessonDetails}>
+            <View style={styles.detailItem}>
+              <Text style={styles.detailLabel}>Tổng thời gian</Text>
+              <Text style={styles.detailValue}>
+                {item.totalTime ?? "----------"}
+              </Text>
+            </View>
+            <View style={styles.detailItem}>
+              <Text style={styles.detailLabel}>Trạng thái:</Text>
+              <Text
+                style={[
+                  styles.detailValue,
+                  {
+                    color: item.status === "COMPLETED" ? "#4CAF50" : "#FFC107",
+                  },
+                ]}
+              >
+                {LessonStatus[item.status]}
+              </Text>
+            </View>
+            <AccuracyCircle
+              key={item.lessonId}
+              accuracy={item.accuracy}
+              animatedValue={circleAnim}
+            />
           </View>
-        </View>
-        <View style={styles.lessonDetails}>
-          <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>Tổng thời gian</Text>
-            <Text style={styles.detailValue}>{item.totalTime ?? "----------"}</Text>
-          </View>
-          <View style={styles.detailItem}>
-            <Text style={styles.detailLabel}>Trạng thái:</Text>
-            <Text
-              style={[
-                styles.detailValue,
-                {
-                  color:
-                    item.status === "COMPLETED" ? "#4CAF50" : "#FFC107",
-                },
-              ]}
-            >
-              {LessonStatus[item.status]}
-            </Text>
-          </View>
-          <AccuracyCircle
-            key={item.lessonId}
-            accuracy={item.accuracy}
-            animatedValue={circleAnim}
-          />
-        </View>
-      </Animated.View>
-    );
-  });
+        </Animated.View>
+      );
+    }
+  );
 
   return (
     <GradientBackground style={styles.container}>
       <FlatList
-        keyExtractor={item => item.historyId.toString()}
+        keyExtractor={(item) => item.historyId.toString()}
         refreshing={isRefresh}
         onRefresh={handleRefresh}
         data={histories}
+        ListEmptyComponent={() => (
+          <Text style={styles.empty}>Bạn chưa học bài nào cả!</Text>
+        )}
         renderItem={({ item, index }) => (
           <LessonHistoryItem item={item} index={index} />
         )}
@@ -202,6 +240,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F0F4F8",
     padding: 16,
+  },
+  empty: {
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: 18,
+    color: "white",
   },
   lessonCard: {
     backgroundColor: "#FFFFFF",

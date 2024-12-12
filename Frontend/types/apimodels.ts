@@ -14,21 +14,17 @@ export interface ApiResponse {
 }
 
 export interface Notification {
-  id: string;
+  id: number;
   title: string;
   content: string;
-  isRead: boolean;
-  lessonId?: number;
+  read: boolean;
+  data?: NotificationData;
+  method?: string;
+  sendAt?: string;
 }
 
-export interface Remind {
-  lessonId: number;
-}
-
-export function isRemind(obj: any): obj is Remind {
-  return (
-    typeof obj === "object" && obj !== null && typeof obj.lessonId === "number"
-  );
+export interface NotificationData {
+  lessonId?: string;
 }
 
 export interface Word {

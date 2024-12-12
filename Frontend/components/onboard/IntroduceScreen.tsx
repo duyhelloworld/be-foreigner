@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Text,
   View,
+  TouchableOpacity,
   useAnimatedValue,
 } from "react-native";
 import BottomButton from "../common/BottomButton";
@@ -25,19 +26,19 @@ const screens = [
     title: "Vui vẻ & Công bằng",
     description: "Tận hưởng không gian vui vẻ và công bằng cho mọi người",
     color: "#10B981",
-    image: require("../../assets/funny.png")
+    image: require("../../assets/funny.png"),
   },
   {
     title: "Hoàn toàn Miễn phí",
     description: "Sử dụng tất cả tính năng mà không mất phí",
     color: "#F59E0B",
-    image: require("../../assets/free.png")
+    image: require("../../assets/free.png"),
   },
   {
     title: "Bạn đã sẵn sàng?",
     description: "Hãy bắt đầu trải nghiệm ngay bây giờ!",
     color: "#11AA11",
-    image:require("../../assets/ready.png")
+    image: require("../../assets/ready.png"),
   },
 ];
 
@@ -49,8 +50,18 @@ const IntroduceScreen = () => {
   const navigator = useAppNavigation();
   const firstTry = useFirstTry();
 
+  const handleSkip = async () => {
+    await firstTry.setTried();
+    navigator.navigate("AuthNavigator", { screen: "LoginScreen" });
+  };
+
   return (
     <View style={styles.container}>
+      {/* Nút Bỏ qua */}
+      <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
+        <Text style={styles.skipText}>Bỏ qua</Text>
+      </TouchableOpacity>
+
       <FlatList
         data={screens}
         horizontal
@@ -117,6 +128,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  skipButton: {
+    position: "absolute",
+    top: 40,
+    right: 20,
+    zIndex: 10,
+  },
+  skipText: {
+    fontSize: 16,
+    color: AppColors.white,
+    fontWeight: "bold",
   },
   slide: {
     flex: 1,

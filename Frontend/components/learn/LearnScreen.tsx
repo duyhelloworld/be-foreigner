@@ -1,4 +1,4 @@
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { Alert, BackHandler, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { QuestionType } from "../../types/enum";
 import GiveMeanChooseWordView from "./questions/GiveMeanChooseWordView";
@@ -102,6 +102,25 @@ const LearnScreen = () => {
     setIsCorrect(undefined);
     setProgress((currentIndex + 1) / lesson.questions.length);
   }, [currentIndex]);
+
+  const onBackPress = () => {
+    Alert.alert("Xác nhận", "Bạn có muốn thoát bài học không?", [
+      { text: "Hủy", style: "cancel" },
+      {
+        text: "OK",
+        onPress: () =>
+          navigator.navigate("HomeNavigator", { screen: "HomeScreen" }),
+      },
+    ]);
+    return true;
+  };
+
+  useEffect(() => {
+    BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+    return () =>
+      BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+  }, [navigator]);
 
   function onCheckPress() {
     if (!resultRef.current.enabled) {

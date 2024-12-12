@@ -20,7 +20,7 @@ const HomeScreen = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [refreshScrollCount, setRefreshScrollCount] = useState(0);
   const [refreshKey, setRefreshKey] = useState(0);
-
+  
   async function loadWord() {
     const wordResponse = await apiClient.get<ApiResponse>("word/today");
     if (wordResponse.data.code === ApiResponseCode.OK) {

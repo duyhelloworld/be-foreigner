@@ -20,14 +20,14 @@ export function useUserStorage() {
     }
   };
 
-  const saveNotificationSetting = async () => {
+  const saveNotificationSetting = async ({isAllowEmail, isAllowNotification} : {isAllowEmail:boolean, isAllowNotification:boolean}) => {
     const user = await getInfo();
-    
+    await setInfo({...user!, isAllowEmail, isAllowNotification});
   }
 
   async function clear() {
     await AsyncStorage.removeItem(KEY);
   }
 
-  return { getInfo, setInfo, clear };
+  return { getInfo, setInfo, clear, saveNotificationSetting };
 }

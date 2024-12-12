@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AuthNavigator, { AuthNavigatorParams } from "./navigators/AuthNavigator";
 import HomeNavigator, { HomeNavigatorParams } from "./navigators/HomeNavigator";
@@ -24,6 +24,11 @@ import FirstTryNavigator, {
   FirstTryNavigatorParams,
 } from "./navigators/FirstTryNavigator";
 import SplashScreen from "../components/common/SplashScreen";
+import { Linking } from "react-native";
+import { useNotificationStorage } from "../hook/NotificationStorageHook";
+import apiClient from "../config/AxiosConfig";
+import { ApiResponse, Notification } from "../types/apimodels";
+import { ApiResponseCode } from "../types/enum";
 
 export type RootNavigatorParams = {
   HomeNavigator: NavigatorScreenParams<HomeNavigatorParams>;
@@ -59,6 +64,8 @@ export type RootParams = {
 export default function AppNavigation() {
   const authStorage = useAuthStorage();
   const firstTry = useFirstTry();
+  const notificationStorage = useNotificationStorage();
+
   const Stack = createNativeStackNavigator<RootNavigatorParams>();
 
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -68,11 +75,16 @@ export default function AppNavigation() {
   async function load() {
     setIsFristTry(await firstTry.isFirstTry());
     setIsSignedIn((await authStorage.getAccessToken()) !== undefined);
+    const response = await apiClient.get<ApiResponse>("remind/sync");
+    if (response.data.code === ApiResponseCode.OK) {
+      await notificationStorage.addAll(response.data.data as Notification[]);
+    }
   }
 
   if (isLoading) {
     return (
       <SplashScreen
+        sublabel="Đang tìm kiếm chất xám cho bạn ngày hôm nay!"
         onTask={load}
         onFinish={() => setIsLoading(false)}
       />
