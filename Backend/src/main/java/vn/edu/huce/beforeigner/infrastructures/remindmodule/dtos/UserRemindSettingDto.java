@@ -1,12 +1,12 @@
 package vn.edu.huce.beforeigner.infrastructures.remindmodule.dtos;
 
-import lombok.Data;
+import lombok.ToString;
 
-@Data
+@ToString
 public class UserRemindSettingDto {
 
-    private boolean isAllowMail;
+    public boolean isAllowMail;
 
-    private boolean isAllowNotification;
+    public boolean isAllowNotification;
     
 }

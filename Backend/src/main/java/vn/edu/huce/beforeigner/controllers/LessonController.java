@@ -36,6 +36,14 @@ public class LessonController {
     }
 
     @IsUser
+    @GetMapping("exam/history/{id}")
+    public ApiResponse<LessonDetailDto> examineByHistory(
+            @AuthenticationPrincipal User user,
+            @PathVariable Integer id) {
+        return ApiResponse.ok(lessonService.examineByHistory(id, user));
+    }
+
+    @IsUser
     @GetMapping("suggest")
     public ApiResponse<PagingResult<LessonDto>> getSuggestedLessons(
             @AuthenticationPrincipal User user,

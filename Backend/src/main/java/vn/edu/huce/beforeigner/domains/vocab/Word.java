@@ -75,6 +75,9 @@ public class Word extends FullAuditedEntity {
     @OneToMany(mappedBy = "word", fetch = FetchType.LAZY)
     private Set<Answer> answers = new HashSet<>();
 
+    // @OneToMany(mappedBy = "word", fetch = FetchType.LAZY)
+    // private Set<Question> questions = new HashSet<>();
+
     @ManyToMany(mappedBy = "words", fetch = FetchType.LAZY)
     private Set<Lesson> lessons = new HashSet<>();
 }

@@ -86,6 +86,8 @@ public class User implements UserDetails {
 
     private boolean isAllowMail;
 
+    private boolean isAllowWordNotification;
+
     private boolean isAllowNotification;
 
     @Enumerated(EnumType.STRING)

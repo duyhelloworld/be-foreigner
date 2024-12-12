@@ -61,6 +61,9 @@ public class Question extends FullAuditedEntity {
     @Enumerated(EnumType.STRING)
     private QuestionLevel level;
 
+    // @ManyToOne
+    // private Word word;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
     private Lesson lesson;

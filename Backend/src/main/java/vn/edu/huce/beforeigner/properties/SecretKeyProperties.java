@@ -23,4 +23,7 @@ public class SecretKeyProperties {
     @Value("${mail.password}")
     private String mailPassword;
 
+    @Value("${spring.ai.openai.api-key}")
+    private String openAiApiKey;
+
 }

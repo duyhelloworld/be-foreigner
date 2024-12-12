@@ -25,7 +25,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     boolean existsByUsername(String username);
 
-    @Query("SELECT u FROM User u WHERE u.role = 'USER' AND u.isAllowMail = true OR u.isAllowNotification = true")
+    @Query("SELECT u FROM User u WHERE u.role = 'USER' AND u.isAllowMail OR u.isAllowNotification OR u.isAllowWordNotification")
     List<User> findUsersWantBeNotify();
 
     Optional<User> findByIdOrUsername(Integer id, String username);

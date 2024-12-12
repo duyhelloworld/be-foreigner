@@ -15,7 +15,7 @@ public class RemindDto {
     
     private String title;
 
-    private String body;
+    private String content;
 
     private Map<String, String> data;
 

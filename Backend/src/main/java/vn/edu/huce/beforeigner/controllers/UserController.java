@@ -69,7 +69,7 @@ public class UserController {
     }
 
     @IsUser
-    @PutMapping("notification/setting")
+    @PutMapping("notification-setting")
     public ApiResponse<Void> save(
             @AuthenticationPrincipal User user,
             @RequestBody UserRemindSettingDto settingDto) {

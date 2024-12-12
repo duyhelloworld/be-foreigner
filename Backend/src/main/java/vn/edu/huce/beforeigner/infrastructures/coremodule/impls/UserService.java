@@ -66,8 +66,8 @@ public class UserService implements IUserService {
 
     @Override
     public void saveSetting(User user, UserRemindSettingDto settingDto) {
-        user.setAllowMail(settingDto.isAllowMail());
-        user.setAllowNotification(settingDto.isAllowNotification());
+        user.setAllowMail(settingDto.isAllowMail);
+        user.setAllowNotification(settingDto.isAllowNotification);
         userRepo.save(user);
     }
 

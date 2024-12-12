@@ -10,7 +10,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.firebase.messaging.FirebaseMessagingException;
 
 import jakarta.mail.MessagingException;
@@ -26,8 +25,9 @@ import vn.edu.huce.beforeigner.domains.exam.Lesson;
 import vn.edu.huce.beforeigner.domains.exam.repo.LessonRepository;
 import vn.edu.huce.beforeigner.domains.remind.Remind;
 import vn.edu.huce.beforeigner.domains.remind.RemindMethod;
-import vn.edu.huce.beforeigner.domains.remind.RemindType;
 import vn.edu.huce.beforeigner.domains.remind.repo.RemindRepository;
+import vn.edu.huce.beforeigner.domains.vocab.Word;
+import vn.edu.huce.beforeigner.domains.vocab.repo.WordRepository;
 import vn.edu.huce.beforeigner.infrastructures.commonmodule.abstracts.IEmailService;
 import vn.edu.huce.beforeigner.infrastructures.commonmodule.abstracts.IPushNotificationService;
 import vn.edu.huce.beforeigner.infrastructures.remindmodule.abstracts.IRemindService;
@@ -55,6 +55,8 @@ public class RemindService implements IRemindService {
 
     private final RemindRepository remindRepo;
 
+    private final WordRepository wordRepo;
+
     private final IEmailService emailService;
 
     private final IPushNotificationService pushNotificationService;
@@ -67,39 +69,60 @@ public class RemindService implements IRemindService {
     public void remindLearnUser(User user, RemindMethod method, Integer lessonId) {
         Map<String, String> data = new HashMap<>();
         data.put("lessonId", lessonId.toString());
-        try {
-            var remind = getRemind(user, method, RemindType.LEARN_REMIND, objectMapper.writeValueAsString(data));
-            switch (method) {
-                case EMAIL:
-                    try {
-                        emailService.send(user.getEmail(), adminMail, remind.getTitle(), remind.getBody());
-                        log.info("Send push notification success");
-                    } catch (MessagingException e) {
-                        log.error("Error when sending message: \n- Message : {}",
-                                e.getMessage());
-                    } 
-                    break;
-                case NOTIFICATION:
-                    var userToken = userTokenRepo
+        var remind = createRemind(user, method, objectMapper.toJson(data), lessonId);
+        switch (method) {
+            case EMAIL:
+                try {
+                    emailService.send(user.getEmail(), adminMail, remind.getTitle(), remind.getBody());
+                    log.info("Send push notification success");
+                } catch (MessagingException e) {
+                    log.error("Error when sending message: \n- Message : {}",
+                            e.getMessage());
+                }
+                break;
+            case NOTIFICATION:
+                var userToken = userTokenRepo
                         .findByLastModifiedByAndType(AuditorConfig.getAuditor(user), TokenType.NOTIFICATION);
-                    if (userToken.isEmpty()) {
-                        return;
-                    }
-                    try {
-                        pushNotificationService.send(userToken.get().getToken(), remind.getTitle(), remind.getBody(),
-                                data);
-                        remindRepo.save(remind);
-                        log.info("Send push notification success");
-                    } catch (FirebaseMessagingException e) {
-                        log.error("Error when sending push notification: \n- Message : {}",
-                                e.getMessage());
-                    } 
-                    break;
-            }
-            remindRepo.save(remind);
-        } catch (JsonProcessingException ex) {
-
+                if (userToken.isEmpty()) {
+                    log.error("Cannot send to {} cause by missing notification token!", user.getUsername());
+                    return;
+                }
+                try {
+                    pushNotificationService.send(userToken.get().getToken(), remind.getTitle(), remind.getBody(),
+                            data);
+                    remindRepo.save(remind);
+                    log.info("Send push notification success");
+                } catch (FirebaseMessagingException e) {
+                    log.error("Error when sending push notification: \n- Message : {}",
+                            e.getMessage());
+                }
+                break;
         }
+        remindRepo.save(remind);
+    }
+
+    @Override
+    public void remindWordByPushNotification(User user, Word word) {
+
+    }
+
+    private Remind createRemind(User user, RemindMethod method, String data, Integer lessonId) {
+        Remind remind = new Remind();
+        var template = RemindTemplateUtils.getTemplate(method, user);
+        remind.setTitle(template.getTitle());
+        remind.setBody(template.getBody());
+        remind.setData(data);
+        remind.setRecipient(user);
+        remind.setMethod(method);
+        return remind;
+    }
+
+    @Override
+    public List<RemindDto> syncNotification(User user, RemindMethod method) {
+        return remindRepo.findByRecipientAndMethod(user, method)
+                .stream()
+                .map(r -> remindMapper.toDto(r))
+                .toList();
     }
 
     @Override
@@ -116,41 +139,37 @@ public class RemindService implements IRemindService {
             }
             int lessonId = pageLesson.getContent().get(0).getId();
             if (user.isAllowMail()) {
-                log.info("Sending mail to user {}: {}", user.getUsername(), user.getEmail());
+                log.info("Sending remind mail to user {}: {}", user.getUsername(), user.getEmail());
                 remindLearnUser(user, RemindMethod.EMAIL, lessonId);
                 totalEmail++;
             }
             if (user.isAllowNotification()) {
-                log.info("Sending push notification to {}", user.getUsername());
+                log.info("Sending remind push notification to '{}'", user.getUsername());
                 remindLearnUser(user, RemindMethod.NOTIFICATION, lessonId);
                 totalNoti++;
             }
+            if (user.isAllowWordNotification()) {
+                log.info("Sending word push notification to '{}'", user.getUsername());
+                var word = wordRepo.getLearnedWord(AuditorConfig.getAuditor(user));
+                if (word.isEmpty()) {
+                    log.info("Not found word");
+                    return;
+                }
+                remindWordByPushNotification(user, word.get());
+            }
         }
-        log.info("OK! Remind {} users by email and {} users by notification!", totalEmail, totalNoti);   
+        log.info("OK! Remind {} users by email and {} users by notification!", totalEmail, totalNoti);
     }
 
     @Override
-    public void remindWordByPushNotification(User user, Integer lessonId) {
-        
-    }
-
-    private Remind getRemind(User user, RemindMethod method, RemindType type, String data) {
-        Remind remind = new Remind();
-        var template = RemindTemplateUtils.getTemplate(method, user);
-        remind.setBody(template.getBody());
-        remind.setMethod(method);
-        remind.setTitle(template.getTitle());
-        remind.setRecipient(user);
-        remind.setBody(data);
-        return remind;
-    }
-
-    @Override
-    public List<RemindDto> syncNotification(User user) {
-        return remindRepo.findByRecipient(user)
-            .stream()
-            .map(r -> remindMapper.toDto(r))
-            .toList();
+    public void markRead(User user, List<Integer> remindIds) {
+        var reminds = remindRepo.findByIdIn(remindIds);
+        remindRepo.saveAll(reminds.stream()
+                .map(remind -> {
+                    remind.setRead(true);
+                    return remind;
+                })
+                .toList());
     }
 
 }
