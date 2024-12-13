@@ -11,8 +11,8 @@ import lombok.Getter;
 @PropertySource("classpath:secrets.properties")
 public class SecretKeyProperties {
 
-    @Value("${unflash.access-key}")
-    private String unflashApiKey;
+    // @Value("${unflash.access-key}")
+    // private String unflashApiKey;
 
     @Value("${cloudinary.url}")
     private String cloudinaryUrl;
@@ -23,7 +23,7 @@ public class SecretKeyProperties {
     @Value("${mail.password}")
     private String mailPassword;
 
-    @Value("${spring.ai.openai.api-key}")
-    private String openAiApiKey;
+    // @Value("${spring.ai.openai.api-key}")
+    // private String openAiApiKey;
 
 }
