@@ -149,8 +149,18 @@ INSERT INTO question (id, index_in_lesson, lesson_id, type, sentense_meaning, se
     (55, 8, 4, 'GIVE_AUDIO_REARRANGE_WORDS', 'Một cô y tá và một bác sĩ', 'A nurse and a doctor', 'https://res.cloudinary.com/dqzwh7zvo/video/upload/v1733930479/lu1nwi6ehos2igtd2wl1.mp3', NULL, 'EASY', NOW(), 'admin', FALSE), 
     (56, 9, 4, 'GIVE_AUDIO_REARRANGE_WORDS', 'Cậu ấy là một kĩ sư IT', 'He is an IT engineer', 'https://res.cloudinary.com/dqzwh7zvo/video/upload/v1733930631/kugwqszmfzj4jw4zosyr.mp3', 'Him your doctor', 'HARD', NOW(), 'admin', FALSE), 
     (57, 10, 4, 'GIVE_SENTENSE_REARRANGE_WORDS', 'Nghề nghiệp của bạn là gì?', 'What is your job?', NULL, 'When you', 'EASY', NOW(), 'admin', FALSE),
-    (58, 11, 4, 'GIVE_MEAN_ENTER_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE);
-
+    (58, 11, 4, 'GIVE_MEAN_ENTER_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
+    -- Câu hỏi job phần 2 : police pilot chef dev 20
+    (59, 1, 5, 'LEARN_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
+    (60, 2, 5, 'LEARN_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
+    (61, 3, 4, 'LEARN_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
+    (62, 4, 5, 'LEARN_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
+    (63, 5, 5, 'GIVE_AUDIO_CHOOSE_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
+    (64, 6, 5, 'GIVE_SENTENSE_REARRANG_WORDS', 'Tôi là lập trình viên', 'I\'m developer', 'https://res.cloudinary.com/dqzwh7zvo/video/upload/v1734050118/u6zg8i7m1qk6xz01tbzu.mp3', NULL, 'EASY', NOW(), 'admin', FALSE),
+    (65, 7, 5, 'GIVE_MEAN_ENTER_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
+    (66, 8, 5, 'GIVE_AUDIO_REARRANGE_WORDS', 'Nhìn kìa, đó là cảnh sát đó', 'Look, that\'s police', 'https://res.cloudinary.com/dqzwh7zvo/video/upload/v1734050711/ovqyoxgrzdrcjszblbkj.mp3', NULL, 'EASY', NOW(), 'admin', FALSE),
+    (67, 9, 5, 'GIVE_MEAN_ENTER_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE),
+    (68, 10, 5, 'GIVE_MEAN_CHOOSE_WORD', NULL, NULL, NULL, NULL, 'EASY', NOW(), 'admin', FALSE); 
 -- Chèn các đáp án vào bảng answer
 INSERT INTO answer (question_id, word_id, is_true, created_at, created_by, is_deleted) VALUES
     -- Câu hỏi học mới lesson 1
@@ -188,7 +198,31 @@ INSERT INTO answer (question_id, word_id, is_true, created_at, created_by, is_de
     (36, 6, FALSE, NOW(), 'admin', FALSE),
     (36, 1, TRUE, NOW(), 'admin', FALSE),
     (36, 2, FALSE, NOW(), 'admin', FALSE),
-    (36, 3, FALSE, NOW(), 'admin', FALSE);
+    (36, 3, FALSE, NOW(), 'admin', FALSE),
+    (40, 3, FALSE, NOW(), 'admin', FALSE),
+    (40, 2, TRUE, NOW(), 'admin', FALSE),
+    (40, 8, FALSE, NOW(), 'admin', FALSE),
+        (40, 6, FALSE, NOW(), 'admin', FALSE),
+        (47, 3, FALSE, NOW(), 'admin', FALSE),
+    (47, 5, FALSE, NOW(), 'admin', FALSE),
+        (47, 8, FALSE , NOW(), 'admin', FALSE),
+    (47, 6, TRUE, NOW(), 'admin', FALSE),
+        (48, 9, TRUE, NOW(), 'admin', FALSE),
+        (49, 10, TRUE, NOW(), 'admin', FALSE),
+    (50, 11, TRUE, NOW(), 'admin', FALSE),
+    (51, 12, TRUE, NOW(), 'admin', FALSE),
+        (52, 12, FALSE, NOW(), 'admin', FALSE),
+        (52, 11, FALSE, NOW(), 'admin', FALSE),
+        (52, 8, TRUE, NOW(), 'admin', FALSE),
+    (52, 10, FALSE, NOW(), 'admin', FALSE),
+    (54, 12, TRUE, NOW(), 'admin', FALSE),
+    (58, 10, FALSE, NOW(), 'admin', FALSE),
+    (58, 12, FALSE, NOW(), 'admin', FALSE),
+    (58, 5, FALSE, NOW(), 'admin', FALSE),
+    (58, 1, FALSE, NOW(), 'admin', FALSE),
+    (59, 13, TRUE, NOW(), 'admin', FALSE),
+    (60, 14, TRUE, NOW(), 'admin', FALSE);
+    
 
 INSERT INTO lesson_history (lesson_id, owner, status, total_time, accuracy, created_at, is_disabled, elo) 
 VALUES
