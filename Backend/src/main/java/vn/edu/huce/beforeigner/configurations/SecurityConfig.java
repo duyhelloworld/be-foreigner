@@ -10,6 +10,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import lombok.AllArgsConstructor;
+import vn.edu.huce.beforeigner.filter.SecurityFilter;
+import vn.edu.huce.beforeigner.handler.Code401ExceptionHandler;
+import vn.edu.huce.beforeigner.handler.Code403ExceptionHandler;
 
 @Configuration
 @EnableMethodSecurity
@@ -19,7 +22,9 @@ public class SecurityConfig {
 
     private final SecurityFilter securityFilter;
 
-    private final SecurityExceptionHandler securityExceptionHandler; 
+    private final Code401ExceptionHandler code401ExceptionHandler;
+    
+    private final Code403ExceptionHandler code403ExceptionHandler;
     
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -29,7 +34,9 @@ public class SecurityConfig {
                 .sessionManagement(ss -> ss.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(r -> r.anyRequest().permitAll())
                 .formLogin(f -> f.disable())
-                .exceptionHandling(t -> t.accessDeniedHandler(securityExceptionHandler))
+                .exceptionHandling(t -> t
+                    .accessDeniedHandler(code403ExceptionHandler)
+                    .authenticationEntryPoint(code401ExceptionHandler))
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

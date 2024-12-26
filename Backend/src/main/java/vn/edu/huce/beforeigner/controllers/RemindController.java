@@ -13,9 +13,9 @@ import java.util.List;
 
 import lombok.RequiredArgsConstructor;
 import vn.edu.huce.beforeigner.infrastructures.remindmodule.dtos.ReadRemindDto;
-import vn.edu.huce.beforeigner.annotations.IsUser;
-import vn.edu.huce.beforeigner.domains.core.User;
-import vn.edu.huce.beforeigner.domains.remind.RemindMethod;
+import vn.edu.huce.beforeigner.annotations.security.IsUser;
+import vn.edu.huce.beforeigner.domains.core.Account;
+import vn.edu.huce.beforeigner.domains.remind.NotificationMethod;
 import vn.edu.huce.beforeigner.exceptions.ApiResponse;
 import vn.edu.huce.beforeigner.exceptions.ResponseCode;
 import vn.edu.huce.beforeigner.exceptions.AppException;
@@ -40,9 +40,9 @@ public class RemindController {
     @GetMapping("sync")
     public ApiResponse<List<RemindDto>> sync(
     @RequestParam(defaultValue = "NOTIFICATION") String method,    
-    @AuthenticationPrincipal User user) {
+    @AuthenticationPrincipal Account user) {
         try {
-            return ApiResponse.ok(remindService.syncNotification(user, RemindMethod.valueOf(method)));
+            return ApiResponse.ok(remindService.syncNotification(user, NotificationMethod.valueOf(method)));
         } catch (Exception e) {
             throw new AppException(ResponseCode.INVALID_REQUEST);
         }
@@ -50,7 +50,7 @@ public class RemindController {
 
     @IsUser
     @PostMapping("read")
-    public ApiResponse<Void> mardRead(@AuthenticationPrincipal User user, @RequestBody ReadRemindDto readRemindDto) {
+    public ApiResponse<Void> mardRead(@AuthenticationPrincipal Account user, @RequestBody ReadRemindDto readRemindDto) {
         remindService.markRead(user, readRemindDto.remindIds);
         return ApiResponse.ok();
     }

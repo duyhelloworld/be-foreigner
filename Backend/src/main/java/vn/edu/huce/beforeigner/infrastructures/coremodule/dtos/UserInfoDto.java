@@ -27,7 +27,4 @@ public class UserInfoDto {
 
     private UserLevel level;
 
-    private boolean isAllowMail;
-
-    private boolean isAllowNotification;
 }

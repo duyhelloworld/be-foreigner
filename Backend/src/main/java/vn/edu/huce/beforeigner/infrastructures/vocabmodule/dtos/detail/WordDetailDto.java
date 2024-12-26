@@ -1,6 +1,7 @@
 package vn.edu.huce.beforeigner.infrastructures.vocabmodule.dtos.detail;
 
-import java.util.Set;
+import java.util.List;
+import java.util.Map;
 
 import lombok.Builder;
 import lombok.Data;
@@ -21,5 +22,5 @@ public class WordDetailDto {
 
     private String image;
 
-    private Set<ExampleDto> examples;
+    private List<Map<String, String>> examples;
 }

@@ -10,6 +10,7 @@ public enum CloudFileType {
     WORD_IMAGE(""),
     WORD_AUDIO(""),
     LESSON_COVER(""),
+    SENTENSE_AUDIO(""),
     VOICE_AUDIO("");
     private String defaultUrl;
 

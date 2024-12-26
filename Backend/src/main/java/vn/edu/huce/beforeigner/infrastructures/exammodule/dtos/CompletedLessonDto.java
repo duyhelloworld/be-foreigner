@@ -7,6 +7,6 @@ public class CompletedLessonDto {
 
     private Integer historyId;
 
-    private Float accuracy;
+    private Integer accuracy;
     
 }

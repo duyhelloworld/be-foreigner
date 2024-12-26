@@ -1,19 +1,21 @@
 package vn.edu.huce.beforeigner.infrastructures.vocabmodule.dtos;
 
 import lombok.Builder;
+import lombok.Data;
 
 @Builder
+@Data
 public class WordDto {
 
-    public Integer id;
+    private Integer id;
 
-    public String value;
+    private String value;
 
-    public String mean;
+    private String mean;
 
-    public String phonetic;
+    private String phonetic;
 
-    public String audio;
+    private String audio;
 
-    public String image;
+    private String image;
 }

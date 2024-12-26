@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import lombok.RequiredArgsConstructor;
-import vn.edu.huce.beforeigner.annotations.IsAdmin;
-import vn.edu.huce.beforeigner.annotations.IsUser;
-import vn.edu.huce.beforeigner.domains.core.User;
+import vn.edu.huce.beforeigner.annotations.security.IsAdmin;
+import vn.edu.huce.beforeigner.annotations.security.IsUser;
+import vn.edu.huce.beforeigner.domains.core.Account;
 import vn.edu.huce.beforeigner.exceptions.ApiResponse;
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.abstracts.IWordService;
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.dtos.WordDto;
@@ -33,7 +33,7 @@ public class WordController {
 
     @IsUser
     @GetMapping("today")
-    public ApiResponse<WordDto> getTodayWord(@AuthenticationPrincipal User user) {
+    public ApiResponse<WordDto> getTodayWord(@AuthenticationPrincipal Account user) {
         return ApiResponse.ok(wordService.getTodayWord(user));
     }
     

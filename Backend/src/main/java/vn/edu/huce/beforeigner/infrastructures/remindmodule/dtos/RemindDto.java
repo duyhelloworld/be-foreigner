@@ -5,7 +5,7 @@ import java.util.Map;
 
 import lombok.Builder;
 import lombok.Data;
-import vn.edu.huce.beforeigner.domains.remind.RemindMethod;
+import vn.edu.huce.beforeigner.domains.remind.NotificationMethod;
 
 @Data
 @Builder
@@ -23,5 +23,5 @@ public class RemindDto {
 
     private LocalDateTime sendAt;
 
-    private RemindMethod method;
+    private NotificationMethod method;
 }

@@ -1,11 +1,10 @@
 package vn.edu.huce.beforeigner.infrastructures.leaderboardmodule.abstracts;
 
-import vn.edu.huce.beforeigner.domains.leaderboard.LeaderBoardType;
-import vn.edu.huce.beforeigner.infrastructures.leaderboardmodule.dtos.LeaderBoardDto;
+// import vn.edu.huce.beforeigner.infrastructures.leaderboardmodule.dtos.RankingDto;
 
 public interface ILeaderboardService {
     
-    LeaderBoardDto fetch(LeaderBoardType type);
+    // RankingDto fetch(RankingType type);
 
     void updateUserRanks();
 

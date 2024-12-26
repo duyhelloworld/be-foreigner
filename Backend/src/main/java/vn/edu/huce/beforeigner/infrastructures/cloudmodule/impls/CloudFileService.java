@@ -37,7 +37,6 @@ public class CloudFileService implements ICloudFileService {
                 var options = CloudinaryUtils.getOptions();
                 var folderName = CloudFileType.getFolderName(type);
                 options.put("folder", folderName);
-                options.put("display_name", file.getOriginalFilename());
                 options.put("asset_folder", folderName);
                 options.put("resource_type", "auto");
                 options.put("return_error", true);
@@ -47,14 +46,14 @@ public class CloudFileService implements ICloudFileService {
                 }
                 ResourceResponse resource = objectMapper
                         .convertValue(uploadResponse, ResourceResponse.class);
-                return UploadResponse.builder().publicId(resource.getPublicId()).filename(file.getOriginalFilename())
+                return UploadResponse.builder().publicId(resource.getPublicId())
                         .url(resource.getUrl()).build();
             } else {
                 return UploadResponse.builder()
                 .url(type.getDefaultUrl()).build();
             }
         } catch (IOException e) {
-            log.error("Error when read and write content of '{}' : ", file.getOriginalFilename(), e.getMessage());
+            log.error("Error when read and write file content : ", e.getMessage());
             throw new AppException(ResponseCode.FILE_UPLOAD_ERROR);
         }
     }
@@ -77,14 +76,13 @@ public class CloudFileService implements ICloudFileService {
     }
 
     @Override
-    public UploadResponse save(String base64, String filename, CloudFileType fileType) {
+    public UploadResponse save(String base64, CloudFileType fileType) {
         try {
             if (base64 != null && !base64.isBlank()) {
                 var file = Base64.getDecoder().decode(base64);
                 var options = CloudinaryUtils.getOptions();
                 var folderName = CloudFileType.getFolderName(fileType);
                 options.put("folder", folderName);
-                options.put("display_name", filename);
                 options.put("asset_folder", folderName);
                 options.put("resource_type", "auto");
                 options.put("return_error", true);
@@ -94,14 +92,14 @@ public class CloudFileService implements ICloudFileService {
                 }
                 ResourceResponse resource = objectMapper
                         .convertValue(uploadResponse, ResourceResponse.class);
-                return UploadResponse.builder().publicId(resource.getPublicId()).filename(filename)
+                return UploadResponse.builder().publicId(resource.getPublicId())
                         .url(resource.getUrl()).build();
             } else {
                 return UploadResponse.builder()
                 .url(fileType.getDefaultUrl()).build();
             }
         } catch (IOException e) {
-            log.error("Error when read and write content of '{}' : ", filename, e.getMessage());
+            log.error("Error when read and write file content : ", e.getMessage());
             throw new AppException(ResponseCode.FILE_UPLOAD_ERROR);
         }
     }

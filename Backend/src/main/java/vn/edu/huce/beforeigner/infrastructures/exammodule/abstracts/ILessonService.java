@@ -1,6 +1,6 @@
 package vn.edu.huce.beforeigner.infrastructures.exammodule.abstracts;
 
-import vn.edu.huce.beforeigner.domains.core.User;
+import vn.edu.huce.beforeigner.domains.core.Account;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.CompletedLessonDto;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.LessonDetailDto;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.LessonDto;
@@ -12,7 +12,7 @@ public interface ILessonService {
     /**
      * Lấy các lesson gợi ý cho user
      */
-    PagingResult<LessonDto> getSuggestedLessons(PagingRequest pagingRequest, User user);
+    PagingResult<LessonDto> getSuggestedLessons(PagingRequest pagingRequest, Account user);
 
     /**
      * Học 1 bài học theo chỉ định
@@ -20,20 +20,20 @@ public interface ILessonService {
      * @param user người học
      * @return
      */
-    LessonDetailDto examine(Integer lessonId, User user);
+    LessonDetailDto examine(Integer lessonId, Account user);
 
     /** Học tiếp bài học chỉ định
      * @param lessonHistoryId Học bài học chỉ định
      * @param user người học
      * @return
      */
-    LessonDetailDto examineByHistory(Integer lessonHistoryId, User user);
+    LessonDetailDto examineByHistory(Integer lessonHistoryId, Account user);
 
     /**
      * Đánh dấu hoàn thành bài học
      * @param lessonId
      */
-    void completed(CompletedLessonDto completedLessonDto, User user);
+    void completed(CompletedLessonDto completedLessonDto, Account user);
 
     
 }

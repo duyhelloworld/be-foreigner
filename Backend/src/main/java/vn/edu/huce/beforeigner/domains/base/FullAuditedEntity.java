@@ -41,7 +41,7 @@ public abstract class FullAuditedEntity {
         return updatedAt == null ? createdAt : updatedAt;
     }
 
-    @Column(name = "is_deleted")
+    @Column(name = "is_deleted", nullable = false)
     @SoftDelete(columnName = "is_deleted")
     private boolean isDeleted = false;
 }

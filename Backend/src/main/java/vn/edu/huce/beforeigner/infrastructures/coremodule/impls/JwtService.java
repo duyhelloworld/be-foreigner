@@ -17,8 +17,8 @@ import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import vn.edu.huce.beforeigner.domains.core.ClaimTypes;
-import vn.edu.huce.beforeigner.domains.core.User;
+import vn.edu.huce.beforeigner.domains.common.ClaimTypes;
+import vn.edu.huce.beforeigner.domains.core.Account;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IJwtService;
 import vn.edu.huce.beforeigner.utils.DatetimeUtils;
 
@@ -36,7 +36,7 @@ public class JwtService implements IJwtService {
     private String secretKey;
 
     @Override
-    public String buildToken(User user) {
+    public String buildToken(Account user) {
         LocalDateTime now = LocalDateTime.now();
         return Jwts.builder()
                 .claim(ClaimTypes.USERNAME.name(), user.getUsername())

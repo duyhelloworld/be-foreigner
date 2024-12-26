@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import lombok.RequiredArgsConstructor;
-import vn.edu.huce.beforeigner.annotations.IsUser;
-import vn.edu.huce.beforeigner.domains.core.User;
+import vn.edu.huce.beforeigner.annotations.security.IsUser;
+import vn.edu.huce.beforeigner.domains.core.Account;
 import vn.edu.huce.beforeigner.exceptions.ApiResponse;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.abstracts.ILessonService;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.CompletedLessonDto;
@@ -30,7 +30,7 @@ public class LessonController {
     @IsUser
     @GetMapping("exam/{id}")
     public ApiResponse<LessonDetailDto> examine(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal Account user,
             @PathVariable Integer id) {
         return ApiResponse.ok(lessonService.examine(id, user));
     }
@@ -38,7 +38,7 @@ public class LessonController {
     @IsUser
     @GetMapping("exam/history/{id}")
     public ApiResponse<LessonDetailDto> examineByHistory(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal Account user,
             @PathVariable Integer id) {
         return ApiResponse.ok(lessonService.examineByHistory(id, user));
     }
@@ -46,7 +46,7 @@ public class LessonController {
     @IsUser
     @GetMapping("suggest")
     public ApiResponse<PagingResult<LessonDto>> getSuggestedLessons(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal Account user,
             PagingRequest pagingRequest) {
         return ApiResponse.ok(lessonService.getSuggestedLessons(pagingRequest, user));
     }
@@ -54,7 +54,7 @@ public class LessonController {
     @IsUser
     @PutMapping("exam/complete")
     public ApiResponse<Void> completed(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal Account user,
             @RequestBody CompletedLessonDto completedLessonDto) {
         lessonService.completed(completedLessonDto, user);
         return ApiResponse.ok();

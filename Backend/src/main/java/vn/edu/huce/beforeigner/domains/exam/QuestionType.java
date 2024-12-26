@@ -1,5 +1,8 @@
 package vn.edu.huce.beforeigner.domains.exam;
 
+/**
+ * Loại câu hỏi
+ */
 public enum QuestionType {
     /**
      * Học từ tiếng anh
@@ -29,4 +32,24 @@ public enum QuestionType {
      * Cho audio TA, chọn từ được phát âm
      */
     GIVE_AUDIO_CHOOSE_WORD,
+    /**
+     * Cho âm thanh, đọc ghi âm
+     */
+    GIVE_AUDIO_CHECK_RECORD,
+    /**
+     * Cho từ, đọc ghi âm
+     */
+    GIVE_WORD_CHECK_RECORD,
+    /**
+     * Cho câu đọc ghi âm
+     */
+    GIVE_SENTENSE_CHECK_RECORD,
+    /**
+     * Cho âm thanh nhập câu nghe được
+     */
+    GIVE_AUDIO_ENTER_SENTENSE,
+    /**
+     * Chọn các đáp án đồng nghĩa
+     */
+    GIVE_WORD_CHOOSE_SYNONYMOUS_WORDS
 }

@@ -12,6 +12,8 @@ import lombok.Data;
 public class CreateWordDto {
     
     private String value;
+
+    private String mean;
     
     private String phonetic;
 
@@ -19,5 +21,5 @@ public class CreateWordDto {
 
     private MultipartFile audio;
     
-    private List<CreateExampleDto> examples;
+    private List<Integer> sentenseIds;
 }

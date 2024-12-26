@@ -13,18 +13,21 @@ import org.springframework.stereotype.Service;
 import com.google.firebase.messaging.FirebaseMessagingException;
 
 import jakarta.mail.MessagingException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import vn.edu.huce.beforeigner.commons.AppObjectMapper;
-import vn.edu.huce.beforeigner.configurations.AuditorConfig;
 import vn.edu.huce.beforeigner.domains.core.TokenType;
-import vn.edu.huce.beforeigner.domains.core.User;
-import vn.edu.huce.beforeigner.domains.core.repo.UserRepository;
-import vn.edu.huce.beforeigner.domains.core.repo.UserTokenRepository;
+import vn.edu.huce.beforeigner.domains.core.AccountSetting;
+import vn.edu.huce.beforeigner.domains.core.Account;
+import vn.edu.huce.beforeigner.domains.core.repo.AccountRepo;
+import vn.edu.huce.beforeigner.domains.core.repo.AccountTokenRepo;
+import vn.edu.huce.beforeigner.domains.core.repo.AccountSettingRepo;
 import vn.edu.huce.beforeigner.domains.exam.Lesson;
 import vn.edu.huce.beforeigner.domains.exam.repo.LessonRepository;
 import vn.edu.huce.beforeigner.domains.remind.Remind;
-import vn.edu.huce.beforeigner.domains.remind.RemindMethod;
+import vn.edu.huce.beforeigner.domains.remind.NotificationMethod;
+import vn.edu.huce.beforeigner.domains.remind.SettingType;
 import vn.edu.huce.beforeigner.domains.remind.repo.RemindRepository;
 import vn.edu.huce.beforeigner.domains.vocab.Word;
 import vn.edu.huce.beforeigner.domains.vocab.repo.WordRepository;
@@ -47,11 +50,13 @@ public class RemindService implements IRemindService {
     @Value("${application.mail.admin-mail}")
     private String adminMail;
 
-    private final UserRepository userRepo;
+    private final AccountRepo accountRepo;
 
     private final LessonRepository lessonRepo;
 
-    private final UserTokenRepository userTokenRepo;
+    private final AccountTokenRepo userTokenRepo;
+
+    private final AccountSettingRepo accountSettingRepo;
 
     private final RemindRepository remindRepo;
 
@@ -66,7 +71,7 @@ public class RemindService implements IRemindService {
     private final RemindMapper remindMapper;
 
     @Override
-    public void remindLearnUser(User user, RemindMethod method, Integer lessonId) {
+    public void remindLearnUser(Account user, NotificationMethod method, Integer lessonId) {
         Map<String, String> data = new HashMap<>();
         data.put("lessonId", lessonId.toString());
         var remind = createRemind(user, method, objectMapper.toJson(data), lessonId);
@@ -82,7 +87,7 @@ public class RemindService implements IRemindService {
                 break;
             case NOTIFICATION:
                 var userToken = userTokenRepo
-                        .findByLastModifiedByAndType(AuditorConfig.getAuditor(user), TokenType.NOTIFICATION);
+                        .findByTypeAndAccountId(TokenType.NOTIFICATION, user.getId());
                 if (userToken.isEmpty()) {
                     log.error("Cannot send to {} cause by missing notification token!", user.getUsername());
                     return;
@@ -102,24 +107,28 @@ public class RemindService implements IRemindService {
     }
 
     @Override
-    public void remindWordByPushNotification(User user, Word word) {
+    @Transactional
+    public void remindWordByPushNotification(Account user, Word word) {
+        Remind remind = new Remind();
+        remind.setMethod(NotificationMethod.NOTIFICATION);
+        remind.setTitle("[r] : Từ vựng hôm nay là " + word.getValue());
 
     }
 
-    private Remind createRemind(User user, RemindMethod method, String data, Integer lessonId) {
+    private Remind createRemind(Account user, NotificationMethod method, String data, Integer lessonId) {
         Remind remind = new Remind();
         var template = RemindTemplateUtils.getTemplate(method, user);
         remind.setTitle(template.getTitle());
         remind.setBody(template.getBody());
         remind.setData(data);
-        remind.setRecipient(user);
+        remind.setAccount(user);
         remind.setMethod(method);
         return remind;
     }
 
     @Override
-    public List<RemindDto> syncNotification(User user, RemindMethod method) {
-        return remindRepo.findByRecipientAndMethod(user, method)
+    public List<RemindDto> syncNotification(Account user, NotificationMethod method) {
+        return remindRepo.findByAccountAndMethod(user, method)
                 .stream()
                 .map(r -> remindMapper.toDto(r))
                 .toList();
@@ -128,9 +137,9 @@ public class RemindService implements IRemindService {
     @Override
     public void testCronJob() {
         log.info("Start cronjob : {}", LocalTime.now());
-        var users = userRepo.findUsersWantBeNotify();
+        var users = accountRepo.findUsersWantBeNotify();
         int totalEmail = 0, totalNoti = 0;
-        for (User user : users) {
+        for (Account user : users) {
             Page<Lesson> pageLesson = lessonRepo.findAll(
                     Pageable.ofSize(1).withPage(NumberUtils.randomNumber(0, (int) lessonRepo.count())));
             if (pageLesson.isEmpty()) {
@@ -138,31 +147,34 @@ public class RemindService implements IRemindService {
                 continue;
             }
             int lessonId = pageLesson.getContent().get(0).getId();
-            if (user.isAllowMail()) {
-                log.info("Sending remind mail to user {}: {}", user.getUsername(), user.getEmail());
-                remindLearnUser(user, RemindMethod.EMAIL, lessonId);
-                totalEmail++;
-            }
-            if (user.isAllowNotification()) {
-                log.info("Sending remind push notification to '{}'", user.getUsername());
-                remindLearnUser(user, RemindMethod.NOTIFICATION, lessonId);
-                totalNoti++;
-            }
-            if (user.isAllowWordNotification()) {
-                log.info("Sending word push notification to '{}'", user.getUsername());
-                var word = wordRepo.getLearnedWord(AuditorConfig.getAuditor(user));
-                if (word.isEmpty()) {
-                    log.info("Not found word");
-                    return;
+            var settings = accountSettingRepo.findEnabledSetting(user.getId());
+            for (AccountSetting setting : settings) {
+                if (setting.getRemindMethod() == NotificationMethod.EMAIL) {
+                    log.info("Sending learn remind mail to user {}: {}", user.getUsername(), user.getEmail());
+                    remindLearnUser(user, NotificationMethod.EMAIL, lessonId);
+                    totalEmail++;
+                } else if (setting.getRemindMethod() == NotificationMethod.NOTIFICATION) {
+                    if (setting.getSettingType() == SettingType.LEARN_REMIND) {
+                        log.info("Sending learn remind push notification to '{}'", user.getUsername());
+                        remindLearnUser(user, NotificationMethod.NOTIFICATION, lessonId);
+                        totalNoti++;
+                    } else {
+                        log.info("Sending word push notification to '{}'", user.getUsername());
+                        var word = wordRepo.getLearnedWord(user.getUsername());
+                        if (word.isEmpty()) {
+                            log.info("Not found word");
+                            return;
+                        }
+                        remindWordByPushNotification(user, word.get());
+                    }
                 }
-                remindWordByPushNotification(user, word.get());
             }
         }
         log.info("OK! Remind {} users by email and {} users by notification!", totalEmail, totalNoti);
     }
 
     @Override
-    public void markRead(User user, List<Integer> remindIds) {
+    public void markRead(Account user, List<Integer> remindIds) {
         var reminds = remindRepo.findByIdIn(remindIds);
         remindRepo.saveAll(reminds.stream()
                 .map(remind -> {

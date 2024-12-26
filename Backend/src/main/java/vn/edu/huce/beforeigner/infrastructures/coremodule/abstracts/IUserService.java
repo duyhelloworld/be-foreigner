@@ -1,6 +1,6 @@
 package vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts;
 
-import vn.edu.huce.beforeigner.domains.core.User;
+import vn.edu.huce.beforeigner.domains.core.Account;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.SetupDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.UpdateProfileDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.UserDto;
@@ -14,13 +14,13 @@ public interface IUserService {
     
     PagingResult<UserDto> findAllUsers(PagingRequest pagingRequest);
 
-    UserInfoDto getInfo(User user);
+    UserInfoDto getInfo(Account user);
 
-    void setup(User user, SetupDto setupDto);
+    void setup(Account user, SetupDto setupDto);
 
-    void saveSetting(User user, UserRemindSettingDto settingDto);
+    void saveSetting(Account user, UserRemindSettingDto settingDto);
 
-    UserInfoDto updateProfile(User user, UpdateProfileDto updateProfileDto);
+    UserInfoDto updateProfile(Account user, UpdateProfileDto updateProfileDto);
 
-    StreakDto streak(User user);
+    StreakDto streak(Account user);
 }

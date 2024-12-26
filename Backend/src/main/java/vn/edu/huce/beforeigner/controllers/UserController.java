@@ -2,9 +2,9 @@ package vn.edu.huce.beforeigner.controllers;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import vn.edu.huce.beforeigner.annotations.IsAdmin;
-import vn.edu.huce.beforeigner.annotations.IsUser;
-import vn.edu.huce.beforeigner.domains.core.User;
+import vn.edu.huce.beforeigner.annotations.security.IsAdmin;
+import vn.edu.huce.beforeigner.annotations.security.IsUser;
+import vn.edu.huce.beforeigner.domains.core.Account;
 import vn.edu.huce.beforeigner.exceptions.ApiResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -41,14 +41,14 @@ public class UserController {
 
     @IsUser
     @GetMapping("/my-info")
-    public ApiResponse<UserInfoDto> getMyInfo(@AuthenticationPrincipal User user) {
+    public ApiResponse<UserInfoDto> getMyInfo(@AuthenticationPrincipal Account user) {
         return ApiResponse.ok(userService.getInfo(user));
     }
 
     @IsUser
     @PutMapping("my-info")
     public ApiResponse<UserInfoDto> updateProfile(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal Account user,
             @RequestBody UpdateProfileDto updateProfileDto) {
         return ApiResponse.ok(userService.updateProfile(user, updateProfileDto));
     }
@@ -56,7 +56,7 @@ public class UserController {
     @IsUser
     @PostMapping("setup")
     public ApiResponse<Void> setUpInformation(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal Account user,
             @RequestBody SetupDto setupDto) {
         userService.setup(user, setupDto);
         return ApiResponse.ok();
@@ -64,14 +64,14 @@ public class UserController {
 
     @IsUser
     @GetMapping("streak")
-    public ApiResponse<StreakDto> streak(@AuthenticationPrincipal User user) {
+    public ApiResponse<StreakDto> streak(@AuthenticationPrincipal Account user) {
         return ApiResponse.ok(userService.streak(user));
     }
 
     @IsUser
     @PutMapping("notification-setting")
     public ApiResponse<Void> save(
-            @AuthenticationPrincipal User user,
+            @AuthenticationPrincipal Account user,
             @RequestBody UserRemindSettingDto settingDto) {
         userService.saveSetting(user, settingDto);
         return ApiResponse.ok();

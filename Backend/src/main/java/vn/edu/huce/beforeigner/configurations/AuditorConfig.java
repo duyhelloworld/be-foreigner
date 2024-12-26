@@ -11,7 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import lombok.extern.slf4j.Slf4j;
-import vn.edu.huce.beforeigner.domains.core.User;
+import vn.edu.huce.beforeigner.domains.core.Account;
 
 @Slf4j
 @Configuration
@@ -23,10 +23,6 @@ public class AuditorConfig implements AuditorAware<String> {
         return new AuditorConfig();
     }
 
-    public static String getAuditor(User user) {
-        return user.getUsername();
-    }
-
     @Override
     public Optional<String> getCurrentAuditor() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -36,8 +32,8 @@ public class AuditorConfig implements AuditorAware<String> {
             return Optional.empty();
         }
         try {
-            return Optional.ofNullable((User) authentication.getPrincipal())
-                .map(u -> getAuditor(u));
+            return Optional.ofNullable((Account) authentication.getPrincipal())
+                .map(u -> u.getUsername());
         } catch (ClassCastException e) {
             log.error("Error when cast " + authentication.getPrincipal() + " to User ", e);
             return Optional.empty();

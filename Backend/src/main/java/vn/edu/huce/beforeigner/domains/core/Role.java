@@ -1,5 +1,15 @@
 package vn.edu.huce.beforeigner.domains.core;
 
+/**
+ * Vai trò
+ */
 public enum Role {
-    USER, ADMIN
+    /**
+     * Người dùng
+     */
+    USER,
+    /**
+     * Quản trị viên
+     */
+    ADMIN
 }

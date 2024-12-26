@@ -15,10 +15,14 @@ public class QuestionMapper {
                 .type(question.getType())
                 .level(question.getLevel())
                 .index(question.getIndexInLesson())
-                .sentenseMeaning(question.getSentenseMeaning()) // đề
-                .sentenseAudio(question.getSentenseAudio()) // đề
-                .sentenseWords(Optional.ofNullable(question.getSentenseWords())
-                        .map(sw -> sw.split(" "))
+                .sentenseMeaning(Optional.ofNullable(question.getSentense())
+                        .map(s -> s.getMean())
+                        .orElse(null)) // đề
+                .sentenseAudio(Optional.ofNullable(question.getSentense())
+                        .map(s -> s.getAudioUrl())
+                        .orElse(null)) // đề
+                .sentenseWords(Optional.ofNullable(question.getSentense())
+                        .map(s -> s.getValue().split(" "))
                         .orElse(null)) // các từ của đáp án
                 .unrelatedWords(Optional.ofNullable(question.getUnrelatedWords())
                         .map(uw -> uw.split(" "))

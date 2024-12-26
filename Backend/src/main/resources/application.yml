@@ -2,28 +2,28 @@ spring:
   application:
     name: be-foreigner
   datasource:
-    url: jdbc:mysql://localhost:3306/be-foreigner?createDatabaseIfNotExist=true&useUnicode=true&useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/be-foreigner-dev?createDatabaseIfNotExist=true&useUnicode=true&useSSL=false&allowPublicKeyRetrieval=true
     username: be-foreigner
     password: password
-
   jpa:
     open-in-view: false
-    show-sql: false
+    show-sql: true
+    properties:
+      hibernate.format_sql: true
+    # jakarta:
+    #   persistence:
+    #     schema-generation:
+    #       scripts:
+    #         action: create
+    #         create-target: metadata.sql
     hibernate:
       ddl-auto: update
-    defer-datasource-initialization: true
-    # properties:
-    #   jakarta:
-    #     persistence:
-    #       schema-generation:
-    #         scripts:
-    #           action: create
-    #           create-target: metadata.sql
   
   servlet:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+      
   output:
     ansi:
       enabled: always

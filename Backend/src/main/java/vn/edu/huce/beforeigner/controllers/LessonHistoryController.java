@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import lombok.RequiredArgsConstructor;
-import vn.edu.huce.beforeigner.domains.core.User;
+import vn.edu.huce.beforeigner.domains.core.Account;
 import vn.edu.huce.beforeigner.exceptions.ApiResponse;
 import vn.edu.huce.beforeigner.infrastructures.historymodule.abstracts.ILessonHistoryService;
 import vn.edu.huce.beforeigner.infrastructures.historymodule.dtos.LessonHistoryDto;
@@ -23,7 +23,7 @@ public class LessonHistoryController {
 
     @GetMapping("my-history")
     public ApiResponse<List<LessonHistoryDto>> getMyHistory(
-        @AuthenticationPrincipal User user) {
+        @AuthenticationPrincipal Account user) {
         return ApiResponse.ok(lessonHistoryService.getMyHistory(user));
     }
 

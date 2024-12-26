@@ -12,7 +12,7 @@ import vn.edu.huce.beforeigner.domains.vocab.Word;
 @Repository
 public interface WordRepository extends JpaRepository<Word, Integer> {
 
-    @Query(value = "SELECT DISTINCT w " +
+    @Query(value = "SELECT w.id, w.value, w.mean, w.phonetic, w.image_url, w.audio_url, w.is_deleted, w.created_at, w.created_by, w.audio_public_id, w.image_public_id, w.updated_at, w.updated_by " +
             "FROM word w " +
             "JOIN answer a ON w.id = a.word_id " +
             "JOIN question q ON a.question_id = q.id " +

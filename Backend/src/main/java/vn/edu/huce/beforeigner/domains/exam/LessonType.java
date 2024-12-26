@@ -1,15 +1,19 @@
 package vn.edu.huce.beforeigner.domains.exam;
 
 /**
- * Loại bài học
+ * Loại bài học hướng tới
  */
-public enum LessonType {
+ public enum LessonType {
     /**
-     * Bài học truy cập tự do
+     * Học các từ vựng mới
      */
-    FREE_ACCESS,
+    NEW_LEARNING,
     /**
-     * Bài học chỉ nâng cấp mới được truy cập 
+     * Ôn tập lại các từ vựng đã học
      */
-    PLUS_ONLY
+    REVISION,
+    /**
+     * Bài kiểm tra 
+     */
+    EXAM_EVENT;
 }

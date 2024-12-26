@@ -15,7 +15,7 @@ public class LessonHistoryMapper {
             .accuracy(lessonHistory.getAccuracy())
             .lessonId(lessonHistory.getLesson().getId())
             .lessonName(lessonHistory.getLesson().getName())
-            .elo(lessonHistory.getLesson().getTarget().getElo())
+            .elo(lessonHistory.getLesson().getElo())
             .lessonImage(lessonHistory.getLesson().getCoverImageUrl())
             .startedAt(DatetimeUtils.dateToString(lessonHistory.getCreatedAt()))
             .completedAt(DatetimeUtils.dateToString(lessonHistory.getUpdatedAt()))

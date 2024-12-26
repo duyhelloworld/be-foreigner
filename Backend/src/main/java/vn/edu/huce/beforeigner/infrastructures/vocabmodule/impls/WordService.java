@@ -1,15 +1,13 @@
 package vn.edu.huce.beforeigner.infrastructures.vocabmodule.impls;
 
-import java.util.stream.Collectors;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import vn.edu.huce.beforeigner.domains.core.User;
-import vn.edu.huce.beforeigner.domains.vocab.Example;
+import vn.edu.huce.beforeigner.domains.core.Account;
 import vn.edu.huce.beforeigner.domains.vocab.Word;
+import vn.edu.huce.beforeigner.domains.vocab.repo.SentenseRepository;
 import vn.edu.huce.beforeigner.domains.vocab.repo.WordRepository;
 import vn.edu.huce.beforeigner.exceptions.AppException;
 import vn.edu.huce.beforeigner.exceptions.ResponseCode;
@@ -31,6 +29,8 @@ public class WordService implements IWordService {
 
     private final WordRepository wordRepo;
 
+    private final SentenseRepository sentenseRepo;
+
     private final WordMapper wordMapper;
 
     private final ICloudFileService cloudFileService;
@@ -49,32 +49,43 @@ public class WordService implements IWordService {
 
     @Override
     public void addNew(CreateWordDto createWordDto) {
-
         Word word = new Word();
+
+        word.setPhonetic(createWordDto.getPhonetic());
+        word.setValue(createWordDto.getValue());
+        word.setMean(createWordDto.getMean());
+        
         var audioResp = cloudFileService.save(createWordDto.getAudio(), CloudFileType.WORD_AUDIO);
         word.setAudioUrl(audioResp.getUrl());
-        word.setAudioFilename(audioResp.getFilename());
         word.setAudioPublicId(audioResp.getPublicId());
 
         var imageResp = cloudFileService.save(createWordDto.getAudio(), CloudFileType.WORD_IMAGE);
         word.setImageUrl(imageResp.getUrl());
-        word.setImageFilename(imageResp.getFilename());
         word.setImagePublicId(imageResp.getPublicId());
 
-        word.setExamples(createWordDto.getExamples().stream().map(ce -> {
-            Example ex = new Example();
-            ex.setMean(ce.getMean());
-            ex.setSentense(ce.getSentense());
-            return ex;
-        }).collect(Collectors.toSet()));
-        word.setPhonetic(createWordDto.getPhonetic());
-        word.setValue(createWordDto.getValue());
+        if (createWordDto.getSentenseIds() != null) {
+            var sentenses = sentenseRepo.findByIdIn(createWordDto.getSentenseIds());
+            word.setSentenses(sentenses);
+        }
         wordRepo.save(word);
     }
 
     @Override
     public WordDetailDto update(Integer id, UpdateWordDto updateWordDto) {
         Word word = wordRepo.findById(id).orElseThrow(() -> new AppException(ResponseCode.WORD_NOT_FOUND));
+        word.setMean(updateWordDto.getMean());
+        word.setValue(updateWordDto.getValue());
+        word.setPhonetic(updateWordDto.getPhonetic());
+
+        var audioResp = cloudFileService.save(updateWordDto.getAudio(), CloudFileType.WORD_AUDIO);
+        word.setAudioUrl(audioResp.getUrl());
+        word.setAudioPublicId(audioResp.getPublicId());
+
+        var imageResp = cloudFileService.save(updateWordDto.getAudio(), CloudFileType.WORD_IMAGE);
+        word.setImageUrl(imageResp.getUrl());
+        word.setImagePublicId(imageResp.getPublicId());
+
+        wordRepo.save(word);
         return wordMapper.toDetailDto(word);
     }
 
@@ -84,14 +95,15 @@ public class WordService implements IWordService {
     }
 
     @Override
-    public WordDto getTodayWord(User user) {
+    public WordDto getTodayWord(Account user) {
         // Tạm thời user kệ, cứ lấy random word thôi
         int total = (int) wordRepo.count();
         int randomPos = NumberUtils.randomNumber(1, total);
-        Page<Word> page = wordRepo.findAll(Pageable.ofSize(1).withPage(randomPos));
+        Page<Word> page = wordRepo.findAll(
+            Pageable.ofSize(1).withPage(randomPos));
         if (page.hasContent()) {
             return wordMapper.toDto(page.getContent().get(0));
         }
-        return null;
+        throw new AppException(ResponseCode.WORD_NOT_FOUND);
     }
 }

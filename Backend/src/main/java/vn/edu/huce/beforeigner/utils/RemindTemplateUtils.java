@@ -1,9 +1,9 @@
 package vn.edu.huce.beforeigner.utils;
 
-import vn.edu.huce.beforeigner.domains.remind.RemindMethod;
+import vn.edu.huce.beforeigner.domains.remind.NotificationMethod;
 import vn.edu.huce.beforeigner.exceptions.AppException;
 import vn.edu.huce.beforeigner.exceptions.ResponseCode;
-import vn.edu.huce.beforeigner.domains.core.User;
+import vn.edu.huce.beforeigner.domains.core.Account;
 import vn.edu.huce.beforeigner.infrastructures.remindmodule.dtos.TemplateDto;
 
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class RemindTemplateUtils {
                         "Xin chào %s, bạn có ưu đãi đặc biệt từ chúng tôi. Đừng bỏ lỡ!")));
     }
 
-    public static TemplateDto getTemplate(RemindMethod method, User user) {
+    public static TemplateDto getTemplate(NotificationMethod method, Account user) {
         if (TEMPLATES.isEmpty()) {
             throw new AppException(ResponseCode.NOTIFICATION_MESSAGE_MAY_NOT_INITILIZED);
         }

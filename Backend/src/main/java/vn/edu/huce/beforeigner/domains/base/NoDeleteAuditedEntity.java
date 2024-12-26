@@ -28,6 +28,10 @@ public abstract class NoDeleteAuditedEntity {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
+    public LocalDateTime getLastUpdatedAt() {
+        return updatedAt == null ? createdAt : updatedAt;
+    }
+
     @Column(length = 100, nullable = false)
     @CreatedBy
     @LastModifiedBy

@@ -3,7 +3,7 @@ package vn.edu.huce.beforeigner.infrastructures.exammodule.dtos;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import vn.edu.huce.beforeigner.domains.exam.LessonType;
+import vn.edu.huce.beforeigner.domains.exam.LessonAccessLevel;
 
 @Getter
 @Setter
@@ -16,5 +16,5 @@ public class LessonDto {
 
     private String cover;
 
-    private LessonType type;
+    private LessonAccessLevel accessLevel;
 }

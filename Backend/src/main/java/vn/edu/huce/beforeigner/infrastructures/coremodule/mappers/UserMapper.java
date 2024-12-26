@@ -2,14 +2,14 @@ package vn.edu.huce.beforeigner.infrastructures.coremodule.mappers;
 
 import org.springframework.stereotype.Component;
 
-import vn.edu.huce.beforeigner.domains.core.User;
+import vn.edu.huce.beforeigner.domains.core.Account;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.UserDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.UserInfoDto;
 
 @Component
 public class UserMapper {
     
-    public UserDto toDto(User user) {
+    public UserDto toDto(Account user) {
         return UserDto.builder()
             .id(user.getId())
             .username(user.getUsername())
@@ -18,15 +18,13 @@ public class UserMapper {
             .build();
     }
 
-    public UserInfoDto toInfoDto(User user) {
+    public UserInfoDto toInfoDto(Account user) {
         return UserInfoDto.builder()
             .id(user.getId())
             .username(user.getUsername())
             .fullname(user.getFullname())
             .avatar(user.getAvatarUrl())
             .email(user.getEmail())
-            .isAllowMail(user.isAllowMail())
-            .isAllowNotification(user.isAllowNotification())
             .level(user.getLevel())
             .streakDays(user.getStreakDays())
             .plan(user.getPlan())

@@ -1,30 +1,23 @@
 package vn.edu.huce.beforeigner.domains.common;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 /**
  * Trình độ người dùng
  */
-@Getter
-@AllArgsConstructor
 public enum UserLevel {
     /**
-     * Thấp, người mới (A0, A1)
+     * Thấp, người mới
      */
-    BEGINNER(100),
+    BEGINNER,
     /**
-     * Biết chút chút (A2)
+     * Biết chút chút 
      */
-    INTERMEDIATE(200),
+    INTERMEDIATE,
     /**
-     * Trung bình, người đã có nền tảng nhẹ (B1)
+     * Trung bình, người đã có nền tảng nhẹ 
      */
-    MEDIUM(500),
+    MEDIUM,
     /**
-     * Khá ổn, cần hiểu sâu tiếng anh (B2)
+     * Khá ổn, cần bổ túc tiếng anh 
      */
-    ADVANCED(800);
-
-    private Integer eloRequired;
+    ADVANCED;
 }

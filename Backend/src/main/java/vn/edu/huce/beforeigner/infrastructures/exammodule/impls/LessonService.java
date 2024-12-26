@@ -10,16 +10,15 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import vn.edu.huce.beforeigner.configurations.AuditorConfig;
-import vn.edu.huce.beforeigner.constants.LessonConstants;
-import vn.edu.huce.beforeigner.domains.core.User;
-import vn.edu.huce.beforeigner.domains.core.repo.UserRepository;
+import vn.edu.huce.beforeigner.constants.EloConstants;
+import vn.edu.huce.beforeigner.domains.core.Account;
+import vn.edu.huce.beforeigner.domains.core.repo.AccountRepo;
 import vn.edu.huce.beforeigner.domains.exam.Lesson;
 import vn.edu.huce.beforeigner.domains.exam.repo.LessonRepository;
 import vn.edu.huce.beforeigner.domains.history.LessonHistory;
-import vn.edu.huce.beforeigner.domains.history.LessonStatus;
+import vn.edu.huce.beforeigner.domains.history.LessonHistoryStatus;
 import vn.edu.huce.beforeigner.domains.history.repo.LessonHistoryRepository;
-import vn.edu.huce.beforeigner.domains.leaderboard.LeaderBoardUser;
+import vn.edu.huce.beforeigner.domains.leaderboard.repo.RankingUserRepository;
 import vn.edu.huce.beforeigner.exceptions.AppException;
 import vn.edu.huce.beforeigner.exceptions.ResponseCode;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.abstracts.ILessonService;
@@ -42,7 +41,7 @@ public class LessonService implements ILessonService {
 
 	private final LessonRepository lessonRepo;
 
-	private final UserRepository userRepo;
+	private final AccountRepo accountRepo;
 
 	private final LessonMapper lessonMapper;
 
@@ -50,28 +49,30 @@ public class LessonService implements ILessonService {
 
 	private final AnswerMapper answerMapper;
 
+	private final RankingUserRepository rankingUserRepo;
+
 	@Override
 	@Transactional
-	public LessonDetailDto examine(Integer lessonId, User user) {
+	public LessonDetailDto examine(Integer lessonId, Account user) {
 		Lesson lesson = lessonRepo.findById(lessonId)
 				.orElseThrow(() -> new AppException(ResponseCode.LESSON_NOT_FOUND));
 
 		int historyId = 0;
 		var learntHistory = lesson.getLessonHistories().stream()
-				.filter(lh -> AuditorConfig.getAuditor(user).equals(lh.getOwner())
-						&& lh.getStatus() != LessonStatus.COMPLETED)
+				.filter(lh -> user.getUsername().equals(lh.getOwner())
+						&& lh.getStatus() != LessonHistoryStatus.COMPLETED)
 				.findFirst();
 		// Nếu chưa học -> thêm 1 dòng mới
 		if (learntHistory.isEmpty()) {
 			LessonHistory newHistory = new LessonHistory();
 			newHistory.setLesson(lesson);
-			newHistory.setStatus(LessonStatus.ONGOING);
+			newHistory.setStatus(LessonHistoryStatus.ONGOING);
 			lessonHistoryRepo.save(newHistory);
 			historyId = newHistory.getId();
 		} else {
 			// Nếu đã học rồi và chưa hoàn thành thì lấy mã lịch sử để trả về
 			historyId = learntHistory
-					.filter(lh -> lh.getStatus() == LessonStatus.ONGOING)
+					.filter(lh -> lh.getStatus() == LessonHistoryStatus.ONGOING)
 					.map(lh -> lh.getId())
 					.get();
 		}
@@ -121,44 +122,44 @@ public class LessonService implements ILessonService {
 
 	@Override
 	@Transactional
-	public void completed(CompletedLessonDto completedLessonDto, User user) {
+	public void completed(CompletedLessonDto completedLessonDto, Account user) {
 		LessonHistory lessonHistory = lessonHistoryRepo.findById(completedLessonDto.getHistoryId())
 				.orElseThrow(() -> new AppException(ResponseCode.LESSON_HISTORY_NOT_FOUND));
-		if (lessonHistory.getStatus() == LessonStatus.COMPLETED) {
+		if (lessonHistory.getStatus() == LessonHistoryStatus.COMPLETED) {
 			throw new AppException(ResponseCode.INVALID_REQUEST);
 		}
 		lessonHistory.setAccuracy(completedLessonDto.getAccuracy());
 		var totalTime = Duration.between(lessonHistory.getCreatedAt(), LocalDateTime.now());
 		lessonHistory.setTotalTime(totalTime.getSeconds());
-		lessonHistory.setStatus(LessonStatus.COMPLETED);
+		lessonHistory.setStatus(LessonHistoryStatus.COMPLETED);
 		// Cộng elo
-		int totalElo = lessonHistory.getLesson()
-				.getTarget()
-				.getElo()
-				+ completedLessonDto.getAccuracy() > LessonConstants.ACCURACY_TO_SUCCESS
-						? LessonConstants.BONUS_ELO_WHEN_SUCCESS
+		int totalElo = lessonHistory.getLesson().getElo()
+				+ completedLessonDto.getAccuracy() > EloConstants.ACCURACY_TO_SUCCESS
+						? EloConstants.BONUS_ELO_WHEN_SUCCESS
 						: 0;
 		lessonHistory.setElo(totalElo);
-		for (LeaderBoardUser leaderBoardUser : user.getLeaderBoardUsers()) {
-			leaderBoardUser.setElo(leaderBoardUser.getElo() + totalElo);
+		var leaderboardUser = rankingUserRepo.findByOwner(user.getUsername());
+		if (leaderboardUser.isPresent()) {
+			leaderboardUser.get().plus(totalElo);
+			rankingUserRepo.save(leaderboardUser.get());
 		}
 		lessonHistoryRepo.save(lessonHistory);
-		userRepo.save(user);
+		accountRepo.save(user);
 	}
 
 	@Override
 	@Transactional
-	public PagingResult<LessonDto> getSuggestedLessons(PagingRequest pagingRequest, User user) {
+	public PagingResult<LessonDto> getSuggestedLessons(PagingRequest pagingRequest, Account user) {
 		return PagingResult.of(
-				lessonRepo.findByLevel(pagingRequest.pageable(), user.getLevel()),
+				lessonRepo.findByUserLevel(pagingRequest.pageable(), user.getLevel()),
 				lesson -> lessonMapper.toDto(lesson));
 	}
 
 	@Override
-	public LessonDetailDto examineByHistory(Integer lessonHistoryId, User user) {
+	public LessonDetailDto examineByHistory(Integer lessonHistoryId, Account user) {
 		LessonHistory lessonHistory = lessonHistoryRepo.findById(lessonHistoryId)
 				.orElseThrow(() -> new AppException(ResponseCode.LESSON_HISTORY_NOT_FOUND));
-		if (lessonHistory.getStatus() != LessonStatus.ONGOING) {
+		if (lessonHistory.getStatus() != LessonHistoryStatus.ONGOING) {
 			throw new AppException(ResponseCode.LESSON_IS_ALREADY_COMPLETED);
 		}
 		Lesson lesson = lessonHistory.getLesson();

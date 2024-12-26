@@ -1,7 +1,7 @@
 package vn.edu.huce.beforeigner.infrastructures.historymodule.dtos;
 
 import lombok.Builder;
-import vn.edu.huce.beforeigner.domains.history.LessonStatus;
+import vn.edu.huce.beforeigner.domains.history.LessonHistoryStatus;
 
 @Builder
 public class LessonHistoryDto {
@@ -22,8 +22,8 @@ public class LessonHistoryDto {
     
     public String totalTime;
 
-    public LessonStatus status;
+    public LessonHistoryStatus status;
 
-    public Float accuracy;
+    public Integer accuracy;
 
 }

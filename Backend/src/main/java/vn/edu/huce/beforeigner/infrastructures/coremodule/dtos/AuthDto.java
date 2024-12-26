@@ -1,11 +1,13 @@
 package vn.edu.huce.beforeigner.infrastructures.coremodule.dtos;
 
 import lombok.Builder;
+import lombok.Data;
 
+@Data
 @Builder
 public class AuthDto {
     
-    public String accessToken;
+    private String accessToken;
 
-    public String refreshToken;
+    private String refreshToken;
 }

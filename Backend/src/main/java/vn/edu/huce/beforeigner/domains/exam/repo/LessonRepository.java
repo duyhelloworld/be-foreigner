@@ -11,6 +11,6 @@ import vn.edu.huce.beforeigner.domains.exam.Lesson;
 @Repository
 public interface LessonRepository extends JpaRepository<Lesson, Integer> {
     
-    Page<Lesson> findByLevel(PageRequest pageRequest, UserLevel level);
+    Page<Lesson> findByUserLevel(PageRequest pageRequest, UserLevel userLevel);
 
 }

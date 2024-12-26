@@ -2,6 +2,7 @@ package vn.edu.huce.beforeigner.infrastructures.commonmodule.impls;
 
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -18,12 +19,16 @@ public class PushNotificationService implements IPushNotificationService {
 
     private final FirebaseMessaging firebaseMessaging;
 
+    @Value("${application.notification.app-icon}")
+    private String appIcon;
+
     @Override
     public void send(String recipientToken, String title, String body, Map<String, String> data)
             throws FirebaseMessagingException {
         Notification notification = Notification.builder()
                 .setTitle(title)
                 .setBody(body)
+                .setImage(appIcon)
                 .build();
         Message msg = Message.builder()
                 .setToken(recipientToken)

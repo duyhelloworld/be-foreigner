@@ -18,7 +18,7 @@ public class LessonMapper {
                 .id(lesson.getId())
                 .name(lesson.getName())
                 .historyId(historyId)
-                .elo(lesson.getTarget().getElo())
+                .elo(lesson.getElo())
                 .questions(questionDtos)
                 .build();
     }
@@ -28,7 +28,7 @@ public class LessonMapper {
                 .id(lesson.getId())
                 .name(lesson.getName())
                 .cover(lesson.getCoverImageUrl())
-                .type(lesson.getType())
+                .accessLevel(lesson.getAccessLevel())
                 .build();
     }
 }

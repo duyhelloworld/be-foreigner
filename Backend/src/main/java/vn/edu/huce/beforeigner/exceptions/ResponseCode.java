@@ -32,6 +32,8 @@ public enum ResponseCode {
     EMAIL_INVALID(1018, "Email không hợp lệ. Hãy điền 1 email hợp lệ."),
     USER_LEVEL_MISSING(1019, "Người dùng chưa lựa chọn trình độ hiện tại"), 
     FULLNAME_OUT_MAX_SIZE(1020, "Tên đầy đủ vượt quá 255 kí tự"),
+    NO_VERIFY_REQUEST_CREATED(1021, "Không có yêu cầu xác thực nào được tạo trước đó."),
+    NO_RESET_PASSWORD_REQUEST_CREATED(1022, "Không có yêu cầu đổi mật nào được tạo trước đó."),
     // NOTIFICATION
     NOTIFICATION_TOKEN_NOT_FOUND(1100, "Không tìm thấy mã thông báo"),
     NOTIFICATION_TOKEN_MISSING(1101, "Mã thông báo bị thiếu"),
@@ -40,7 +42,6 @@ public enum ResponseCode {
     // MAIL
     NEW_PASS_IS_SAME_WITH_OLD(1200, "Mật khẩu mới không đựợc trùng với mật khẩu cũ"),
     WRONG_RESET_PASSWORD_CODE(1201, "Mã cập nhật mật khẩu không hợp lệ"),
-
     // STORAGE
     FILE_UPLOAD_ERROR(1202, "Xảy ra lỗi khi tải lên file"),
     DEFAULT_FILE_NOT_FOUND(1203, "Ảnh đại diện mặc định không có trên hệ thống"),
@@ -56,7 +57,10 @@ public enum ResponseCode {
     WORD_TYPE_MISSING(4007, "Thiếu loại từ vựng"),
     WORD_EXAMPLE_SENTENSE_MISSING(4008, "Thiếu câu ví dụ cho từ vựng"),
     WORD_EXAMPLE_MEAN_MISSING(4009, "Thiếu nghĩa câu ví dụ cho từ vựng"),
-
+    SENTENSE_NOT_FOUND(4010, "Không tìm thấy câu này"),
+    SENTENSE_VALUE_MISSING(4011, "Thiếu câu."),
+    SENTENSE_MEAN_MISSING(4012, "Thiếu ý nghĩa câu."),
+    SENTENSE_AUDIO_MISSING(4013, "Thiếu âm thanh câu."),
     // EXAM
     NO_LESSON_WITH_RIGHT_LEVEL_OF_DIFFICULTY(5000, "Không có bài học nào có độ khó phù hợp với bạn"),
     LESSON_NOT_FOUND(5001, "Không tìm thấy bài học này"),  

@@ -26,7 +26,5 @@ public class SignUpDto {
 
     private UserLevel level;
 
-    private String avatarFilename;
-
     private String avatar;
 }

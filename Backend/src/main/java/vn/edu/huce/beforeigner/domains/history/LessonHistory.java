@@ -8,8 +8,10 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import lombok.Setter;
-import vn.edu.huce.beforeigner.domains.base.OwnerAuditedEntity;
+import vn.edu.huce.beforeigner.constants.EloConstants;
+import vn.edu.huce.beforeigner.domains.base.NoDeleteAuditedEntity;
 import vn.edu.huce.beforeigner.domains.exam.Lesson;
 import lombok.Getter;
 import jakarta.persistence.ManyToOne;
@@ -17,28 +19,45 @@ import jakarta.persistence.ManyToOne;
 @Getter
 @Setter
 @Entity
-public class LessonHistory extends OwnerAuditedEntity {
+/**
+ * Lịch sử bài học
+ */
+public class LessonHistory extends NoDeleteAuditedEntity {
 
+    /**
+     * Khóa chính
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Lesson lesson;
-
     /**
      * Trạng thái bài học
      */
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private LessonStatus status;
+    private LessonHistoryStatus status;
 
+    /**
+     * Điểm xếp hạng
+     * @see EloConstants
+     */
     private Integer elo;
 
     /**
-     * Tổng thời gian làm, null nếu chưa xong
+     * Tổng thời gian làm
      */
     private Long totalTime;
 
-    @Column(scale = 2)
-    private Float accuracy;
+    /**
+     * Độ chính xác
+     */
+    private Integer accuracy;
+
+    /**
+     * Bài học
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private Lesson lesson;
 }
