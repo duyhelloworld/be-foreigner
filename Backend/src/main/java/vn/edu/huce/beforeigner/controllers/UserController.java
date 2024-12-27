@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import vn.edu.huce.beforeigner.annotations.security.IsAdmin;
 import vn.edu.huce.beforeigner.annotations.security.IsUser;
 import vn.edu.huce.beforeigner.domains.core.Account;
-import vn.edu.huce.beforeigner.exceptions.ApiResponse;
+
 import org.springframework.web.bind.annotation.PostMapping;
 
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IUserService;
@@ -15,6 +15,7 @@ import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.UserDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.StreakDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.UserInfoDto;
 import vn.edu.huce.beforeigner.infrastructures.remindmodule.dtos.UserRemindSettingDto;
+import vn.edu.huce.beforeigner.utils.apiresponse.ApiResponse;
 import vn.edu.huce.beforeigner.utils.paging.PagingRequest;
 import vn.edu.huce.beforeigner.utils.paging.PagingResult;
 

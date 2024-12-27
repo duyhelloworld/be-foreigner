@@ -29,6 +29,7 @@ import vn.edu.huce.beforeigner.domains.core.repo.AccountTokenRepo;
 import vn.edu.huce.beforeigner.domains.core.repo.AccountSettingRepo;
 import vn.edu.huce.beforeigner.domains.remind.NotificationMethod;
 import vn.edu.huce.beforeigner.domains.remind.SettingType;
+import vn.edu.huce.beforeigner.domains.streak.Streak;
 import vn.edu.huce.beforeigner.exceptions.AppException;
 import vn.edu.huce.beforeigner.exceptions.ResponseCode;
 import vn.edu.huce.beforeigner.infrastructures.cloudmodule.abstracts.ICloudFileService;
@@ -81,7 +82,7 @@ public class AuthService implements IAuthService, UserDetailsService {
                 .findByUsernameOrEmail(requestForgotPasswordDto.getUsername(), requestForgotPasswordDto.getEmail())
                 .orElseThrow(() -> new AppException(ResponseCode.USERNAME_NOT_FOUND));
 
-        var optToken = accountTokenRepo.findByTypeAndAccountId(TokenType.RESET_PASSWORD, account.getId());
+        var optToken = accountTokenRepo.findValidTokenByTypeAndOwner(TokenType.RESET_PASSWORD, account.getUsername());
         if (optToken.isPresent()) {
             // Đang có 1 phiên reset mật khẩu
             return;
@@ -102,16 +103,15 @@ public class AuthService implements IAuthService, UserDetailsService {
 
     @Override
     public void requestVerifyAccount(Account account, RequestVerifyEmailDto requestVerifyEmailDto) {
-
-        var optToken = accountTokenRepo.findByTypeAndAccountId(TokenType.RESET_PASSWORD, account.getId());
+        if (account.isVerified()) {
+            return;
+        }
+        var optToken = accountTokenRepo.findValidTokenByTypeAndOwner(TokenType.RESET_PASSWORD, account.getUsername());
         if (optToken.isPresent()) {
             // Đang có 1 phiên xác thực tài khoản
             return;
         }
         var accountToken = optToken.get();
-        if (accountToken.getAccount().isVerified()) {
-            return;
-        }
         accountToken.setToken(generateCode());
         accountToken.setType(TokenType.RESET_PASSWORD);
         try {
@@ -133,24 +133,23 @@ public class AuthService implements IAuthService, UserDetailsService {
         if (account.isVerified()) {
             return;
         }
-        var accountToken = accountTokenRepo.findByTypeAndAccountId(TokenType.VERIFY_EMAIL, account.getId())
+        var accountToken = accountTokenRepo.findValidTokenByTypeAndOwner(TokenType.VERIFY_EMAIL, account.getUsername())
             .orElseThrow(() -> new AppException(ResponseCode.NO_VERIFY_REQUEST_CREATED));
         if (accountToken.getToken().equals(verifyEmailDto.getCode())) {
             accountToken.setExpiredAt(LocalDateTime.now());
             account.setVerified(true);
             accountRepo.save(account);
-
         }
     }
 
     @Override
     public AuthDto signIn(SignInDto signInDto) {
         Account account = accountRepo.findByUsername(signInDto.getUsername())
-                .orElseThrow(() -> new AppException(ResponseCode.USERNAME_NOT_FOUND));
+        .orElseThrow(() -> new AppException(ResponseCode.USERNAME_NOT_FOUND));
         if (!passwordEncoder.matches(signInDto.getPassword(), account.getPassword())) {
             throw new AppException(ResponseCode.USERNAME_OR_PASSWORD_INCORRECT);
         }
-        var accountToken = accountTokenRepo.findByTypeAndAccountId(TokenType.REFRESH, account.getId());
+        var accountToken = accountTokenRepo.findValidTokenByTypeAndOwner(TokenType.REFRESH, account.getUsername());
         String refreshToken = accountToken.isPresent()
                 ? accountToken.get().getToken()
                 : accountTokenService.addNew(TokenType.REFRESH, accountTokenService.generateRefreshToken());
@@ -177,7 +176,6 @@ public class AuthService implements IAuthService, UserDetailsService {
         user.setQuota(UserConstants.QUOTA_PER_DAY);
         user.setPlan(SubscriptionPlan.FREE);
         user.setRole(Role.USER);
-        user.setStreakDays(0);
 
         var response = cloudFileService.save(signUpDto.getAvatar(), CloudFileType.USER_AVATAR);
         user.setAvatarUrl(response.getUrl());
@@ -200,6 +198,11 @@ public class AuthService implements IAuthService, UserDetailsService {
         remindByMail.setRemindMethod(NotificationMethod.EMAIL);
         accountSettingRepo.saveAll(List.of(remindByMail, remindByNoti));
 
+        Streak streak = new Streak();
+        streak.setPlusStreak(false);
+        streak.setHighestStreak(0);
+        streak.setCurrentStreak(0);
+        
         return AuthDto.builder()
                 .accessToken(tokenService.buildToken(user))
                 .refreshToken(refreshToken)
@@ -218,7 +221,7 @@ public class AuthService implements IAuthService, UserDetailsService {
                 account.getPassword())) {
             throw new AppException(ResponseCode.USERNAME_OR_PASSWORD_INCORRECT);
         }
-        var accountToken = accountTokenRepo.findByTypeAndAccountId(TokenType.VERIFY_EMAIL, account.getId())
+        var accountToken = accountTokenRepo.findValidTokenByTypeAndOwner(TokenType.VERIFY_EMAIL, account.getUsername())
             .orElseThrow(() -> new AppException(ResponseCode.NO_VERIFY_REQUEST_CREATED));
         if (accountToken.getToken().equals(changePasswordDto.getCode())) {
             accountToken.setExpiredAt(LocalDateTime.now());

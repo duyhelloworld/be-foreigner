@@ -87,7 +87,7 @@ public class RemindService implements IRemindService {
                 break;
             case NOTIFICATION:
                 var userToken = userTokenRepo
-                        .findByTypeAndAccountId(TokenType.NOTIFICATION, user.getId());
+                        .findValidTokenByTypeAndOwner(TokenType.NOTIFICATION, user.getUsername());
                 if (userToken.isEmpty()) {
                     log.error("Cannot send to {} cause by missing notification token!", user.getUsername());
                     return;
@@ -121,14 +121,14 @@ public class RemindService implements IRemindService {
         remind.setTitle(template.getTitle());
         remind.setBody(template.getBody());
         remind.setData(data);
-        remind.setAccount(user);
+        remind.setOwner(user.getUsername());
         remind.setMethod(method);
         return remind;
     }
 
     @Override
     public List<RemindDto> syncNotification(Account user, NotificationMethod method) {
-        return remindRepo.findByAccountAndMethod(user, method)
+        return remindRepo.findByOwnerAndMethod(user.getUsername(), method)
                 .stream()
                 .map(r -> remindMapper.toDto(r))
                 .toList();

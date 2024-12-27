@@ -9,16 +9,15 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToOne;
 import lombok.Setter;
+import vn.edu.huce.beforeigner.domains.base.NoDeleteAuditedEntity;
 import lombok.Getter;
 
 @Getter
 @Setter
 @Entity
-public class AccountToken {
+public class AccountToken extends NoDeleteAuditedEntity {
     
     /**
      * Id
@@ -45,11 +44,4 @@ public class AccountToken {
      * Token hết hạn lúc ?
      */
     private LocalDateTime expiredAt;
-
-    /**
-     * Tài khoản sở hữu
-     */
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private Account account;
 }

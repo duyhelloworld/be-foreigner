@@ -15,12 +15,12 @@ import lombok.RequiredArgsConstructor;
 import vn.edu.huce.beforeigner.annotations.security.IsAdmin;
 import vn.edu.huce.beforeigner.annotations.security.IsUser;
 import vn.edu.huce.beforeigner.domains.core.Account;
-import vn.edu.huce.beforeigner.exceptions.ApiResponse;
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.abstracts.IWordService;
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.dtos.WordDto;
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.dtos.creatation.CreateWordDto;
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.dtos.detail.WordDetailDto;
 import vn.edu.huce.beforeigner.infrastructures.vocabmodule.dtos.updatation.UpdateWordDto;
+import vn.edu.huce.beforeigner.utils.apiresponse.ApiResponse;
 import vn.edu.huce.beforeigner.utils.paging.PagingRequest;
 import vn.edu.huce.beforeigner.utils.paging.PagingResult;
 

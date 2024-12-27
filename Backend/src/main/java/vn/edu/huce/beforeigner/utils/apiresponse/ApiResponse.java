@@ -1,8 +1,9 @@
-package vn.edu.huce.beforeigner.exceptions;
+package vn.edu.huce.beforeigner.utils.apiresponse;
 
 import java.util.List;
 
 import lombok.Data;
+import vn.edu.huce.beforeigner.exceptions.ResponseCode;
 
 @Data
 public class ApiResponse<T> {

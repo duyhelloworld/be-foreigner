@@ -44,29 +44,29 @@ public class UserTokenService implements IAccountTokenService {
 
     @Override
     public String addNew(TokenType type, String token) {
-        var optUsertoken = accountTokenRepo.findByTypeAndToken(type, token);
-        if (optUsertoken.isPresent()) {
-            return optUsertoken.get().getToken();
+        var isExisted = accountTokenRepo.existsByTypeAndToken(type, token);
+        if (!isExisted) {
+            AccountToken userToken = new AccountToken();
+            userToken.setToken(token);
+            userToken.setExpiredAt(LocalDateTime.now().plusDays(10));
+            userToken.setType(type);
+            accountTokenRepo.save(userToken);
         }
-        AccountToken userToken = new AccountToken();
-        userToken.setToken(token);
-        userToken.setExpiredAt(LocalDateTime.now().plusDays(10));
-        userToken.setType(type);
-        accountTokenRepo.save(userToken);
-        return userToken.getToken();
+        return token;
     }
 
     @Override
     public void expire(Account account, String token, TokenType type) {
-        AccountToken accountToken = accountTokenRepo.findByTypeAndAccountId(type, account.getId())
-            .orElseThrow(() -> new AppException(ResponseCode.UNAUTHORIZED));
+        AccountToken accountToken = accountTokenRepo.findValidTokenByTypeAndOwner(type, account.getUsername())
+                .orElseThrow(() -> new AppException(ResponseCode.UNAUTHORIZED));
         accountToken.setExpiredAt(LocalDateTime.now());
         accountTokenRepo.save(accountToken);
     }
 
     @Override
     public AuthDto renewAccess(Account account, String refreshToken) {
-        AccountToken accountToken = accountTokenRepo.findByTypeAndAccountId(TokenType.REFRESH, account.getId())
+        AccountToken accountToken = accountTokenRepo
+                .findValidTokenByTypeAndOwner(TokenType.REFRESH, account.getUsername())
                 .orElseThrow(() -> new AppException(ResponseCode.REFRESH_TOKEN_EXPIRED));
         accountToken.setToken(generateRefreshToken());
         accountToken.setExpiredAt(LocalDateTime.now().plusDays(5));

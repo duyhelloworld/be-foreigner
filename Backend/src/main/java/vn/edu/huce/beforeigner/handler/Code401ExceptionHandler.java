@@ -12,8 +12,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import vn.edu.huce.beforeigner.commons.AppObjectMapper;
-import vn.edu.huce.beforeigner.exceptions.ApiResponse;
 import vn.edu.huce.beforeigner.exceptions.ResponseCode;
+import vn.edu.huce.beforeigner.utils.apiresponse.ApiResponse;
 
 @Component
 @RequiredArgsConstructor

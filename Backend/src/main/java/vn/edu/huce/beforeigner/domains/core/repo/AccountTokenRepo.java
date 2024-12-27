@@ -13,20 +13,21 @@ import java.util.Optional;
 @Repository
 public interface AccountTokenRepo extends JpaRepository<AccountToken, Integer> {
     
-    @Query("""
-            SELECT at FROM AccountToken at
-            WHERE expiredAt > CURRENT_TIMESTAMP 
-                AND type = :type 
-                AND token = :token
-            """)
-    Optional<AccountToken> findByTypeAndToken(@Param("type") TokenType type, @Param("token") String token);
+    boolean existsByTypeAndToken(TokenType type, String token);
+
+    // @Query("""
+    //         SELECT at FROM AccountToken at
+    //         WHERE expiredAt > CURRENT_TIMESTAMP 
+    //             AND type = :type 
+    //             AND token = :token
+    //         """)
+    // Optional<AccountToken> findByTypeAndToken(@Param("type") TokenType type, @Param("token") String token);
 
     @Query("""
             SELECT at FROM AccountToken at
-            JOIN Account a
-            WHERE expiredAt > CURRENT_TIMESTAMP 
-                AND type = :type 
-                AND a.id = :accountId
+            WHERE type = :type 
+                AND expiredAt > CURRENT_TIMESTAMP 
+                AND owner = :owner
             """)
-    Optional<AccountToken> findByTypeAndAccountId(@Param("type") TokenType type, @Param("accountId") Integer accountId);
+    Optional<AccountToken> findValidTokenByTypeAndOwner(@Param("type") TokenType type, @Param("owner") String owner);
 }

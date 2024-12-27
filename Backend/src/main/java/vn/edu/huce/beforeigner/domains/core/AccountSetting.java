@@ -7,8 +7,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.Setter;
 import vn.edu.huce.beforeigner.domains.base.NoDeleteAuditedEntity;
 import vn.edu.huce.beforeigner.domains.remind.NotificationMethod;
@@ -51,8 +49,4 @@ public class AccountSetting extends NoDeleteAuditedEntity {
      */
     @Column(nullable = false)
     private boolean isEnabled;
-
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private Account account;
 }

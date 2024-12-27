@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import vn.edu.huce.beforeigner.domains.core.repo.AccountRepo;
+import vn.edu.huce.beforeigner.domains.streak.repo.StreakRepository;
 import vn.edu.huce.beforeigner.infrastructures.leaderboardmodule.abstracts.ILeaderboardService;
 import vn.edu.huce.beforeigner.infrastructures.remindmodule.abstracts.IRemindService;
 
@@ -20,14 +20,14 @@ public class ScheduleConfig {
 
     private final IRemindService remindService;
 
-    private final AccountRepo accountRepo;
+    private final StreakRepository streakRepository;
 
     private final ILeaderboardService leaderboardService;
 
     @Scheduled(cron = "0 0 0 * * ?")
     public void onNewDayJobs() {
         log.info("Start schedule onNewDayJobs at {}", LocalDateTime.now());
-        int result = accountRepo.resetShowedStreak();
+        int result = streakRepository.resetShowedStreak();
         log.info("Success reset first try of {} users", result);
         leaderboardService.updateUserRanks();
         log.info("Sucess update user ranks in Ranking");

@@ -2,9 +2,6 @@ package vn.edu.huce.beforeigner.domains.core;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,10 +13,10 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.Index;
+import jakarta.persistence.Table;
 import lombok.Setter;
 import vn.edu.huce.beforeigner.domains.common.UserLevel;
-import vn.edu.huce.beforeigner.domains.remind.Remind;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -30,6 +27,7 @@ import lombok.NoArgsConstructor;
 /**
  * Người dùng
  */
+@Table(indexes = @Index(columnList = "username, email"))
 public class Account implements UserDetails {
 
     /**
@@ -81,18 +79,6 @@ public class Account implements UserDetails {
     private String avatarPublicId;
 
     /**
-     * Số chuỗi ngày học
-     */
-    @Column
-    private Integer streakDays;
-
-    /**
-     * True nếu đã tăng streak, false nếu chưa
-     */
-    @Column
-    private boolean isPlusStreak;
-
-    /**
      * Vai trò
      */
     @Column(nullable = false)
@@ -102,7 +88,6 @@ public class Account implements UserDetails {
     /**
      * Cấp độ người dùng
      */
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private UserLevel level;
 
@@ -127,13 +112,4 @@ public class Account implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(role.name()));
     }
-
-    @OneToMany(mappedBy = "account")
-    private Set<AccountToken> accountTokens = new HashSet<>();
-
-    @OneToMany(mappedBy = "account")
-    private Set<AccountSetting> accountSettings = new HashSet<>();
-
-    @OneToMany(mappedBy = "account")
-    private Set<Remind> reminds = new HashSet<>();
 }

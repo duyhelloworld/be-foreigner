@@ -9,6 +9,9 @@ import vn.edu.huce.beforeigner.domains.core.Role;
 import vn.edu.huce.beforeigner.domains.core.TokenType;
 import vn.edu.huce.beforeigner.domains.core.Account;
 import vn.edu.huce.beforeigner.domains.core.repo.AccountRepo;
+import vn.edu.huce.beforeigner.domains.streak.repo.StreakRepository;
+import vn.edu.huce.beforeigner.exceptions.AppException;
+import vn.edu.huce.beforeigner.exceptions.ResponseCode;
 import vn.edu.huce.beforeigner.infrastructures.cloudmodule.abstracts.ICloudFileService;
 import vn.edu.huce.beforeigner.infrastructures.cloudmodule.dtos.CloudFileType;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IUserService;
@@ -36,7 +39,7 @@ public class UserService implements IUserService {
 
     private final IAccountTokenService userTokenService;
 
-    // private final UserRemindSettingRepository accountSettingRepo;
+    private final StreakRepository streakRepository;
 
     @Override
     public PagingResult<UserDto> findAllUsers(PagingRequest pagingRequest) {
@@ -79,16 +82,18 @@ public class UserService implements IUserService {
     @Override
 	public StreakDto streak(Account user) {
         var builder = StreakDto.builder();
-        if (user.isPlusStreak()) {
+        var streak = streakRepository.findByOwner(user.getUsername())
+            .orElseThrow(() -> new AppException(ResponseCode.UNEXPECTED_ERROR));
+        if (streak.isPlusStreak()) {
             // User đã học trước đó
-            builder.streakDays(user.getStreakDays())
+            builder.streakDays(streak.getCurrentStreak())
                 .hasLearned(true);
         } else {
             // User chưa học, tăng streak và set trạng thái đã học
-            user.setStreakDays(user.getStreakDays() + 1);
-            user.setPlusStreak(true);
+            streak.plusStreak();
+            streak.setPlusStreak(true);
             accountRepo.save(user);
-            builder.streakDays(user.getStreakDays())
+            builder.streakDays(streak.getCurrentStreak())
                 .hasLearned(false);
         }
         return builder.build();

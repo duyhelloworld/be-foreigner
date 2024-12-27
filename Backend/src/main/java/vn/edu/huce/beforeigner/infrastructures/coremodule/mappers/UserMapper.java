@@ -26,7 +26,6 @@ public class UserMapper {
             .avatar(user.getAvatarUrl())
             .email(user.getEmail())
             .level(user.getLevel())
-            .streakDays(user.getStreakDays())
             .plan(user.getPlan())
             .build();
     }

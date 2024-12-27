@@ -21,10 +21,6 @@ public class UserInfoDto {
 
     private SubscriptionPlan plan;
 
-    private Integer quota;
-
-    private Integer streakDays;
-
     private UserLevel level;
 
 }

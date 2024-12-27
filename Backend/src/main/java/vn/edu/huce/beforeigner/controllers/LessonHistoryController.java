@@ -9,9 +9,10 @@ import java.util.List;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import lombok.RequiredArgsConstructor;
 import vn.edu.huce.beforeigner.domains.core.Account;
-import vn.edu.huce.beforeigner.exceptions.ApiResponse;
 import vn.edu.huce.beforeigner.infrastructures.historymodule.abstracts.ILessonHistoryService;
 import vn.edu.huce.beforeigner.infrastructures.historymodule.dtos.LessonHistoryDto;
+import vn.edu.huce.beforeigner.utils.apiresponse.ApiResponse;
+
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController

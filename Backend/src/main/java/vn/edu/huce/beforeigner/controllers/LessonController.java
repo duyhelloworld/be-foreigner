@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import lombok.RequiredArgsConstructor;
 import vn.edu.huce.beforeigner.annotations.security.IsUser;
 import vn.edu.huce.beforeigner.domains.core.Account;
-import vn.edu.huce.beforeigner.exceptions.ApiResponse;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.abstracts.ILessonService;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.CompletedLessonDto;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.LessonDetailDto;
 import vn.edu.huce.beforeigner.infrastructures.exammodule.dtos.LessonDto;
+import vn.edu.huce.beforeigner.utils.apiresponse.ApiResponse;
 import vn.edu.huce.beforeigner.utils.paging.PagingRequest;
 import vn.edu.huce.beforeigner.utils.paging.PagingResult;
 

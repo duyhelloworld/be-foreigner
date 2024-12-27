@@ -16,11 +16,11 @@ import vn.edu.huce.beforeigner.infrastructures.remindmodule.dtos.ReadRemindDto;
 import vn.edu.huce.beforeigner.annotations.security.IsUser;
 import vn.edu.huce.beforeigner.domains.core.Account;
 import vn.edu.huce.beforeigner.domains.remind.NotificationMethod;
-import vn.edu.huce.beforeigner.exceptions.ApiResponse;
 import vn.edu.huce.beforeigner.exceptions.ResponseCode;
 import vn.edu.huce.beforeigner.exceptions.AppException;
 import vn.edu.huce.beforeigner.infrastructures.remindmodule.abstracts.IRemindService;
 import vn.edu.huce.beforeigner.infrastructures.remindmodule.dtos.RemindDto;
+import vn.edu.huce.beforeigner.utils.apiresponse.ApiResponse;
 
 
 @RestController

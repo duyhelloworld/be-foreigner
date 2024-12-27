@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import vn.edu.huce.beforeigner.annotations.security.IsAuthenticated;
 import vn.edu.huce.beforeigner.annotations.security.IsUser;
 import vn.edu.huce.beforeigner.domains.core.Account;
-import vn.edu.huce.beforeigner.exceptions.ApiResponse;
 import jakarta.validation.Valid;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IAuthService;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.abstracts.IAccountTokenService;
@@ -21,6 +20,7 @@ import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.RequestVerifyEmai
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.SignInDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.SignUpDto;
 import vn.edu.huce.beforeigner.infrastructures.coremodule.dtos.VerifyEmailDto;
+import vn.edu.huce.beforeigner.utils.apiresponse.ApiResponse;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
